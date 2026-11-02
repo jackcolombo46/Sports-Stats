@@ -1,0 +1,27 @@
+Stagione 2026-27: controllo le partite dal 2026-08-01 al 2026-11-02
+Stagione 2026-27: 98 partite nuove
+  50/98 partite
+Fatto: 2026-11-02T15:32:01Z 4 file, 22 partite in calendario, 647 giocatori in rosa
+Stagione 2024-25: scarico il calendario...
+Stagione 2024-25: 380 partite, scarico i tabellini...
+  50/380 partite
+  100/380 partite
+  150/380 partite
+  200/380 partite
+  250/380 partite
+  300/380 partite
+  350/380 partite
+Stagione 2024-25: salvate 11887 righe, 380 partite
+Stagione 2025-26: scarico il calendario...
+Stagione 2025-26: 380 partite, scarico i tabellini...
+  50/380 partite
+  100/380 partite
+  150/380 partite
+  200/380 partite
+  250/380 partite
+  300/380 partite
+  350/380 partite
+Stagione 2025-26: salvate 11928 righe, 380 partite
+Stagione 2026-27: controllo le partite dal 2026-10-29 al 2026-11-02
+Stagione 2026-27: 0 partite nuove
+Fatto: 2026-11-02T15:32:46Z 6 file, 22 partite in calendario, 647 giocatori in rosa

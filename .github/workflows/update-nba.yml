@@ -1,0 +1,58 @@
+name: Aggiorna dati NBA
+
+on:
+  schedule:
+    # orari UTC: dopo le partite USA (mattina in Italia), primo pomeriggio e sera
+    - cron: "23 7 * * *"
+    - cron: "41 13 * * *"
+    - cron: "17 19 * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["tools/nba/**", ".github/workflows/update-nba.yml"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-nba
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Stagione in corso
+        run: |
+          set -o pipefail
+          mkdir -p docs/nba/data
+          python tools/nba/update_data.py --skip-past 2>&1 | tee docs/nba/data/update-log.txt
+      - name: Salva (stagione in corso)
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/nba/data
+          git diff --cached --quiet && exit 0
+          git commit -m "Dati aggiornati nba $(date -u +'%Y-%m-%d %H:%M UTC')"
+          git pull --rebase -q -X ours origin main || (git rebase --abort; git pull -q --no-rebase -X ours origin main)
+          git push
+      - name: Stagioni passate (solo la prima volta)
+        run: |
+          set -o pipefail
+          python tools/nba/update_data.py 2>&1 | tee -a docs/nba/data/update-log.txt
+      - name: Salva (stagioni passate)
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/nba/data
+          git diff --cached --quiet && exit 0
+          git commit -m "Dati aggiornati nba $(date -u +'%Y-%m-%d %H:%M UTC')"
+          git pull --rebase -q -X ours origin main || (git rebase --abort; git pull -q --no-rebase -X ours origin main)
+          git push

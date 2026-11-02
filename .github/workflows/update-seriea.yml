@@ -1,0 +1,58 @@
+name: Aggiorna dati Serie A
+
+on:
+  schedule:
+    # orari UTC: notte (dopo le partite serali), primo pomeriggio e sera (dopo le partite delle 15 e 18)
+    - cron: "23 0 * * *"
+    - cron: "41 11 * * *"
+    - cron: "17 19 * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["tools/seriea/**", ".github/workflows/update-seriea.yml"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-seriea
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Stagione in corso
+        run: |
+          set -o pipefail
+          mkdir -p docs/seriea/data
+          python tools/seriea/update_data.py --skip-past 2>&1 | tee docs/seriea/data/update-log.txt
+      - name: Salva (stagione in corso)
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/seriea/data
+          git diff --cached --quiet && exit 0
+          git commit -m "Dati aggiornati seriea $(date -u +'%Y-%m-%d %H:%M UTC')"
+          git pull --rebase -q -X ours origin main || (git rebase --abort; git pull -q --no-rebase -X ours origin main)
+          git push
+      - name: Stagioni passate (solo la prima volta)
+        run: |
+          set -o pipefail
+          python tools/seriea/update_data.py 2>&1 | tee -a docs/seriea/data/update-log.txt
+      - name: Salva (stagioni passate)
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/seriea/data
+          git diff --cached --quiet && exit 0
+          git commit -m "Dati aggiornati seriea $(date -u +'%Y-%m-%d %H:%M UTC')"
+          git pull --rebase -q -X ours origin main || (git rebase --abort; git pull -q --no-rebase -X ours origin main)
+          git push

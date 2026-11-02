@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sports Stats</title>
+<meta name="theme-color" content="#0e1116">
+<link rel="manifest" href="manifest.webmanifest?v=1">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Sports Stats">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+  :root { --bg: #0e1116; --panel: #161b22; --line: #2a3340; --text: #e8edf3; --muted: #8b97a6;
+          --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace; }
+  * { box-sizing: border-box; }
+  html, body { overflow-x: hidden; max-width: 100%; overscroll-behavior-x: none; -webkit-text-size-adjust: 100%; }
+  html { touch-action: manipulation; }
+  body { margin: 0; background: var(--bg); color: var(--text); min-height: 100vh;
+         font: 15px/1.45 "Inter", system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: calc(36px + env(safe-area-inset-top)) 20px calc(40px + env(safe-area-inset-bottom)); }
+  h1 { margin: 0; font-size: 26px; letter-spacing: .3px; }
+  h1 span { background: linear-gradient(90deg, #ff7a1a, #2f8cff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .lead { color: var(--muted); margin: 6px 0 26px; }
+  .sports { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 600px) { .sports { grid-template-columns: 1fr; } h1 { font-size: 24px; } main { padding-top: calc(26px + env(safe-area-inset-top)); } }
+  a.sport { display: block; text-decoration: none; color: inherit; background: var(--panel); border: 1px solid var(--line);
+            border-radius: 16px; padding: 20px; position: relative; overflow: hidden; min-width: 0;
+            transition: transform .12s ease, border-color .12s ease; }
+  a.sport::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: var(--c); }
+  a.sport:hover, a.sport:focus-visible { border-color: var(--c); outline: none; }
+  a.sport:active { transform: scale(.985); }
+  .nba { --c: #ff7a1a; --c2: #ffb36b; } .seriea { --c: #2f8cff; --c2: #8cc4ff; }
+  .top { display: flex; align-items: center; gap: 14px; }
+  .ball { width: 52px; height: 52px; flex: none; }
+  .sport h2 { margin: 0; font-size: 22px; }
+  .sport h2 small { display: block; font-size: 13px; color: var(--muted); font-weight: 500; margin-top: 2px; }
+  .go { margin-left: auto; color: var(--c2); font-size: 22px; }
+  .info { margin-top: 16px; display: grid; gap: 6px; font-size: 13.5px; color: var(--muted); min-height: 62px; }
+  .info b { color: var(--text); font-weight: 600; }
+  .info .m { font-family: var(--mono); color: var(--c2); }
+  .live { background: #ef5d5d; color: #fff; font-weight: 700; font-size: 11px; border-radius: 4px; padding: 1px 6px; margin-right: 4px; }
+  footer { color: var(--muted); font-size: 12px; margin-top: 30px; line-height: 1.6; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Sports <span>Stats</span></h1>
+  <p class="lead">Scegli lo sport: proiezioni dei giocatori contro il prossimo avversario.</p>
+  <div class="sports">
+    <a class="sport nba" href="nba/">
+      <div class="top">
+        <svg class="ball" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24" fill="#ff7a1a"/>
+          <g fill="none" stroke="#0e1116" stroke-width="2.2"><path d="M2 26h48M26 2v48"/><path d="M10 8c8 9 8 27 0 36M42 8c-8 9-8 27 0 36"/></g></svg>
+        <h2>NBA<small>Punti, rimbalzi, assist, triple…</small></h2>
+        <span class="go">→</span>
+      </div>
+      <div class="info" id="info-nba">Caricamento…</div>
+    </a>
+    <a class="sport seriea" href="seriea/">
+      <div class="top">
+        <svg class="ball" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24" fill="#2f8cff"/>
+          <g fill="#0e1116"><path d="M26 18l7.6 5.5-2.9 9h-9.4l-2.9-9z"/><path d="M26 2l6 2.5-6 4.5-6-4.5zM48.5 20l-.5 6.5-5.5-3.5 2-7zM40 46l-6.5 3 1-7 7-1zM12 46l-1.5-5 7 1 1 7zM3.5 20l3.5-4 2 7-5.5 3.5z"/></g>
+          <g stroke="#0e1116" stroke-width="2"><path d="M26 18V9M33.6 23.5l8.9-1M30.7 32.5l4 9.5M21.3 32.5l-3.5 9.5M18.4 23.5l-9.4-.5"/></g></svg>
+        <h2>Serie A<small>Gol, assist, tiri, cartellini…</small></h2>
+        <span class="go">→</span>
+      </div>
+      <div class="info" id="info-seriea">Caricamento…</div>
+    </a>
+  </div>
+  <footer>
+    Dati ESPN, aggiornati automaticamente più volte al giorno. Le proiezioni sono stime statistiche.<br>
+    Sul telefono: Condividi → "Aggiungi a schermata Home" (iPhone) oppure menu ⋮ → "Installa app" (Android).
+  </footer>
+</main>
+<script>
+(function () {
+  "use strict";
+  const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const when = d => {
+    const t = new Date(d), now = new Date();
+    const day = new Date(t.getFullYear(), t.getMonth(), t.getDate()) - new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const h = t.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
+    if (day === 0) return "oggi " + h;
+    if (day === 864e5) return "domani " + h;
+    return t.toLocaleDateString("it-IT", { weekday: "short", day: "numeric", month: "short" }) + " " + h;
+  };
+  async function info(sport, name) {
+    const el = document.getElementById("info-" + sport);
+    try {
+      const r = await fetch(sport + "/data/meta.json", { cache: "no-store" });
+      if (!r.ok) throw new Error();
+      const m = await r.json();
+      const now = Date.now();
+      const games = (m.schedule || []).filter(g => g.state === "in" || new Date(g.utc) > now - 3 * 3600e3)
+        .sort((a, b) => (a.utc < b.utc ? -1 : 1));
+      const live = games.filter(g => g.state === "in").length;
+      const next = games.find(g => g.state !== "in");
+      const lines = [];
+      if (live) lines.push(`<span><span class="live">IN CORSO</span><b>${live}</b> ${live === 1 ? "partita" : "partite"}</span>`);
+      if (next) {
+        const end = new Date(next.utc).getTime() + 18 * 3600e3;
+        const n = games.filter(g => g.state !== "in" && new Date(g.utc) <= end).length;
+        lines.push(`<span>Prossima: <b>${esc(name(m, next.home))} – ${esc(name(m, next.away))}</b> · <span class="m">${esc(when(next.utc))}</span></span>`);
+        if (n > 1) lines.push(`<span><b>${n}</b> partite in arrivo in questa giornata</span>`);
+      } else if (!live) lines.push("<span>Nessuna partita nei prossimi giorni</span>");
+      if (m.updated_at) lines.push(`<span>Dati aggiornati: ${esc(new Date(m.updated_at).toLocaleString("it-IT", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }))}</span>`);
+      el.innerHTML = lines.join("");
+    } catch { el.textContent = "Tocca per aprire"; }
+  }
+  info("nba", (m, t) => t);
+  info("seriea", (m, t) => ((m.teams || {})[t] || {}).short || t);
+})();
+</script>
+</body>
+</html>
