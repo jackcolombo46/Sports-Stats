@@ -1,0 +1,56 @@
+name: Aggiorna dati LBA
+
+on:
+  schedule:
+    # ogni 3 ore dalle 12 alle 24 (ora italiana): le partite LBA si giocano soprattutto la sera e nel weekend
+    - cron: "7 11-23/3 * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["tools/lba/**", ".github/workflows/update-lba.yml"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-lba
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Stagione in corso
+        run: |
+          set -o pipefail
+          mkdir -p docs/lba/data
+          python tools/lba/update_data.py --skip-past 2>&1 | tee docs/lba/data/update-log.txt
+      - name: Salva (stagione in corso)
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/lba/data
+          git diff --cached --quiet && exit 0
+          git commit -m "Dati aggiornati lba $(date -u +'%Y-%m-%d %H:%M UTC')"
+          git pull --rebase -q -X ours origin main || (git rebase --abort; git pull -q --no-rebase -X ours origin main)
+          git push
+      - name: Stagioni passate (solo la prima volta)
+        run: |
+          set -o pipefail
+          python tools/lba/update_data.py 2>&1 | tee -a docs/lba/data/update-log.txt
+      - name: Salva (stagioni passate)
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/lba/data
+          git diff --cached --quiet && exit 0
+          git commit -m "Dati aggiornati lba $(date -u +'%Y-%m-%d %H:%M UTC')"
+          git pull --rebase -q -X ours origin main || (git rebase --abort; git pull -q --no-rebase -X ours origin main)
+          git push
