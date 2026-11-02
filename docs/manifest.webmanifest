@@ -2,7 +2,7 @@
   "name": "Sports Stats",
   "id": "sports-stats",
   "short_name": "Sports Stats",
-  "description": "Proiezioni statistiche dei giocatori NBA e Serie A contro il prossimo avversario",
+  "description": "Proiezioni statistiche dei giocatori NBA, Serie A e Serie A di basket contro il prossimo avversario",
   "start_url": "./?app=sports-stats",
   "scope": "./",
   "display": "standalone",

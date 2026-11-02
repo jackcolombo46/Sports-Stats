@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LBA Stats</title>
+<meta name="theme-color" content="#0e1116">
+<link rel="manifest" href="../manifest.webmanifest?v=1">
+<link rel="icon" href="../icon-192.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Sports Stats">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+  :root {
+    --bg: #0e1116; --panel: #161b22; --panel2: #1c232d; --line: #2a3340;
+    --text: #e8edf3; --muted: #8b97a6; --accent: #1fb57a; --accent2: #7be0b4;
+    --good: #3ecf8e; --mid: #e8c547; --bad: #ef5d5d;
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  /* su telefono la pagina scorre solo in verticale: niente spostamenti laterali, niente zoom con il doppio tocco */
+  html, body { overflow-x: hidden; max-width: 100%; overscroll-behavior-x: none; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  html { touch-action: manipulation; }
+  .two > *, .grid > *, .wgrid > *, .hero > * { min-width: 0; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 15px/1.45 "Inter", system-ui, -apple-system, "Segoe UI", sans-serif; }
+  header { padding: 22px 28px 0; display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+  h1 { margin: 0; font-size: 22px; letter-spacing: .5px; }
+  h1 span { color: var(--accent); }
+  #status { color: var(--muted); font-size: 12.5px; }
+  #status button { background: none; border: 1px solid var(--line); color: var(--muted);
+                   border-radius: 6px; padding: 2px 8px; cursor: pointer; font-size: 12px; margin-left: 6px; }
+  main { max-width: 1180px; margin: 0 auto; padding: 18px 28px 60px; }
+  .tabs { display: flex; gap: 6px; margin-bottom: 14px; }
+  .tab { background: var(--panel); border: 1px solid var(--line); color: var(--muted);
+         padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+  .tab.on { color: var(--text); border-color: var(--accent); box-shadow: inset 0 -2px 0 var(--accent); }
+  .controls { display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+              background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+  input, select { background: var(--panel2); color: var(--text); border: 1px solid var(--line);
+                  border-radius: 8px; padding: 10px 12px; font: inherit; }
+  input:focus, select:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+  .search { position: relative; flex: 1 1 320px; }
+  .search input { width: 100%; }
+  .sugg { position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 5;
+          background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .sugg div { padding: 9px 12px; cursor: pointer; display: flex; justify-content: space-between; }
+  .sugg div:hover, .sugg div.hl { background: #263040; }
+  .sugg small { color: var(--muted); }
+  label.chk { color: var(--muted); display: flex; gap: 6px; align-items: center; font-size: 14px; }
+  button.go { background: var(--accent); color: #1a0d00; border: 0; font-weight: 700;
+              border-radius: 8px; padding: 10px 18px; cursor: pointer; }
+  .hidden { display: none !important; }
+  #out { margin-top: 18px; }
+  .msg { color: var(--muted); padding: 30px; text-align: center; }
+  .err { color: var(--bad); background: #2a1515; border: 1px solid #5a2525; padding: 12px 14px; border-radius: 8px; }
+  .hero { display: flex; justify-content: space-between; gap: 18px; flex-wrap: wrap;
+          background: linear-gradient(120deg, #1d2430, #161b22 60%); border: 1px solid var(--line);
+          border-radius: 14px; padding: 18px 20px; }
+  .hero h2 { margin: 0 0 4px; font-size: 26px; }
+  .hero .sub { color: var(--muted); }
+  .hero .vs { font-size: 18px; font-weight: 700; margin-top: 6px; }
+  .hero .vs b { color: var(--accent2); }
+  .kpis { display: flex; gap: 22px; align-items: center; }
+  .kpi { text-align: right; } .kpi b { display: block; font-size: 22px; font-family: var(--mono); }
+  .kpi span { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .6px; }
+  .warn { margin-top: 10px; background: #2b2410; border: 1px solid #5c4a14; color: #f3d77a;
+          padding: 8px 12px; border-radius: 8px; font-size: 14px; }
+  h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin: 26px 0 10px; }
+  .opp { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { background: var(--panel); border: 1px solid var(--line); border-radius: 999px;
+          padding: 5px 12px; font-size: 13px; }
+  .chip .up { color: var(--good); } .chip .dn { color: var(--bad); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(265px, 1fr)); gap: 12px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+  .card .top { display: flex; justify-content: space-between; align-items: baseline; }
+  .card .name { font-weight: 700; }
+  .card .proj { font-family: var(--mono); font-size: 28px; font-weight: 700; color: var(--accent2); }
+  .likely { margin: 4px 0 8px; font-size: 13.5px; }
+  .likely b { color: var(--good); }
+  .avgs { display: flex; gap: 12px; color: var(--muted); font-size: 12.5px; margin-bottom: 8px; flex-wrap: wrap; }
+  .avgs b { color: var(--text); font-family: var(--mono); font-weight: 600; }
+  .ln { display: grid; grid-template-columns: 44px 1fr 42px 42px; gap: 8px; align-items: center;
+        font-size: 12.5px; padding: 2px 0; font-family: var(--mono); }
+  .ln .bar { height: 8px; background: var(--panel2); border-radius: 4px; overflow: hidden; }
+  .ln .bar i { display: block; height: 100%; border-radius: 4px; }
+  .ln .hr { color: var(--muted); text-align: right; }
+  .lnh { color: var(--muted); font-size: 11px; font-family: inherit; }
+  table { width: 100%; border-collapse: collapse; background: var(--panel); border: 1px solid var(--line);
+          border-radius: 12px; overflow: hidden; font-size: 14px; }
+  th, td { padding: 8px 10px; text-align: right; border-bottom: 1px solid var(--line); }
+  th { color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .5px; }
+  th:first-child, td:first-child { text-align: left; }
+  td { font-family: var(--mono); } td:first-child { font-family: inherit; }
+  tr.click { cursor: pointer; } tr.click:hover td { background: #1f2733; }
+  .leader li { display: flex; justify-content: space-between; padding: 3px 0; font-size: 14px; }
+  .leader ol { margin: 6px 0 0; padding-left: 18px; }
+  .leader .v { font-family: var(--mono); color: var(--accent2); }
+  .leader small { color: var(--muted); }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 800px) { .two { grid-template-columns: 1fr; } main, header { padding-left: 14px; padding-right: 14px; } }
+  footer { color: var(--muted); font-size: 12px; margin-top: 34px; line-height: 1.6; }
+  .nt { text-transform: none; letter-spacing: 0; }
+  .scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 12px; }
+  .scroll table { min-width: 560px; }
+  .sep { margin-top: 34px; border-top: 1px solid var(--line); }
+  .inj { background: #5a2525; color: #ffb4b4; border-radius: 4px; padding: 0 4px; font-size: 11px; }
+  @media (max-width: 600px) {
+    .hero h2 { font-size: 22px; } .kpis { gap: 14px; } .kpi b { font-size: 18px; }
+    .controls > * { flex: 1 1 100%; } .controls select, .controls button { width: 100%; }
+    .grid { grid-template-columns: 1fr; }
+  }
+  .wtools { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;
+            color: var(--muted); font-size: 13px; margin-bottom: 10px; }
+  .wtools button, .wbtn button { background: var(--panel2); color: var(--text); border: 1px solid var(--line);
+            border-radius: 8px; padding: 6px 12px; cursor: pointer; font: inherit; }
+  .wbtn { display: flex; gap: 4px; } .wbtn button { padding: 4px 9px; font-size: 13px; color: var(--muted); }
+  .wgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; }
+  .wcard .tm { color: var(--muted); }
+  .ghead { margin: 10px 0 8px; font-size: 14px; color: var(--muted); } .ghead b { font-family: var(--mono); }
+  .box { display: grid; grid-template-columns: repeat(auto-fill, minmax(58px, 1fr)); gap: 6px; }
+  .box div { background: var(--panel2); border-radius: 8px; padding: 6px 4px; text-align: center; }
+  .box span { display: block; font-size: 10.5px; color: var(--muted); letter-spacing: .5px; }
+  .box b { font-family: var(--mono); font-size: 16px; }
+  .box .up { box-shadow: inset 0 -3px 0 var(--good); } .box .dn { box-shadow: inset 0 -3px 0 var(--bad); }
+  .up { color: var(--good); } .dn { color: var(--bad); }
+  .avg { color: var(--muted); font-size: 12.5px; margin-top: 8px; } .avg b { color: var(--text); font-family: var(--mono); }
+  .live { background: var(--bad); color: #fff; font-weight: 700; font-size: 11px; border-radius: 4px; padding: 1px 6px; }
+  .msg.small { padding: 10px; font-size: 13px; }
+  button.link { background: none; border: 0; color: var(--accent2); cursor: pointer; padding: 8px 0 0; font: inherit; font-size: 13.5px; }
+  .sub button.link { padding: 0 0 0 8px; }
+  @media (max-width: 600px) { .wgrid { grid-template-columns: 1fr; } }
+  @media (max-width: 600px) {
+    input, select { font-size: 16px; }
+    header { padding-top: calc(14px + env(safe-area-inset-top)); }
+    main { padding-bottom: calc(40px + env(safe-area-inset-bottom)); }
+    .tabs { gap: 4px; } .tab { flex: 1; padding: 8px 4px; font-size: 13.5px; }
+    .hero { padding: 14px; } .hero .vs { font-size: 16px; }
+    .kpis { width: 100%; justify-content: space-between; } .kpi { text-align: center; }
+    .chip { font-size: 12px; padding: 4px 10px; }
+    .scroll { overflow-x: visible; }
+    table, .scroll table { min-width: 0; font-size: 12.5px; }
+    th, td { padding: 7px 3px; } th { font-size: 10px; letter-spacing: 0; }
+    td:first-child { max-width: 34vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .box { grid-template-columns: repeat(5, 1fr); }
+    .hm2 { display: none; }
+  }
+  .switch { align-self: center; display: inline-flex; align-items: center; gap: 6px; min-height: 40px;
+            color: var(--text); background: var(--panel); text-decoration: none; border: 1px solid var(--line);
+            border-radius: 999px; padding: 6px 16px; font-size: 15px; font-weight: 700; }
+  .switch:hover, .switch:active { border-color: var(--accent); color: var(--accent2); }
+  @media (max-width: 600px) { header { align-items: center; } }
+</style>
+</head>
+<body>
+<header>
+  <a class="switch" href="../" title="Cambia sport">⇄ Sport</a>
+  <h1>LBA <span>Stats</span></h1>
+  <div id="status">Caricamento dati…</div>
+</header>
+<main>
+  <div class="tabs">
+    <button class="tab on" data-mode="player">Giocatore</button>
+    <button class="tab" data-mode="team">Squadra</button>
+    <button class="tab" data-mode="watch">Osservati</button>
+  </div>
+  <div class="controls">
+    <div class="search" id="playerBox">
+      <input id="pq" placeholder="Cerca un giocatore (es. Ross, Shengelia, Mirotic)…" autocomplete="off" autocapitalize="off" spellcheck="false">
+      <div class="sugg hidden" id="sugg"></div>
+    </div>
+    <select id="team" class="hidden"></select>
+    <select id="opp" title="Avversario"></select>
+    <label class="chk hidden" id="bothBox"><input type="checkbox" id="both" checked> anche i giocatori avversari</label>
+    <button class="go" id="go">Analizza</button>
+  </div>
+  <div id="out"><div class="msg">Cerca un giocatore o scegli una squadra.</div></div>
+  <footer>
+    Dati: legabasket.it (regular season), aggiornati automaticamente ogni 3 ore. Partite da 40 minuti.
+    Le proiezioni sono stime statistiche: non conoscono infortuni, scelte dell'allenatore o partite già decise.
+    "L10" = quante volte il giocatore ha raggiunto la soglia nelle ultime 10 partite.<br>
+    Sul telefono: Condividi → "Aggiungi a schermata Home" (iPhone) oppure menu ⋮ → "Installa app" (Android).
+  </footer>
+</main>
+<script src="model.js?v=2"></script>
+<script src="app.js?v=2"></script>
+</body>
+</html>

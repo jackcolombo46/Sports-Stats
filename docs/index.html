@@ -20,11 +20,11 @@
   html { touch-action: manipulation; }
   body { margin: 0; background: var(--bg); color: var(--text); min-height: 100vh;
          font: 15px/1.45 "Inter", system-ui, -apple-system, "Segoe UI", sans-serif; }
-  main { max-width: 760px; margin: 0 auto; padding: calc(36px + env(safe-area-inset-top)) 20px calc(40px + env(safe-area-inset-bottom)); }
+  main { max-width: 1000px; margin: 0 auto; padding: calc(36px + env(safe-area-inset-top)) 20px calc(40px + env(safe-area-inset-bottom)); }
   h1 { margin: 0; font-size: 26px; letter-spacing: .3px; }
   h1 span { background: linear-gradient(90deg, #ff7a1a, #2f8cff); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .lead { color: var(--muted); margin: 6px 0 26px; }
-  .sports { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .sports { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; }
   @media (max-width: 600px) { .sports { grid-template-columns: 1fr; } h1 { font-size: 24px; } main { padding-top: calc(26px + env(safe-area-inset-top)); } }
   a.sport { display: block; text-decoration: none; color: inherit; background: var(--panel); border: 1px solid var(--line);
             border-radius: 16px; padding: 20px; position: relative; overflow: hidden; min-width: 0;
@@ -32,7 +32,7 @@
   a.sport::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: var(--c); }
   a.sport:hover, a.sport:focus-visible { border-color: var(--c); outline: none; }
   a.sport:active { transform: scale(.985); }
-  .nba { --c: #ff7a1a; --c2: #ffb36b; } .seriea { --c: #2f8cff; --c2: #8cc4ff; }
+  .nba { --c: #ff7a1a; --c2: #ffb36b; } .lba { --c: #1fb57a; --c2: #7be0b4; } .seriea { --c: #2f8cff; --c2: #8cc4ff; }
   .top { display: flex; align-items: center; gap: 14px; }
   .ball { width: 52px; height: 52px; flex: none; }
   .sport h2 { margin: 0; font-size: 22px; }
@@ -69,9 +69,18 @@
       </div>
       <div class="info" id="info-seriea">Caricamento…</div>
     </a>
+    <a class="sport lba" href="lba/">
+      <div class="top">
+        <svg class="ball" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24" fill="#1fb57a"/>
+          <g fill="none" stroke="#0e1116" stroke-width="2.2"><path d="M2 26h48M26 2v48"/><path d="M10 8c8 9 8 27 0 36M42 8c-8 9-8 27 0 36"/></g></svg>
+        <h2>Serie A basket<small>LBA · punti, rimbalzi, assist…</small></h2>
+        <span class="go">→</span>
+      </div>
+      <div class="info" id="info-lba">Caricamento…</div>
+    </a>
   </div>
   <footer>
-    Dati ESPN, aggiornati automaticamente più volte al giorno. Le proiezioni sono stime statistiche.<br>
+    Dati ESPN (NBA, Serie A) e legabasket.it (Serie A basket), aggiornati automaticamente più volte al giorno. Le proiezioni sono stime statistiche.<br>
     Sul telefono: Condividi → "Aggiungi a schermata Home" (iPhone) oppure menu ⋮ → "Installa app" (Android).
   </footer>
 </main>
@@ -112,6 +121,7 @@
   }
   info("nba", (m, t) => t);
   info("seriea", (m, t) => ((m.teams || {})[t] || {}).short || t);
+  info("lba", (m, t) => ((m.teams || {})[t] || {}).short || t);
 })();
 </script>
 </body>
