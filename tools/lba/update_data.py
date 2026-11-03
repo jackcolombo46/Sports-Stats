@@ -38,7 +38,8 @@ SERIES_A = 1         # championship_series_id della Serie A
 KNOWN_RS = {2024: 567, 2025: 596, 2026: 602}   # riserva se l'elenco dei campionati non risponde
 
 COLS = ["pid", "tri", "gid", "date", "opp", "home", "min", "pts", "reb", "oreb", "ast",
-        "fg3m", "stl", "blk", "tov", "fga", "fta"]
+        "fg3m", "stl", "blk", "tov", "fga", "fta", "fgm", "ftm", "fg3a"]
+NEW_COLS = ("fgm", "ftm", "fg3a")   # colonne aggiunte per le statistiche avanzate: i file della stagione in corso senza queste colonne vengono riscaricati
 
 # Le squadre cambiano id ogni stagione e nome con lo sponsor: le riconosciamo dalla città/club.
 CLUBS = [  # (sigla, nome breve, parole chiave nel nome ufficiale)
@@ -222,7 +223,8 @@ def match(gid):
                 n = lambda k: r.get(k) or 0  # noqa: E731
                 rows.append([pid, tri, str(gid), info["date"], opp, home, round(secs / 60, 1),
                              n("pun"), n("rimbalzi_t"), n("rimbalzi_o"), n("ass"), n("t3_r"), n("palle_r"),
-                             n("stoppate_dat"), n("palle_p"), n("t2_t") + n("t3_t"), n("tl_t")])
+                             n("stoppate_dat"), n("palle_p"), n("t2_t") + n("t3_t"), n("tl_t"),
+                             n("t2_r") + n("t3_r"), n("tl_r"), n("t3_t")])
     return info, rows, names
 
 
@@ -298,6 +300,12 @@ def update_current(y, rs, teams, meta):
             d = read_json(os.path.join(LOGS, fn))
             by_month[fn[len(s) + 1:-5]] = d
             have |= {r[2] for r in d["rows"]}
+    if any(not all(c in d["cols"] for c in NEW_COLS) for d in by_month.values()):
+        # i file vecchi restano finché il nuovo download non va a buon fine
+        log(f"Stagione {s}: file nel formato vecchio, riscarico la stagione in corso")
+        have, stale = set(), True
+    else:
+        stale = False
     cache = {g["id"]: g for g in meta.get("games_cache", []) if g.get("season") == s}
     if y not in rs:
         log(f"Stagione {s}: campionato non ancora disponibile")
@@ -306,6 +314,8 @@ def update_current(y, rs, teams, meta):
     new = [g["gid"] for g in games if g["played"] and g["gid"] not in have]
     log(f"Stagione {s}: {len(games)} partite in calendario, {len(new)} nuove da scaricare")
     infos, rows, names = fetch_games(new)
+    if stale and rows:
+        by_month = {}
     for i in infos:
         teams.update(i["teams"])
         cache[i["id"]] = {**{k: i[k] for k in ("id", "utc", "home", "away", "status", "round")}, "season": s}

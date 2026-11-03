@@ -1,6 +1,7 @@
 /* Interfaccia: carica i dati da data/, costruisce il modello e disegna i risultati. */
 (function () {
   "use strict";
+  const GM = 40;   // minuti di una partita
   const M = window.LBAModel;
   const $ = s => document.querySelector(s);
   let ctx = null, mode = "player", selected = null, suggIdx = -1, suggList = [];
@@ -44,6 +45,7 @@
     const liveNote = "";
     ctx = new M.Context({ ...meta, logs });
     teamOptions();
+    cmpOptions();
     const upd = meta.updated_at ? new Date(meta.updated_at).toLocaleString("it-IT", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "?";
     $("#status").innerHTML = liveNote
       ? `Stagione ${esc(ctx.season)} · statistiche al ${esc(upd)} <button id="refresh">Ricarica</button>`
@@ -93,14 +95,15 @@
   document.querySelectorAll(".tab").forEach(b => b.onclick = () => {
     document.querySelectorAll(".tab").forEach(x => x.classList.toggle("on", x === b));
     mode = b.dataset.mode;
-    $("#playerBox").classList.toggle("hidden", mode === "team");
+    $("#playerBox").classList.toggle("hidden", mode === "team" || mode === "compare");
     $("#team").classList.toggle("hidden", mode !== "team");
     $("#bothBox").classList.toggle("hidden", mode !== "team");
-    $("#opp").classList.toggle("hidden", mode === "watch");
-    $("#go").classList.toggle("hidden", mode === "watch");
+    $("#opp").classList.toggle("hidden", mode === "watch" || mode === "compare");
+    $("#go").classList.toggle("hidden", mode === "watch" || mode === "compare");
+    $("#cmpBox").classList.toggle("hidden", mode !== "compare");
     $("#pq").placeholder = mode === "watch" ? "Aggiungi un giocatore da osservare…" : "Cerca un giocatore (es. Ross, Shengelia, Mirotic)…";
     if (mode === "watch") { $("#pq").value = ""; selected = null; }
-    if (mode === "watch" || selected || $("#team").value) run();
+    if (mode === "watch" || mode === "compare" || selected || $("#team").value) run();
     else $("#out").innerHTML = `<div class="msg">${mode === "team" ? "Scegli una squadra." : "Cerca un giocatore."}</div>`;
   });
 
@@ -138,12 +141,14 @@
   $("#pq").addEventListener("blur", () => setTimeout(() => $("#sugg").classList.add("hidden"), 150));
   $("#go").onclick = run;
   $("#team").onchange = run;
+  $("#cmpA").onchange = $("#cmpB").onchange = run;
   $("#opp").onchange = () => { if (selected || $("#team").value) run(); };
 
   function run() {
     if (!ctx) return;
     try {
       if (mode === "watch") return renderWatch();
+      if (mode === "compare") { $("#out").innerHTML = renderCompare(); return; }
       if (mode === "player") {
         if (!selected) { if (suggList.length) return pick(0); return; }
         $("#out").innerHTML = renderPlayer(playerResult(selected.id));
@@ -153,6 +158,7 @@
         if (!t) return;
         $("#out").innerHTML = renderTeam(teamResult(t, $("#both").checked));
       }
+      Adv.bind($("#out"));
       bindRows();
     } catch (e) {
       $("#out").innerHTML = `<div class="err">${esc(e.message)}</div>`;
@@ -310,7 +316,8 @@
     <div class="two">
       <div><h3>Ultime 10 partite</h3><table><tr><th>Data</th><th>Avv.</th><th>Min</th><th>Pt</th><th>Rb</th><th>As</th><th>3P</th></tr>${recent}</table></div>
       <div><h3>Precedenti contro ${esc(d.opponent.tri)}</h3><table><tr><th>Data</th><th>Min</th><th>Pt</th><th>Rb</th><th>As</th><th>3P</th></tr>${h2h}</table></div>
-    </div>`;
+    </div>
+    ${BasketAdv.playerSection(ctx, M, GM, d.player.id)}`;
   }
 
   const COLS = ["PTS", "REB", "AST", "FG3M", "STL", "BLK", "PRA"];
@@ -341,7 +348,36 @@
     <div class="hero"><div class="idt">${L(t.team.tri, "l")}<div><h2>${esc(t.team.name)}</h2>${matchupLine(t.team.tri, d.game, t.opponent.tri)}</div></div></div>
     ${teamBlock(t)}
     ${oppChips(d.opp_profile)}
-    ${d.opponent ? `<div class="sep"></div>${teamBlock(d.opponent)}${oppChips(d.own_profile)}` : ""}`;
+    ${d.opponent ? `<div class="sep"></div>${teamBlock(d.opponent)}${oppChips(d.own_profile)}` : ""}
+    ${BasketAdv.teamSection(ctx, M, GM, t.team.tri)}`;
+  }
+
+  // ------------------------------------------------------------ confronto fra squadre
+  function cmpOptions() {
+    const keepA = $("#cmpA").value, keepB = $("#cmpB").value;
+    const opts = M.TEAMS.map(t => `<option value="${t.tri}">${esc(t.name)}</option>`).join("");
+    $("#cmpA").innerHTML = opts; $("#cmpB").innerHTML = opts;
+    if (keepA) $("#cmpA").value = keepA;
+    if (keepB) $("#cmpB").value = keepB;
+  }
+
+  function renderCompare() {
+    if (!$("#cmpA").options.length) cmpOptions();
+    // la prima volta: la squadra scelta (o la prima) contro il suo prossimo avversario
+    if (!$("#cmpA").dataset.set) {
+      const a = $("#team").value || (selected && ctx.playerTeam(selected.id)) || M.TEAMS[0].tri;
+      const g = ctx.nextGame(a);
+      $("#cmpA").value = a;
+      $("#cmpB").value = g ? g.opp : M.TEAMS.find(t => t.tri !== a).tri;
+      $("#cmpA").dataset.set = 1;
+    }
+    const a = $("#cmpA").value, b = $("#cmpB").value;
+    if (a === b) return `<div class="msg">Scegli due squadre diverse.</div>`;
+    const g = ctx.nextGame(a);
+    const next = g && g.opp === b ? `<div class="advnote" style="margin:0 0 10px">Si affrontano ${esc(fmtDate(g.utc))}${g.home === false ? ` in casa di ${esc(M.TEAM[b].name)}` : g.home ? ` in casa di ${esc(M.TEAM[a].name)}` : ""}.</div>` : "";
+    const head = (tri, t) => `<div class="tname">${L(tri, "m")}<span>${esc(M.TEAM[tri].name)}</span></div>
+      <div class="tsub">${t ? `${t.w} vinte · ${t.gp - t.w} perse` : "nessuna partita"}</div>`;
+    return `<h3 style="margin-top:0">Confronta squadre · stagione ${esc(ctx.season)}</h3>${next}` + BasketAdv.compare(ctx, M, GM, a, b, head);
   }
 
   // ------------------------------------------------------------ avvio

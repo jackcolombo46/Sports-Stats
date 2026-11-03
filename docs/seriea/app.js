@@ -23,7 +23,7 @@
 
   // ------------------------------------------------------------ partite nuove direttamente da ESPN
   const STAT_KEYS = { totalGoals: "gol", goalAssists: "ast", totalShots: "sh", shotsOnTarget: "sot", foulsCommitted: "fc",
-                      foulsSuffered: "fs", yellowCards: "yc", redCards: "rc", saves: "sv", goalsConceded: "gc" };
+                      foulsSuffered: "fs", yellowCards: "yc", redCards: "rc", saves: "sv", goalsConceded: "gc", expectedGoals: "xg" };
   let ESPN = "https://site.api.espn.com/apis/site/v2/sports/soccer/ita.1/";
   const num = x => { if (x && typeof x === "object") x = x.value ?? x.displayValue; const n = parseFloat(x); return isNaN(n) ? 0 : n; };
   const flag = x => x && typeof x === "object" ? !!(x.didSub ?? x.value) : !!x;
@@ -101,7 +101,22 @@
     let st = p.stats || [];
     if (!Array.isArray(st)) st = Object.entries(st).map(([name, value]) => ({ name, value }));
     for (const s of st) { const k = STAT_KEYS[s.name || s.abbreviation]; if (k) o[k] = num(s.value ?? s.displayValue); }
+    if (!st.some(s => (s.name || s.abbreviation) === "expectedGoals")) delete o.xg;   // xG non presente
     return o;
+  }
+
+  /* statistiche di squadra della partita (possesso, passaggi, contrasti...): {tid: {nome: valore}} */
+  function teamStats(sum) {
+    const out = {};
+    for (const t of ((sum.boxscore || {}).teams || [])) {
+      const tid = String((t.team || {}).id || ""), st = {};
+      for (const x of t.statistics || []) {
+        const v = parseFloat(String(x.value ?? x.displayValue ?? "").replace("%", ""));
+        if (x.name && isFinite(v)) st[x.name] = v;
+      }
+      if (tid && Object.keys(st).length) out[tid] = st;
+    }
+    return out;
   }
 
   function parseSummary(sum, ev) {
@@ -150,13 +165,14 @@
     const rows = [], games = [];
     for (let i = 0; i < events.length; i += 4) {
       const chunk = await Promise.all(events.slice(i, i + 4).map(ev =>
-        espn(`summary?event=${ev.id}`).then(s => [ev, parseSummary(s, ev)]).catch(() => null)));
-      for (const c of chunk) if (c) { rows.push(...c[1]); games.push({ gid: c[0].id, date: c[0].date, home: c[0].home, away: c[0].away, hg: c[0].hg, ag: c[0].ag }); }
+        espn(`summary?event=${ev.id}`).then(s => [ev, parseSummary(s, ev), teamStats(s)]).catch(() => null)));
+      for (const c of chunk) if (c) { rows.push(...c[1]); TSTATS[c[0].id] = c[2]; games.push({ gid: c[0].id, date: c[0].date, home: c[0].home, away: c[0].away, hg: c[0].hg, ag: c[0].ag }); }
     }
     return { rows, games, schedule, live: [...states.values()].filter(e => e.state === "in"), ok: boards.some(([, b]) => b) };
   }
 
   let liveNow = [];
+  let TSTATS = {}, XG = null;   // statistiche di squadra per partita e xG di Understat (statistiche avanzate)
   async function loadData() {
     $("#status").textContent = "Caricamento dati…";
     const meta = await getJSON("data/meta.json", { cache: "no-store" });
@@ -164,7 +180,9 @@
     const v = encodeURIComponent(meta.updated_at || "");
     const files = await Promise.all(meta.files.map(f => getJSON(`data/${f}?v=${v}`).then(j => [f, j])));
     const logs = {}, games = {}, teams = {};
+    TSTATS = {}; XG = meta.xg || null;
     for (const [f, j] of files) {
+      Object.assign(TSTATS, j.tstats || {});
       const season = f.split("/").pop().slice(0, 7);
       const d = M.decodeLogFile(j);
       (logs[season] ||= []).push(...d.rows);
@@ -185,12 +203,13 @@
     } catch { /* restano i dati dell'ultimo aggiornamento automatico */ }
     ctx = new M.Context({ ...meta, teams, logs, games });
     teamOptions();
+    cmpOptions();
     const upd = meta.updated_at ? new Date(meta.updated_at).toLocaleString("it-IT", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "?";
     $("#status").innerHTML = liveNote
       ? `Stagione ${esc(ctx.season)} · statistiche aggiornate${esc(liveNote)} <button id="refresh">Ricarica</button>`
       : `Stagione ${esc(ctx.season)} · statistiche al ${esc(upd)} <button id="refresh">Ricarica</button>`;
     $("#refresh").onclick = async () => { await loadData(); run(); };
-    if (selected || $("#team").value || mode === "table" || mode === "watch") run();
+    if (selected || $("#team").value || mode === "table" || mode === "watch" || mode === "compare") run();
   }
 
   function teamOptions() {
@@ -237,17 +256,18 @@
     document.querySelectorAll(".tab").forEach(x => x.classList.toggle("on", x.dataset.mode === m));
     mode = m;
     $("#controls").classList.toggle("hidden", m === "table");
-    $("#playerBox").classList.toggle("hidden", m === "team");
+    $("#playerBox").classList.toggle("hidden", m === "team" || m === "compare");
     $("#team").classList.toggle("hidden", m !== "team");
     $("#bothBox").classList.toggle("hidden", m !== "team");
-    $("#opp").classList.toggle("hidden", m === "watch");
-    $("#go").classList.toggle("hidden", m === "watch");
+    $("#opp").classList.toggle("hidden", m === "watch" || m === "compare");
+    $("#go").classList.toggle("hidden", m === "watch" || m === "compare");
+    $("#cmpBox").classList.toggle("hidden", m !== "compare");
     $("#pq").placeholder = m === "watch" ? "Aggiungi un giocatore da osservare…" : "Cerca un giocatore (es. Lautaro, Leão, Dybala)…";
     if (m === "watch") { $("#pq").value = ""; selected = null; }
   }
   document.querySelectorAll(".tab").forEach(b => b.onclick = () => {
     setMode(b.dataset.mode);
-    if (mode === "watch" || mode === "table" || (mode === "player" && selected) || (mode === "team" && $("#team").value)) run();
+    if (mode === "watch" || mode === "table" || mode === "compare" || (mode === "player" && selected) || (mode === "team" && $("#team").value)) run();
     else $("#out").innerHTML = `<div class="msg">${mode === "team" ? "Scegli una squadra." : "Cerca un giocatore."}</div>`;
   });
 
@@ -285,6 +305,7 @@
   $("#pq").addEventListener("blur", () => setTimeout(() => $("#sugg").classList.add("hidden"), 150));
   $("#go").onclick = run;
   $("#team").onchange = run;
+  $("#cmpA").onchange = $("#cmpB").onchange = run;
   $("#opp").onchange = () => { if (selected || $("#team").value) run(); };
 
   function run() {
@@ -292,6 +313,7 @@
     try {
       if (mode === "watch") return renderWatch();
       if (mode === "table") { $("#out").innerHTML = renderTable(); return bindRows(); }
+      if (mode === "compare") { $("#out").innerHTML = renderCompare(); return; }
       if (mode === "player") {
         if (!selected) { if (suggList.length) return pick(0); return; }
         $("#out").innerHTML = renderPlayer(playerResult(selected.id));
@@ -301,6 +323,7 @@
         if (!t) return;
         $("#out").innerHTML = renderTeam(teamResult(t, $("#both").checked));
       }
+      Adv.bind($("#out"));
       bindRows();
     } catch (e) {
       $("#out").innerHTML = `<div class="err">${esc(e.message)}</div>`;
@@ -492,7 +515,8 @@
     <div class="two">
       <div><h3>Ultime 10 presenze <small class="nt">(* = entrato dalla panchina)</small></h3><div class="scroll"><table><tr><th>Data</th><th>Avv.</th><th>Min</th>${head}<th></th></tr>${recent}</table></div></div>
       <div><h3>Precedenti contro ${esc(d.opponent.short)}</h3><div class="scroll"><table><tr><th>Data</th><th>Min</th>${head2}<th></th></tr>${h2h}</table></div></div>
-    </div>`;
+    </div>
+    ${SoccerAdv.playerSection(ctx, TSTATS, XG, d.player.id)}`;
   }
 
   function teamBlock(t) {
@@ -526,7 +550,8 @@
     ${matchBox(t.team.tid, t.opponent.tid, t.match, d.game.home)}
     ${teamBlock(t)}
     ${oppChips(d.opp_profile)}
-    ${d.opponent ? `<div class="sep"></div>${teamBlock(d.opponent)}${oppChips(d.own_profile)}` : ""}`;
+    ${d.opponent ? `<div class="sep"></div>${teamBlock(d.opponent)}${oppChips(d.own_profile)}` : ""}
+    ${SoccerAdv.teamSection(ctx, TSTATS, XG, t.team.tid)}`;
   }
 
   function renderTable() {
@@ -535,6 +560,32 @@
       <td class="form">${x.form.map(r => `<i class="${r}">${r}</i>`).join("")}</td></tr>`).join("");
     return `<h3>Classifica ${esc(ctx.season)} <small class="nt">(calcolata dai risultati · tocca una squadra per le proiezioni)</small></h3>
       <div class="scroll"><table class="std"><tr><th>Squadra</th><th>G</th><th class="hm">V</th><th class="hm">N</th><th class="hm">P</th><th class="hm">Gol</th><th>DR</th><th>Pt</th><th>Forma</th></tr>${rows}</table></div>`;
+  }
+
+  // ------------------------------------------------------------ confronto fra squadre
+  function cmpOptions() {
+    const keepA = $("#cmpA").value, keepB = $("#cmpB").value;
+    const opts = ctx.TEAMS.map(t => `<option value="${t.tid}">${esc(t.name)}</option>`).join("");
+    $("#cmpA").innerHTML = opts; $("#cmpB").innerHTML = opts;
+    if (keepA) $("#cmpA").value = keepA;
+    if (keepB) $("#cmpB").value = keepB;
+  }
+
+  function renderCompare() {
+    if (!$("#cmpA").dataset.set) {
+      const a = $("#team").value || (selected && ctx.playerTeam(selected.id)) || ctx.TEAMS[0].tid;
+      const g = ctx.nextGame(a);
+      $("#cmpA").value = a;
+      $("#cmpB").value = g ? g.opp : ctx.TEAMS.find(t => t.tid !== a).tid;
+      $("#cmpA").dataset.set = 1;
+    }
+    const a = $("#cmpA").value, b = $("#cmpB").value;
+    if (a === b) return `<div class="msg">Scegli due squadre diverse.</div>`;
+    const g = ctx.nextGame(a);
+    const next = g && g.opp === b ? `<div class="advnote" style="margin:0 0 10px">Si affrontano ${esc(fmtDate(g.utc))} in casa di ${esc(T(g.home ? a : b).name)}.</div>` : "";
+    const head = (tid, t) => `<div class="tname">${L(tid, "m")}<span>${esc(T(tid).name)}</span></div>
+      <div class="tsub">${t ? `${t.w}V ${t.d}N ${t.l}P · ${t.pts} punti` : "nessuna partita"}</div>`;
+    return `<h3 style="margin-top:0">Confronta squadre · stagione ${esc(ctx.season)}</h3>${next}` + SoccerAdv.compare(ctx, TSTATS, XG, a, b, head);
   }
 
   // ------------------------------------------------------------ avvio
