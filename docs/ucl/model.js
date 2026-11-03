@@ -43,6 +43,9 @@
 
   const SHRINK_GAMES = 8, PREV_SEASON_REGRESS = 0.5, RATE_HALF_LIFE = 15, MIN_HALF_LIFE = 3;
   const PRIOR_MIN = 300, H2H_MAX_WEIGHT = 0.25, LIKELY_PROB = 0.60, MAX_GOALS = 10;
+  /* effetto assenze nelle proiezioni (tarato con tools/backtest); MODEL_PARAMS.ABS solo per le prove */
+  // spento: nella verifica sul calcio la correzione peggiorava leggermente le previsioni
+  const ABS = Object.assign({ ON: false, K: 50, MISSED: 2, ROLE: 45 }, (root.MODEL_PARAMS || {}).ABS || {});
 
   const norm = s => (s || "").normalize("NFKD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
   const statVal = (g, s) => SPORT.derived[s] ? SPORT.derived[s].reduce((a, k) => a + g[SPORT.key[k]], 0) : g[SPORT.key[s]];
@@ -317,7 +320,7 @@
       return (this.playerLogs.get(pid) || []).filter(g => g.season === this.season).reduce((a, g) => a + g.yc, 0);
     }
 
-    project(pid, opp, home = null) {
+    project(pid, opp, home = null, opts = null) {
       const logs = (this.playerLogs.get(pid) || []).filter(g => g.min > 0);
       const tid = this.playerTeam(pid);
       if (!logs.length || !tid || !this.TEAM[opp]) return null;
@@ -380,6 +383,9 @@
       }
       if (!suspended && SPORT.suspendAt(yc + 1)) warnings.push(`Diffidato (${yc} ammonizioni): con un altro giallo salta la partita successiva.`);
       const inj = this.injury(pid);
+      const absent = (opts && opts.absent) || (ABS.ON ? this.likelyAbsent(tid) : []);
+      const adj = absent.length ? this.absenceDelta(pid, tid, absent) : null;
+      if (adj) warnings.push(`Proiezione corretta per l'assenza di ${adj.names.join(", ")}.`);
       if (inj) warnings.unshift(`Infortunio: ${inj.status || "in lista"}${inj.comment ? " – " + inj.comment : ""}`);
 
       const proj = {}, stats = [];
@@ -403,6 +409,7 @@
             h2hAvg = avg(h2h, s);
           }
         }
+        if (adj && !SPORT.derived[s]) mu = Math.max(mu * 0.25, mu + adj[s]);   // assenze dei compagni
         if (SPORT.derived[s] && h2h.length) h2hAvg = avg(h2h, s);
         proj[s] = { model: muModel, mu };
         if (!shown.includes(s)) continue;
@@ -424,7 +431,7 @@
         }
         const ll = likelyLine(mu, v);
         stats.push({
-          stat: s, label: LABELS[s], proj: r2(mu), p1: r3(probAtLeast(1, mu, v)),
+          stat: s, label: LABELS[s], proj: r2(mu), mu, v, p1: r3(probAtLeast(1, mu, v)),
           season_avg: cur.length ? r2(avg(cur, s)) : null,
           prev_avg: prev.length ? r2(avg(prev, s)) : null,
           l10_avg: r2(avg(last10, s)),
@@ -441,12 +448,65 @@
       return {
         player: { id: pid, name: this.names.get(pid), team: this.TEAM[tid], keeper },
         opponent: this.TEAM[opp], home, match: m,
-        minutes: Math.round(minutes), starts5, yc,
+        minutes: Math.round(adj ? Math.max(0, minutes + adj.min) : minutes), starts5, yc, absence: adj ? adj.names : [],
         games: { season: cur.length, prev: prev.length, h2h: h2h.length },
         h2h_games: h2h.slice(0, 6).map(g => ({ date: g.date, min: g.min, gol: g.gol, ast: g.ast, sh: g.sh, sot: g.sot, yc: g.yc, sv: g.sv })),
         recent: last10.map(g => ({ date: g.date, opp: g.opp, home: !!g.home, min: g.min, start: !!g.start, gol: g.gol, ast: g.ast, sh: g.sh, sot: g.sot, fc: g.fc, yc: g.yc, rc: g.rc, sv: g.sv, gc: g.gc })),
         missed, injury: inj, suspended, warnings, stats,
       };
+    }
+
+    /* ---------------------------------------------------------- effetto assenze nelle proiezioni
+       Compagni probabilmente assenti: ruolo vero quest'anno (minuti medi >= ABS.ROLE) e infortunati, oppure fuori
+       nelle ultime ABS.MISSED partite della squadra. */
+    likelyAbsent(tm) {
+      this._absC ||= {};
+      if (this._absC[tm]) return this._absC[tm];
+      const dates = [...(this.teamDates[tm] || [])];
+      const out = [];
+      for (const pid of this.teamPlayers(tm)) {
+        const cur = (this.playerLogs.get(pid) || []).filter(g => g.season === this.season && g.min > 0);
+        if (cur.length < 2 || cur.reduce((a, g) => a + g.min, 0) / cur.length < ABS.ROLE) continue;
+        const inj = this.injury(pid);
+        const injOut = inj && /^(out|suspension|injured|infortun)/i.test(inj.status || "");
+        const missed = dates.filter(d => d > cur[0].date).length;
+        if (injOut || missed >= ABS.MISSED) out.push(pid);
+      }
+      return (this._absC[tm] = out);
+    }
+
+    /* per ogni statistica: (media senza il compagno − media con) nelle partite insieme nella stessa squadra
+       (stagione in corso e precedente), ridimensionata con peso partite_senza / (partite_senza + ABS.K) */
+    absenceDelta(pid, tm, absent) {
+      const keys = [...STATS, "min"];
+      const d = Object.fromEntries(keys.map(k => [k, 0])), names = [];
+      const xl = (this.playerLogs.get(pid) || []).filter(g => g.min > 0 && g.tid === tm && (g.season === this.season || g.season === this.prevSeason));
+      for (const y of absent) {
+        if (y === pid) continue;
+        const yl = (this.playerLogs.get(y) || []).filter(g => g.min > 0 && g.tid === tm);
+        const acc = { w: { n: 0 }, o: { n: 0 } };
+        for (const season of [this.season, this.prevSeason]) {
+          const ys = yl.filter(g => g.season === season);
+          if (!ys.length) continue;
+          const yg = new Set(ys.map(g => g.gid)), from = ys[ys.length - 1].date;
+          const to = season === this.season ? "9999" : ys[0].date;
+          for (const g of xl) {
+            if (g.season !== season || g.date < from || g.date > to) continue;
+            const b = yg.has(g.gid) ? acc.w : acc.o;
+            b.n++;
+            for (const k of keys) b[k] = (b[k] || 0) + (k === "min" ? g.min : statVal(g, k));
+          }
+        }
+        if (acc.o.n < 1 || acc.w.n < 2) continue;
+        // la media recente del giocatore contiene già le partite senza il compagno: si corregge solo la parte
+        // di partite recenti (ultime 10) in cui il compagno c'era, per non contare due volte l'assenza
+        const recent = xl.slice(0, 10), ygAll = new Set(yl.map(g => g.gid));
+        const fracWith = recent.length ? recent.filter(g => ygAll.has(g.gid)).length / recent.length : 0;
+        const w = fracWith * acc.o.n / (acc.o.n + ABS.K);
+        for (const k of keys) d[k] += w * (acc.o[k] / acc.o.n - acc.w[k] / acc.w.n);
+        names.push(this.names.get(y));
+      }
+      return names.length ? { ...d, names } : null;
     }
 
     projectTeam(tid, opp, home = null, minMinutes = 25) {
