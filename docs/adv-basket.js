@@ -189,5 +189,12 @@
       ["ptsf", "ptsa", "net", "ortg", "drtg", "pace", "efg", "ts", "p3", "tov", "orb", "drb", "ast100"], A.teamVals[tri], A.ranks[tri], head);
   }
 
-  window.BasketAdv = { build, teamSection, playerSection, compare, gameModel, teamGames, teamTiles };
+  /* statistiche avanzate di un giocatore (per il confronto fra giocatori) */
+  function playerVals(ctx, M, gameMin, pid) {
+    const A = build(ctx, M, gameMin), x = A.byPlayer.get(pid);
+    const metrics = A.PM.filter(m => m.key !== "gp" && m.key !== "mpg");
+    return { metrics, vals: x ? Object.fromEntries(metrics.map(m => [m.key, fin(m.val(x))])) : {} };
+  }
+
+  window.BasketAdv = { build, teamSection, playerSection, compare, gameModel, teamGames, teamTiles, playerVals };
 })();

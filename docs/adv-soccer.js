@@ -116,7 +116,7 @@
     const sumGT = (gid, tid) => (byGT.get(gid + "|" + tid) || []).reduce(addR, zero());
     const xgGT = (gid, tid) => {
       const rs = byGT.get(gid + "|" + tid) || [];
-      return rs.length && rs.every(r => r.xg != null) ? rs.reduce((a, r) => a + (+r.xg || 0), 0) : null;
+      return rs.length && rs.every(r => r.xg != null) && rs.some(r => +r.xg > 0) ? rs.reduce((a, r) => a + (+r.xg || 0), 0) : null;
     };
     const us = (xgMeta && xgMeta.season === ctx.season && xgMeta.teams) || {};
     const T = {};
@@ -142,13 +142,14 @@
 
     // giocatori
     const byPlayer = new Map();
+    const anyXg = rows.some(r => +r.xg > 0);   // ESPN a volte manda la colonna xG tutta a zero: allora non c'è
     const lgP = { 0: { gp: 0, starts: 0, min: 0, s: zero(), xg: 0, xgMin: 0, xgGol: 0, cs: 0, full: 0 }, 1: null };
     lgP[1] = JSON.parse(JSON.stringify(lgP[0]));
     for (const r of rows) {
       const x = byPlayer.get(r.pid) || { gp: 0, starts: 0, min: 0, s: zero(), xg: 0, xgMin: 0, xgGol: 0, cs: 0, full: 0, gkGames: 0 };
       for (const y of [x, lgP[r.gk ? 1 : 0]]) {
         y.gp++; y.starts += r.start ? 1 : 0; y.min += r.min; addR(y.s, r);
-        if (r.xg != null) { y.xg += +r.xg || 0; y.xgMin += r.min; y.xgGol += +r.gol || 0; }
+        if (anyXg && r.xg != null) { y.xg += +r.xg || 0; y.xgMin += r.min; y.xgGol += +r.gol || 0; }
         if (r.min >= 60) { y.full++; if (!r.gc) y.cs++; }
       }
       if (r.gk) x.gkGames++;
@@ -203,5 +204,12 @@
   }
 
   const configure = o => Object.assign(CFG, o);
-  window.SoccerAdv = { build, teamSection, playerSection, compare, configure, teamTiles };
+  /* statistiche avanzate di un giocatore (per il confronto fra giocatori); keeper = metriche da portiere */
+  function playerVals(ctx, tstats, xgMeta, pid, keeper) {
+    const A = build(ctx, tstats, xgMeta), x = A.byPlayer.get(pid);
+    const metrics = A.PM[keeper ? 1 : 0].filter(m => !["gp", "st", "mpg"].includes(m.key));
+    return { metrics, vals: x ? Object.fromEntries(metrics.map(m => [m.key, fin(m.val(x))])) : {} };
+  }
+
+  window.SoccerAdv = { build, teamSection, playerSection, compare, configure, teamTiles, playerVals };
 })();

@@ -318,12 +318,14 @@
       if (mode === "watch") return renderWatch();
       if (mode === "table") { $("#out").innerHTML = renderTable(); return bindRows(); }
       if (mode === "slip") return showSlip();
-      if (mode === "compare") { $("#out").innerHTML = renderCompare(); Adv.bind($("#out")); Slip.bind($("#out")); return bindRows(); }
+      if (mode === "compare") { $("#out").innerHTML = renderCompare(); mountTrend(); Adv.bind($("#out")); Slip.bind($("#out")); return bindRows(); }
       if (mode === "picks") { $("#out").innerHTML = renderPicks(); Adv.bind($("#out")); Slip.bind($("#out")); Picks.bindMore(run, (h, a) => { $("#cmpA").dataset.set = 1; $("#cmpA").value = h; $("#cmpB").value = a; setMode("compare"); window.scrollTo({ top: 0, behavior: "smooth" }); run(); }); return bindRows(); }
       if (mode === "player") {
         if (!selected) { if (suggList.length) return pick(0); return; }
         $("#out").innerHTML = renderPlayer(playerResult(selected.id));
         $("#addw").onclick = () => { addWatch({ id: selected.id, name: selected.name }); $("#addw").textContent = "✓ tra gli osservati"; };
+        $("#toPcmp").onclick = () => openPlayerCompare(selected.id);
+        mountTrend();
       } else {
         const t = $("#team").value;
         if (!t) return;
@@ -510,7 +512,8 @@
     return `
     <div class="hero">
       <div class="idt">${P(d.player.id, d.player.name, "l")}<div><h2>${esc(d.player.name)}</h2><div class="sub">${L(d.player.team.tid, "s")} ${esc(d.player.team.name)}${k ? " · portiere" : ""}
-        <button class="link" id="addw" data-id="${d.player.id}">${watch.some(x => x.id === d.player.id) ? "✓ tra gli osservati" : "+ Osserva"}</button></div>
+        <button class="link" id="addw" data-id="${d.player.id}">${watch.some(x => x.id === d.player.id) ? "✓ tra gli osservati" : "+ Osserva"}</button>
+        <button class="link" id="toPcmp">⇄ Confronta</button></div>
         ${matchupLine(d.player.team.tid, d.game, d.opponent.tid)}</div></div>
       <div class="kpis">
         <div class="kpi"><b>${d.minutes}'</b><span>minuti attesi</span></div>
@@ -522,6 +525,7 @@
     ${matchBox(d.player.team.tid, d.opponent.tid, d.match, d.home)}
     <h3>Proiezioni contro ${esc(d.opponent.name)} <small class="nt">(se gioca i minuti attesi)</small></h3>
     <div class="grid">${d.stats.map(s => statCard(s, d)).join("")}</div>
+    ${playerTrend(d)}
     ${oppChips(d.opp_profile)}
     <div class="two">
       <div><h3>Ultime 10 presenze <small class="nt">(* = entrato dalla panchina)</small></h3><div class="scroll"><table><tr><th>Data</th><th>Avv.</th><th>Min</th>${head}<th></th></tr>${recent}</table></div></div>
@@ -670,9 +674,128 @@
     $("#cmpA").innerHTML = opts; $("#cmpB").innerHTML = opts;
     if (keepA) $("#cmpA").value = keepA;
     if (keepB) $("#cmpB").value = keepB;
+    playerOptions();
+  }
+
+  // ------------------------------------------------------------ andamento (grafici) e confronto fra giocatori
+  const STATV = s => g => { const k = M.SPORT.key, dv = M.SPORT.derived; return dv[s] ? dv[s].reduce((a, x) => a + (+g[k[x]] || 0), 0) : +g[k[s]] || 0; };
+  const oppAbbr = o => T(o).abbr, oppName = o => T(o).short, teamLbl = tid => (tid ? T(tid).short : "—");
+  let TREND = null;   // grafico da disegnare dopo aver messo la pagina (vedi run)
+  function trendPoints(pid, s, n) {
+    const f = STATV(s);
+    return (ctx.playerLogs.get(pid) || []).filter(g => g.min > 0).slice(0, n).reverse().map(g => {
+      const v = f(g);
+      return { v, label: oppAbbr(g.opp), old: g.season !== ctx.season,
+               title: `${g.date.split("-").reverse().join("/")} ${g.home ? "vs" : "@"} ${oppName(g.opp)}: ${v} (${Math.round(g.min)}')` };
+    });
+  }
+  const statLines = s => (s.lines || []).map(l => l.line);
+  const defLine = s => (s.likely ? s.likely.line : s.lines && s.lines.length ? s.lines.reduce((a, l) => (Math.abs(l.line - s.proj) < Math.abs(a.line - s.proj) ? l : a)).line : null);
+  function playerTrend(d) {
+    TREND = { el: "trendBox", title: "Andamento · ultime 20 partite", note: "(verde = soglia raggiunta, rosso = no; barre chiare = stagione scorsa; puntini = media)",
+      stats: d.stats.filter(s => s.lines && s.lines.length).map(s => ({ key: s.stat, label: s.label, lines: statLines(s), def: defLine(s) })),
+      series: k => [{ name: d.player.name, cls: "sa", points: trendPoints(d.player.id, k, 20) }] };
+    return `<div id="trendBox"></div>`;
+  }
+  function mountTrend() { if (TREND) { Trend.mount(document.getElementById(TREND.el), TREND); TREND = null; } }
+
+  // elenco dei giocatori per i campi del confronto ("Nome · Squadra")
+  let PLMAP = new Map();
+  function playerOptions() {
+    if (!ctx) return;   // all'avvio i dati non sono ancora caricati
+    PLMAP = new Map();
+    const opts = [];
+    for (const [pid, name] of ctx.names) {
+      const tm = ctx.playerTeam(pid);
+      if (!tm || !(ctx.playerLogs.get(pid) || []).length) continue;
+      const v = `${name} · ${teamLbl(tm)}`;
+      PLMAP.set(v, pid); opts.push(v);
+    }
+    $("#cmpPL").innerHTML = opts.sort((a, b) => a.localeCompare(b)).map(v => `<option value="${esc(v)}"></option>`).join("");
+  }
+  const pidOf = v => {
+    if (PLMAP.has(v)) return PLMAP.get(v);
+    const n = M.norm ? M.norm(String(v).split(" · ")[0]) : String(v).toLowerCase();
+    for (const [k, pid] of PLMAP) if ((M.norm ? M.norm(k.split(" · ")[0]) : k.toLowerCase()) === n) return pid;
+    return null;
+  };
+  const labelOf = pid => [...PLMAP].find(([, p]) => p === pid)?.[0] || ctx.names.get(pid) || "";
+  function cmpKindSync() {
+    if (!PLMAP.size) playerOptions();
+    const pl = $("#cmpKind").value === "players";
+    $("#cmpA").classList.toggle("hidden", pl); $("#cmpB").classList.toggle("hidden", pl);
+    $("#cmpPA").classList.toggle("hidden", !pl); $("#cmpPB").classList.toggle("hidden", !pl);
+  }
+  $("#cmpKind").onchange = () => { cmpKindSync(); run(); };
+  $("#cmpPA").onchange = $("#cmpPB").onchange = run;
+
+  /* dalla scheda giocatore: apre il confronto con questo giocatore già scelto */
+  function openPlayerCompare(pid) {
+    if (!PLMAP.size) playerOptions();
+    $("#cmpKind").value = "players"; cmpKindSync();
+    $("#cmpPA").value = labelOf(pid); $("#cmpPB").value = "";
+    setMode("compare"); run();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    setTimeout(() => $("#cmpPB").focus(), 300);
+  }
+
+  function pside(pid) {
+    const tm = ctx.playerTeam(pid), g = tm && ctx.nextGame(tm);
+    let pr = null; try { pr = g ? ctx.project(pid, g.opp, g.home) : null; } catch { pr = null; }
+    const logs = (ctx.playerLogs.get(pid) || []).filter(x => x.min > 0);
+    return { pid, name: ctx.names.get(pid), tm, g, pr, cur: logs.filter(x => x.season === ctx.season), l10: logs.slice(0, 10) };
+  }
+
+  function renderPlayerCompare() {
+    if (!PLMAP.size) playerOptions();
+    const a = pidOf($("#cmpPA").value), b = pidOf($("#cmpPB").value);
+    if (!a || !b) return `<div class="msg">Scrivi o scegli due giocatori nei campi qui sopra (anche della stessa squadra).</div>`;
+    if (a === b) return `<div class="msg">Scegli due giocatori diversi.</div>`;
+    const S = [pside(a), pside(b)];
+    const keeper = ctx.isKeeper(a) && ctx.isKeeper(b);
+    const PJ = keeper
+      ? [["SV", "Parate attese", "n2", 1, "proj"], ["YC", "Prob. ammonizione", "pct", -1, "p1"]]
+      : [["GOL", "Prob. di segnare", "pct", 1, "p1"], ["AST", "Prob. di assist", "pct", 1, "p1"], ["GA", "Prob. gol o assist", "pct", 1, "p1"],
+         ["SH", "Tiri attesi", "n2", 1, "proj"], ["SOT", "Tiri in porta attesi", "n2", 1, "proj"], ["FS", "Falli subiti attesi", "n2", 1, "proj"],
+         ["FC", "Falli commessi attesi", "n2", -1, "proj"], ["YC", "Prob. ammonizione", "pct", -1, "p1"]];
+    const SE = keeper
+      ? [["sv", "Parate a partita", 1, "pg"], ["gc", "Gol subiti a partita", -1, "pg"], ["yc", "Ammonizioni", -1, "tot"]]
+      : [["gol", "Gol", 1, "tot"], ["ast", "Assist", 1, "tot"], ["sh", "Tiri a partita", 1, "pg"], ["sot", "Tiri in porta a partita", 1, "pg"],
+         ["fs", "Falli subiti a partita", 1, "pg"], ["fc", "Falli commessi a partita", -1, "pg"], ["yc", "Ammonizioni", -1, "tot"]];
+    const metrics = [], vals = [{}, {}];
+    const add = (key, label, group, fmt, dir, f) => { metrics.push({ key, label, group, fmt, dir }); S.forEach((x, i) => { vals[i][key] = f(x); }); };
+    for (const [k, l, fm, d, fld] of PJ) add("p" + k, l, "Prossima partita (proiezione)", fm, d, x => { const s = x.pr && x.pr.stats.find(y => y.stat === k); return s ? s[fld] : null; });
+    add("sgp", "Presenze", "Stagione", "n0", 0, x => x.cur.length);
+    add("smin", "Minuti a presenza", "Stagione", "n0", 0, x => (x.cur.length ? x.cur.reduce((t, g) => t + g.min, 0) / x.cur.length : null));
+    for (const [k, l, d, how] of SE) add("s" + k, l, "Stagione", how === "tot" ? "n0" : "n2", d,
+      x => (x.cur.length ? x.cur.reduce((t, g) => t + (+g[k] || 0), 0) / (how === "tot" ? 1 : x.cur.length) : null));
+    for (const [k, l, d] of SE.filter(z => z[3] === "pg" || z[0] === "gol" || z[0] === "ast"))
+      add("l" + k, l.replace(" a partita", "") + " a partita", "Ultime 10 presenze", "n2", d, x => (x.l10.length ? x.l10.reduce((t, g) => t + (+g[k] || 0), 0) / x.l10.length : null));
+    const AV = S.map(x => SoccerAdv.playerVals(ctx, TSTATS, XG, x.pid, keeper));
+    for (const m of AV[0].metrics) { metrics.push({ ...m, key: "a" + m.key, group: "Avanzate (stagione)" }); AV.forEach((av, i) => { vals[i]["a" + m.key] = av.vals[m.key]; }); }
+
+    const head = x => `<div class="tname">${P(x.pid, x.name, "m")}<span>${esc(x.name)}</span></div>
+      <div class="tsub">${x.tm ? L(x.tm, "s") + " " + esc(teamLbl(x.tm)) : "—"}${x.g ? ` · prossima ${x.g.home ? "vs" : "@"} ${esc(oppName(x.g.opp))}` : ""}</div>`;
+    const same = S[0].tm && S[0].tm === S[1].tm;
+    const note = same
+      ? `Stessa squadra: le proiezioni sono contro lo stesso avversario${S[0].g ? ` (${esc(oppName(S[0].g.opp))}, ${esc(fmtDate(S[0].g.utc))})` : ""}.`
+      : `Squadre diverse: ognuno è proiettato contro il proprio prossimo avversario.`;
+    // grafico: statistiche in comune con le soglie della proiezione
+    const ref = (S[0].pr || S[1].pr);
+    const stats = ref ? ref.stats.filter(s => s.lines && s.lines.length).map(s => {
+      const o = S[1].pr && S[1].pr.stats.find(y => y.stat === s.stat);
+      const lines = [...new Set([...statLines(s), ...(o ? statLines(o) : [])])].sort((x, y) => x - y);
+      return { key: s.stat, label: s.label, lines, def: defLine(s) };
+    }) : [];
+    TREND = stats.length ? { el: "trendCmp", title: "Andamento a confronto · ultime 15 partite", note: "(tocca un punto per partita e valore)", stats,
+      series: k => S.map((x, i) => ({ name: x.name, cls: i ? "sb" : "sa", points: trendPoints(x.pid, k, 15) })) } : null;
+    return `<h3 style="margin-top:0">Confronta giocatori · stagione ${esc(ctx.season)}</h3><div class="advnote" style="margin:0 0 10px">${note}</div>`
+      + Adv.compare(metrics, { vals: vals[0], html: head(S[0]) }, { vals: vals[1], html: head(S[1]) })
+      + `<div id="trendCmp"></div>`;
   }
 
   function renderCompare() {
+    if ($("#cmpKind").value === "players") return renderPlayerCompare();
     if (!$("#cmpA").dataset.set) {
       const a = $("#team").value || (selected && ctx.playerTeam(selected.id)) || ctx.TEAMS[0].tid;
       const g = ctx.nextGame(a);

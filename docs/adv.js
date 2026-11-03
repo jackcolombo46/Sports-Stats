@@ -157,6 +157,8 @@
   .advleg b { color: var(--text); font-weight: 600; }
   .cmpsel { display: flex; gap: 10px; flex: 1 1 100%; flex-wrap: wrap; align-items: center; }
   .cmpsel select { flex: 1 1 200px; }
+  .cmpsel #cmpKind { flex: 1 1 100%; }
+  .cmpsel input { flex: 1 1 200px; }
   .cmpsel .vsx { color: var(--muted); font-weight: 700; }
   .cmphead { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; align-items: center;
              background: linear-gradient(120deg, #1d2430, #161b22 60%); border: 1px solid var(--line);
