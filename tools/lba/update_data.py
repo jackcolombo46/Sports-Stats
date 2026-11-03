@@ -23,6 +23,7 @@ import sys
 import time
 import unicodedata
 import urllib.error
+import urllib.parse
 import urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -97,57 +98,132 @@ def club(name):
 
 
 # ------------------------------------------------------------ immagini
-# Loghi delle squadre e foto dei giocatori, se legabasket.it li include nei dati della partita.
-# I nomi dei campi non sono documentati: si cercano i valori che sembrano indirizzi di immagini.
-IMAGES = {"teams": {}, "players": {}}
-_IMG_EXT = re.compile(r"\.(png|jpe?g|webp|svg|gif)(\?|$)", re.I)
-_IMG_KEY = ("logo", "image", "img", "photo", "foto", "picture", "avatar", "pic")
+# Loghi e foto: nei dati delle partite legabasket.it non mette l'indirizzo dell'immagine ma un codice
+# (es. player_p_key nel tabellino, home_logo_key / v_logo_key nella partita). L'immagine è
+# {archivio}/variants/{codice}/thumb (o {archivio}/{codice}); l'indirizzo dell'archivio non è documentato:
+# find_cdn() lo cerca nelle pagine e negli script del sito e lo verifica scaricando un'immagine vera.
+IMAGES = {"teams": {}, "players": {}}   # valori: codice immagine (o indirizzo completo, se il sito lo dà)
+IMG_VERSION = 2
 _seen_keys = set()
 
 
-def _img_url(key, val):
-    if not isinstance(val, str) or len(val) < 5 or " " in val.strip():
-        return None
-    v = val.strip()
-    if not (_IMG_EXT.search(v) or any(k in key.lower() for k in _IMG_KEY)) or "/" not in v:
-        return None
-    if v.startswith("//"):
-        return "https:" + v
-    if v.startswith("/"):
-        return SITE + v
-    if v.startswith("http"):
-        return v.replace("http://", "https://", 1)
-    return SITE + "/" + v
+def _img_value(v):
+    return v.strip() if isinstance(v, str) and 3 <= len(v.strip()) <= 300 and " " not in v.strip() else None
 
 
-def _images_in(obj, depth=0):
-    """[(chiave, url)] di tutti i valori-immagine in un dizionario (anche annidato)."""
-    out = []
-    if isinstance(obj, dict) and depth < 3:
-        for k, v in obj.items():
-            u = _img_url(str(k), v)
-            if u:
-                out.append((str(k).lower(), u))
-            elif isinstance(v, dict):
-                out += [(f"{k}.{kk}".lower(), uu) for kk, uu in _images_in(v, depth + 1)]
-    return out
+def _is_player_img(k):
+    k = k.lower()
+    if "logo" in k or "team" in k:
+        return False
+    return (k.endswith("_key") and any(w in k for w in ("p_key", "picture", "photo", "image"))) or \
+        any(w in k for w in ("image", "photo", "picture", "foto"))
 
 
 def collect_images(m, hcode, vcode, rows_by_side):
     """m = dati della partita; rows_by_side = {"ht": righe, "vt": righe} del tabellino."""
-    for key, url in _images_in(m):
-        side = hcode if key.startswith(("h_", "ht_", "home")) else vcode if key.startswith(("v_", "vt_", "visitor", "away")) else None
-        if side and ("logo" in key or "team" in key):
-            IMAGES["teams"][side] = url
-            _seen_keys.add("squadra:" + key)
+    for k, v in (m or {}).items():
+        kl, v = str(k).lower(), _img_value(v)
+        if not v or "logo" not in kl:
+            continue
+        side = hcode if kl.startswith(("h_", "ht_", "home")) else vcode if kl.startswith(("v_", "vt_", "visitor", "away")) else None
+        if side:
+            IMAGES["teams"][side] = v
+            _seen_keys.add("squadra:" + kl)
     for rows in rows_by_side.values():
         for r in rows or []:
             if not r.get("player_id"):
                 continue
-            imgs = [(k, u) for k, u in _images_in(r) if "team" not in k and "logo" not in k]
-            if imgs:
-                IMAGES["players"][str(int(r["player_id"]))] = imgs[0][1]
-                _seen_keys.add("giocatore:" + imgs[0][0])
+            for k, v in r.items():
+                v = _img_value(v)
+                if v and _is_player_img(str(k)):
+                    IMAGES["players"][str(int(r["player_id"]))] = v
+                    _seen_keys.add("giocatore:" + str(k).lower())
+                    break
+
+
+def _fetch(url, binary=False):
+    """GET semplice; per legabasket.it rispetta i 2 secondi fra le richieste."""
+    if "legabasket.it" in url:
+        wait = DELAY - (time.time() - _last[0])
+        if wait > 0:
+            time.sleep(wait)
+        _last[0] = time.time()
+    req = urllib.request.Request(url, headers={"User-Agent": UA, "Referer": SITE + "/"})
+    with urllib.request.urlopen(req, timeout=20) as r:
+        body = r.read()
+        return (body, r.headers.get("Content-Type", "")) if binary else body.decode("utf-8", "replace")
+
+
+def img_urls(base, key):
+    if key.startswith(("http://", "https://")):
+        return [key]
+    key = urllib.parse.quote(key.lstrip("/"), safe="/")
+    return [f"{base}/variants/{key}/thumb", f"{base}/{key}"]
+
+
+def _works(base, key):
+    for u in img_urls(base, key):
+        try:
+            body, ctype = _fetch(u, binary=True)
+            if ctype.startswith("image/") and len(body) > 100:
+                return True
+        except (urllib.error.URLError, TimeoutError, ConnectionError, ValueError):
+            pass
+    return False
+
+
+def _cdn_candidates(text):
+    text = text.replace("\\u002F", "/").replace("\\/", "/")
+    for m in re.finditer(r"/_next/image\?url=([^&\"' ]+)", text):
+        text += " " + urllib.parse.unquote(m.group(1))
+    out = re.findall(r"(https?://[A-Za-z0-9.-]+(?:/[A-Za-z0-9._~-]+)*?)/variants/", text)
+    # negli script: indirizzi scritti poco prima della parola "variants"
+    for m in re.finditer(r"variants", text):
+        out += re.findall(r"[\"'`](https?://[^\"'`\s]+?)/?[\"'`]", text[max(0, m.start() - 400):m.start()])
+    out += re.findall(r"NEXT_PUBLIC_[A-Z_]*(?:CDN|IMAGE|IMG|MEDIA|ASSET|STORAGE)[A-Z_]*[\"']?\s*[:=]\s*[\"'](https?://[^\"']+)", text)
+    out += [u for u in re.findall(r"https?://[A-Za-z0-9.-]+(?:/[A-Za-z0-9._~-]+)*", text)
+            if re.search(r"cdn|img|image|media|asset|storage|cloudfront|blob|bucket", u.split("/")[2])]
+    seen, res = set(), []
+    for u in out:
+        u = u.rstrip("/")
+        if u not in seen and "legabasket.it/api" not in u:
+            seen.add(u)
+            res.append(u)
+    return res
+
+
+def find_cdn(key, max_scripts=40):
+    tried = set()
+
+    def test(cands):
+        for c in cands:
+            if c in tried:
+                continue
+            tried.add(c)
+            if _works(c, key):
+                return c
+        return None
+
+    scripts = []
+    for page in (SITE + "/protagonisti/squadre", SITE + "/"):
+        try:
+            html = _fetch(page)
+        except (urllib.error.URLError, TimeoutError, ConnectionError) as e:
+            log("  immagini, pagina non raggiungibile:", page, e)
+            continue
+        found = test(_cdn_candidates(html))
+        if found:
+            return found
+        scripts += [x for x in re.findall(r"[\"'](/_next/static/[^\"']+?\.js)[\"']", html) if x not in scripts]
+    for src in scripts[:max_scripts]:
+        try:
+            found = test(_cdn_candidates(_fetch(SITE + src)))
+        except (urllib.error.URLError, TimeoutError, ConnectionError):
+            continue
+        if found:
+            return found
+    log(f"  immagini: archivio non trovato ({len(tried)} indirizzi provati, {min(len(scripts), max_scripts)} script letti)")
+    return None
 
 
 # ------------------------------------------------------------ stagioni
@@ -391,12 +467,16 @@ def main():
 
     past_files = backfill_past(y, args.past, rs, teams, download=not args.skip_past)
     old = meta.get("images") or {}
+    if old.get("v") != IMG_VERSION:
+        old = {}   # formato vecchio: si riparte
     IMAGES["teams"] = {**(old.get("teams") or {}), **IMAGES["teams"]}
     IMAGES["players"] = {**(old.get("players") or {}), **IMAGES["players"]}
     cur_files, schedule = update_current(y, rs, teams, meta)
     if not old.get("scanned"):
         # prima volta: rilegge le ultime partite già salvate solo per prendere foto e loghi
-        gids = sorted({r[2] for f in cur_files for r in (read_json(os.path.join(DATA, f)) or {}).get("rows", [])}, key=int)[-64:]
+        have_img = set(IMAGES["players"])
+        gids = sorted({r[2] for f in cur_files for r in (read_json(os.path.join(DATA, f)) or {}).get("rows", [])
+                       if str(r[0]) not in have_img}, key=int)[-64:]
         log(f"Immagini: rileggo {len(gids)} partite già salvate (una volta sola)")
         for gid in gids:
             try:
@@ -404,7 +484,16 @@ def main():
             except RuntimeError as e:
                 log("  immagini", gid, e)
     log(f"Immagini: {len(IMAGES['teams'])} loghi, {len(IMAGES['players'])} foto; campi trovati: {sorted(_seen_keys) or 'nessuno'}")
-    meta["images"] = {"teams": IMAGES["teams"], "players": IMAGES["players"], "scanned": True}
+    # indirizzo dell'archivio immagini: si riusa quello trovato, altrimenti si cerca (al più una volta al giorno)
+    cdn, sample = old.get("cdn"), next(iter(IMAGES["teams"].values()), None) or next(iter(IMAGES["players"].values()), None)
+    today_s = dt.date.today().isoformat()
+    if sample and not sample.startswith("http") and (not cdn or not _works(cdn, sample)) and old.get("cdn_tried") != today_s:
+        log("Immagini: cerco l'indirizzo dell'archivio immagini di legabasket.it...")
+        cdn = find_cdn(sample)
+        old["cdn_tried"] = today_s
+    log(f"Immagini: archivio {cdn or 'non trovato'}")
+    meta["images"] = {"v": IMG_VERSION, "cdn": cdn, "cdn_tried": old.get("cdn_tried"),
+                      "teams": IMAGES["teams"], "players": IMAGES["players"], "scanned": True}
     meta.update({"league": "LBA", "season": season_str(y), "seasons": [season_str(y - k) for k in range(args.past + 1)],
                  "files": past_files + cur_files, "schedule": schedule, "rosters": rosters_from_logs(y),
                  "injuries": [], "teams": teams,
