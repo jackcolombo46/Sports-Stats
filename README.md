@@ -31,6 +31,16 @@ Il funzionamento dei due modelli è descritto nei README dei repository original
 tutto ciò che è specifico del calcio sta nell'oggetto `SPORT` in `docs/seriea/model.js`; il campionato
 scaricato è `LEAGUE` in `tools/seriea/update_data.py`.
 
+## Foto dei giocatori e loghi delle squadre
+
+`docs/media.js` (condiviso) disegna foto e loghi; se un'immagine non si carica restano le iniziali
+del giocatore o la sigla della squadra.
+
+- **NBA e Serie A**: immagini dal CDN di ESPN, calcolate dagli id già presenti nei dati
+  (`a.espncdn.com/i/headshots/...` e `/i/teamlogos/...`). Per la Serie A ESPN non ha la foto di tutti i giocatori.
+- **LBA**: l'aggiornamento automatico cerca nei dati delle partite di legabasket.it i campi che contengono
+  immagini e li salva in `meta.json` → `images`. Il log dell'Action riporta quanti loghi/foto ha trovato e in quali campi.
+
 ## Aggiungere uno sport
 
 1. `tools/<sport>/update_data.py` che scrive in `docs/<sport>/data/`

@@ -95,6 +95,60 @@ def club(name):
     return w[:3].upper(), w.title()
 
 
+# ------------------------------------------------------------ immagini
+# Loghi delle squadre e foto dei giocatori, se legabasket.it li include nei dati della partita.
+# I nomi dei campi non sono documentati: si cercano i valori che sembrano indirizzi di immagini.
+IMAGES = {"teams": {}, "players": {}}
+_IMG_EXT = re.compile(r"\.(png|jpe?g|webp|svg|gif)(\?|$)", re.I)
+_IMG_KEY = ("logo", "image", "img", "photo", "foto", "picture", "avatar", "pic")
+_seen_keys = set()
+
+
+def _img_url(key, val):
+    if not isinstance(val, str) or len(val) < 5 or " " in val.strip():
+        return None
+    v = val.strip()
+    if not (_IMG_EXT.search(v) or any(k in key.lower() for k in _IMG_KEY)) or "/" not in v:
+        return None
+    if v.startswith("//"):
+        return "https:" + v
+    if v.startswith("/"):
+        return SITE + v
+    if v.startswith("http"):
+        return v.replace("http://", "https://", 1)
+    return SITE + "/" + v
+
+
+def _images_in(obj, depth=0):
+    """[(chiave, url)] di tutti i valori-immagine in un dizionario (anche annidato)."""
+    out = []
+    if isinstance(obj, dict) and depth < 3:
+        for k, v in obj.items():
+            u = _img_url(str(k), v)
+            if u:
+                out.append((str(k).lower(), u))
+            elif isinstance(v, dict):
+                out += [(f"{k}.{kk}".lower(), uu) for kk, uu in _images_in(v, depth + 1)]
+    return out
+
+
+def collect_images(m, hcode, vcode, rows_by_side):
+    """m = dati della partita; rows_by_side = {"ht": righe, "vt": righe} del tabellino."""
+    for key, url in _images_in(m):
+        side = hcode if key.startswith(("h_", "ht_", "home")) else vcode if key.startswith(("v_", "vt_", "visitor", "away")) else None
+        if side and ("logo" in key or "team" in key):
+            IMAGES["teams"][side] = url
+            _seen_keys.add("squadra:" + key)
+    for rows in rows_by_side.values():
+        for r in rows or []:
+            if not r.get("player_id"):
+                continue
+            imgs = [(k, u) for k, u in _images_in(r) if "team" not in k and "logo" not in k]
+            if imgs:
+                IMAGES["players"][str(int(r["player_id"]))] = imgs[0][1]
+                _seen_keys.add("giocatore:" + imgs[0][0])
+
+
 # ------------------------------------------------------------ stagioni
 
 def season_start_year(today):
@@ -155,8 +209,9 @@ def match(gid):
             "teams": {hcode: {"name": m.get("h_team_name"), "short": hshort},
                       vcode: {"name": m.get("v_team_name"), "short": vshort}}}
     rows, names = [], {}
+    sc = d.get("scores") or {}
+    collect_images(m, hcode, vcode, {side: (sc.get(side) or {}).get("rows") for side in ("ht", "vt")})
     if info["status"] == "2":
-        sc = d.get("scores") or {}
         for side, tri, opp, home in (("ht", hcode, vcode, 1), ("vt", vcode, hcode, 0)):
             for r in (sc.get(side) or {}).get("rows") or []:
                 secs = r.get("sec") or 0
@@ -325,7 +380,21 @@ def main():
     log("Campionati di regular season:", {k: v for k, v in sorted(rs.items()) if k >= y - args.past})
 
     past_files = backfill_past(y, args.past, rs, teams, download=not args.skip_past)
+    old = meta.get("images") or {}
+    IMAGES["teams"] = {**(old.get("teams") or {}), **IMAGES["teams"]}
+    IMAGES["players"] = {**(old.get("players") or {}), **IMAGES["players"]}
     cur_files, schedule = update_current(y, rs, teams, meta)
+    if not old.get("scanned"):
+        # prima volta: rilegge le ultime partite già salvate solo per prendere foto e loghi
+        gids = sorted({r[2] for f in cur_files for r in (read_json(os.path.join(DATA, f)) or {}).get("rows", [])}, key=int)[-64:]
+        log(f"Immagini: rileggo {len(gids)} partite già salvate (una volta sola)")
+        for gid in gids:
+            try:
+                match(gid)
+            except RuntimeError as e:
+                log("  immagini", gid, e)
+    log(f"Immagini: {len(IMAGES['teams'])} loghi, {len(IMAGES['players'])} foto; campi trovati: {sorted(_seen_keys) or 'nessuno'}")
+    meta["images"] = {"teams": IMAGES["teams"], "players": IMAGES["players"], "scanned": True}
     meta.update({"league": "LBA", "season": season_str(y), "seasons": [season_str(y - k) for k in range(args.past + 1)],
                  "files": past_files + cur_files, "schedule": schedule, "rosters": rosters_from_logs(y),
                  "injuries": [], "teams": teams,
