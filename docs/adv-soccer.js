@@ -1,9 +1,12 @@
-/* Statistiche avanzate della Serie A, stagione in corso.
+/* Statistiche avanzate del calcio (Serie A, Champions League), stagione in corso.
+   Si usano solo le partite della competizione dell'app: in Champions nessun dato dei campionati nazionali.
    Fonti: tabellini dei giocatori e risultati (ESPN), statistiche di squadra di ogni partita (ESPN: possesso,
    passaggi, contrasti...), xG di ogni giocatore (ESPN, quando presente) e totali di Understat (xG, PPDA, punti attesi). */
 (function () {
   "use strict";
   const ok = v => v != null && isFinite(v);
+  // nome della competizione nei testi e se ci sono i dati di Understat (non coprono la Champions League)
+  const CFG = { name: "Serie A", understat: true };
   const div = (a, b) => (ok(a) && ok(b) && b > 0 ? a / b : NaN);
   const fin = v => (ok(v) ? v : null);
   const RK = ["gol", "ast", "sh", "sot", "fc", "fs", "yc", "rc", "sv", "gc"];
@@ -161,7 +164,7 @@
   function note(A) {
     const miss = [];
     if (!A.hasTs) miss.push("possesso/passaggi/contrasti");
-    if (!A.hasXg) miss.push("xG/pressing");
+    if (!A.hasXg) miss.push(CFG.understat ? "xG/pressing" : "xG");
     return miss.length ? ` Le voci su ${miss.join(" e ")} compariranno dopo il prossimo aggiornamento automatico dei dati.` : "";
   }
 
@@ -169,7 +172,7 @@
     const A = build(ctx, tstats, xgMeta);
     if (!A.teamVals[tid]) return Adv.section("team:" + tid, "Statistiche avanzate", `<div class="msg small">Nessuna partita giocata in questa stagione.</div>`);
     const t = A.T[tid];
-    const nt = `Stagione ${ctx.season}, ${t.gp} partite (${t.w}V ${t.d}N ${t.l}P). Pos. = posizione in Serie A (1ª = la migliore); Media = media delle squadre.` + note(A);
+    const nt = `Stagione ${ctx.season}, ${t.gp} partite (${t.w}V ${t.d}N ${t.l}P). Pos. = posizione fra le squadre della ${CFG.name} (1ª = la migliore); Media = media delle squadre.` + note(A);
     return Adv.section("team:" + tid, "Statistiche avanzate della squadra", Adv.table(A.TM, A.teamVals[tid], A.ranks[tid], A.lg, { hideEmpty: true }), nt);
   }
 
@@ -179,7 +182,7 @@
     if (!x) return Adv.section("player:" + pid, "Statistiche avanzate", `<div class="msg small">Nessuna presenza in questa stagione.</div>`);
     const k = x.gkGames * 2 > x.gp ? 1 : 0;
     const vals = Object.fromEntries(A.PM[k].map(m => [m.key, fin(m.val(x))]));
-    const nt = `Stagione ${ctx.season}, ${x.gp} presenze, ${Math.round(x.min)} minuti. Media = valore medio dei ${k ? "portieri" : "giocatori di movimento"} della Serie A.`;
+    const nt = `Stagione ${ctx.season}, ${x.gp} presenze, ${Math.round(x.min)} minuti. Media = valore medio dei ${k ? "portieri" : "giocatori di movimento"} della ${CFG.name}.`;
     return Adv.section("player:" + pid, "Statistiche avanzate del giocatore", Adv.table(A.PM[k], vals, null, A.plg[k], { hideEmpty: true }), nt);
   }
 
@@ -190,5 +193,6 @@
       + (n ? `<div class="advnote" style="margin-top:10px">${n.trim()}</div>` : "");
   }
 
-  window.SoccerAdv = { build, teamSection, playerSection, compare };
+  const configure = o => Object.assign(CFG, o);
+  window.SoccerAdv = { build, teamSection, playerSection, compare, configure };
 })();
