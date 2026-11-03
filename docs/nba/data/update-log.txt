@@ -3,3 +3,6 @@ Stagione 2026-27: controllo le partite dal 2026-10-01 al 2026-11-03
 Stagione 2026-27: 107 partite nuove
   100/107 partite
 Fatto: 2026-11-03T08:50:45Z 4 file, 103 partite in calendario
+Stagione 2026-27: controllo le partite dal 2026-10-30 al 2026-11-03
+Stagione 2026-27: 0 partite nuove
+Fatto: 2026-11-03T08:50:55Z 4 file, 103 partite in calendario
