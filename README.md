@@ -61,6 +61,14 @@ La scheda **Confronta** mette due squadre una accanto all'altra: verde = meglio,
 
 Quando i file della stagione in corso sono nel formato vecchio, l'aggiornamento automatico li riscarica da solo.
 
+## Occasioni
+
+La scheda **Occasioni** (`docs/picks.js`) elenca le previsioni più probabili per tutti i giocatori della prossima
+giornata, usando le stesse proiezioni delle schede Giocatore e Squadra. Per ogni giocatore e statistica prende la soglia
+più alta che supera la probabilità minima scelta e ordina per probabilità; si filtra per partita, statistica e
+probabilità minima. `minLine` (in `app.js` di ogni app) esclude le soglie troppo basse (es. "almeno 5 punti"), e
+`windowH` è l'ampiezza della giornata in ore (NBA 20, LBA 60, calcio 96).
+
 ## Champions League
 
 L'app `docs/ucl/` usa lo stesso aggiornatore della Serie A con la competizione ESPN `uefa.champions`
