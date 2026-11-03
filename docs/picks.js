@@ -294,7 +294,6 @@
   table.pkt td.pkh { font-size: 12px; line-height: 1.5; }
   table.pkt td.pkp { font-weight: 700; background: linear-gradient(90deg, rgba(62,207,142,.18) var(--p), transparent var(--p)); }
   @media (max-width: 600px) {
-    .tabs { display: grid; grid-template-columns: repeat(3, 1fr); }
     table.pkt td, table.pkt th { padding: 7px 4px; }
     table.pkt .who .ph.pl.s { display: none; }
   }`;
