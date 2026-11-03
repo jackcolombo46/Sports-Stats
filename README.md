@@ -88,6 +88,17 @@ tipo la più ambiziosa che supera il minimo:
   (verde/grigio/rosso) e, a scomparsa, le proiezioni complete di ciascuna squadra e cosa concede l'avversario.
   Se le due squadre si affrontano a breve si usa il campo vero, altrimenti campo neutro.
 
+## Assenze nelle proiezioni
+
+Nei modelli (`likelyAbsent`, `absenceDelta`, oggetto `ABS`): se un compagno con un ruolo vero manca, la proiezione
+del giocatore si sposta della differenza "senza − con" il compagno (stagione in corso e precedente, stessa squadra),
+ridimensionata con peso `partite_senza / (partite_senza + K)` e solo per la quota di partite recenti in cui il compagno
+c'era (la media recente contiene già le sue assenze). Verifica (tarata sulla 2025-26, controllata sulla 2026-27):
+- NBA con le assenze vere: piccolo miglioramento (logloss 0,2974 → 0,2962 sulla 2025-26) → **attiva, solo per i
+  giocatori "Out" nel bollettino infortuni** (indovinare gli assenti dalle partite saltate non migliora nulla);
+- LBA nessun miglioramento, calcio leggermente peggio → **spenta** (`ABS.ON = false`).
+Per riprovare: `MODEL_PARAMS = { ABS: { ON, K, MISSED, ROLE } }`.
+
 ## Andamento e confronto fra giocatori
 
 - `docs/trend.js`: grafici SVG senza librerie. Nella scheda giocatore, **Andamento**: ultime 20 partite della
