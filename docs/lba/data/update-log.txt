@@ -4,3 +4,8 @@ Calendario: aggiorno 24 partite
 Immagini: rileggo 48 partite già salvate (una volta sola)
 Immagini: 0 loghi, 0 foto; campi trovati: nessuno
 Fatto: 2026-11-03T07:51:57Z 5 file, 24 partite in calendario, 201 giocatori, 16 squadre
+Campionati di regular season: {2024: 567, 2025: 596, 2026: 602}
+Stagione 2026-27: 240 partite in calendario, 0 nuove da scaricare
+Calendario: aggiorno 24 partite
+Immagini: 0 loghi, 0 foto; campi trovati: nessuno
+Fatto: 2026-11-03T07:52:50Z 5 file, 24 partite in calendario, 201 giocatori, 16 squadre
