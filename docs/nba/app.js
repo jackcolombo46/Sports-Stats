@@ -225,10 +225,11 @@
     $("#opp").classList.toggle("hidden", mode === "watch" || mode === "compare" || mode === "picks");
     $("#go").classList.toggle("hidden", mode === "watch" || mode === "compare" || mode === "picks");
     $("#cmpBox").classList.toggle("hidden", mode !== "compare");
+    document.querySelector(".controls").classList.toggle("hidden", mode === "slip");
     $("#pickBox").classList.toggle("hidden", mode !== "picks");
     $("#pq").placeholder = mode === "watch" ? "Aggiungi un giocatore da osservare…" : "Cerca un giocatore (es. Jokic, Tatum, Doncic)…";
     if (mode === "watch") { $("#pq").value = ""; selected = null; }
-    if (mode === "watch" || mode === "compare" || mode === "picks" || selected || $("#team").value) run();
+    if (mode === "watch" || mode === "compare" || mode === "picks" || mode === "slip" || selected || $("#team").value) run();
     else $("#out").innerHTML = `<div class="msg">${mode === "team" ? "Scegli una squadra." : "Cerca un giocatore."}</div>`;
   });
 
@@ -275,8 +276,9 @@
     if (!ctx) return;
     try {
       if (mode === "watch") return renderWatch();
+      if (mode === "slip") return showSlip();
       if (mode === "compare") { $("#out").innerHTML = renderCompare(); return; }
-      if (mode === "picks") { $("#out").innerHTML = renderPicks(); Adv.bind($("#out")); Picks.bindMore(run, (h, a) => { $("#cmpA").dataset.set = 1; $("#cmpA").value = h; $("#cmpB").value = a; document.querySelector('.tab[data-mode="compare"]').click(); window.scrollTo({ top: 0, behavior: "smooth" }); }); return bindRows(); }
+      if (mode === "picks") { $("#out").innerHTML = renderPicks(); Adv.bind($("#out")); Slip.bind($("#out")); Picks.bindMore(run, (h, a) => { $("#cmpA").dataset.set = 1; $("#cmpA").value = h; $("#cmpB").value = a; document.querySelector('.tab[data-mode="compare"]').click(); window.scrollTo({ top: 0, behavior: "smooth" }); }); return bindRows(); }
       if (mode === "player") {
         if (!selected) { if (suggList.length) return pick(0); return; }
         $("#out").innerHTML = renderPlayer(playerResult(selected.id));
@@ -287,6 +289,7 @@
         $("#out").innerHTML = renderTeam(teamResult(t, $("#both").checked));
       }
       Adv.bind($("#out"));
+      Slip.bind($("#out"));
       bindRows();
     } catch (e) {
       $("#out").innerHTML = `<div class="err">${esc(e.message)}</div>`;
@@ -451,23 +454,26 @@
     return `<h3>Cosa concede ${L(prof.team.tri, "s")} ${esc(prof.team.name)} rispetto alla media NBA <small class="nt">(1ª = la più permissiva)</small></h3><div class="opp">${c.join("")}</div>`;
   }
 
-  function statCard(s) {
+  function statCard(s, d) {
     const lk = s.likely ? `Molto probabile: <b>almeno ${s.likely.line}</b> (${pct(s.likely.prob)})` : `<span style="color:var(--muted)">Nessuna soglia oltre il 60%</span>`;
     const av = [
       s.season_avg != null ? `Stagione <b>${s.season_avg}</b>` : s.prev_avg != null ? `Anno scorso <b>${s.prev_avg}</b>` : "",
       `L10 <b>${s.l10_avg}</b>`,
       s.h2h_avg != null ? `vs avv. <b>${s.h2h_avg}</b>` : "",
     ].filter(Boolean).map(x => `<span>${x}</span>`).join("");
+    const sl = d && d.game && d.game.id && !d.game.manual;   // pulsante schedina solo con una partita vera in calendario
     const lines = s.lines.map(l => `
-      <div class="ln"><span>${l.line}+</span>
+      <div class="ln${sl ? " slp" : ""}"><span>${l.line}+</span>
         <div class="bar"><i style="width:${pct(l.prob)};background:${color(l.prob)}"></i></div>
         <span style="text-align:right">${pct(l.prob)}</span>
-        <span class="hr">${l.l10[0]}/${l.l10[1]}</span></div>`).join("");
+        <span class="hr">${l.l10[0]}/${l.l10[1]}</span>${sl ? Slip.button({ key: `p|${d.game.id}|${d.player.id}|${s.stat}|${l.line}`, kind: "p",
+          gid: d.game.id, utc: d.game.utc, pid: d.player.id, prob: l.prob, text: `${d.player.name}: ${s.label.toLowerCase()} almeno ${l.line}`,
+          sub: `${slipTeam(d.player.team)} ${d.game.home === false ? "@" : "vs"} ${slipTeam(d.opponent)}` }) : ""}</div>`).join("");
     return `<div class="card">
       <div class="top"><span class="name">${esc(s.label)}</span><span class="proj">${s.proj}</span></div>
       <div class="likely">${lk}</div>
       <div class="avgs">${av}</div>
-      <div class="ln lnh"><span>soglia</span><span>probabilità</span><span></span><span class="hr">L10</span></div>
+      <div class="ln lnh${sl ? " slp" : ""}"><span>soglia</span><span>probabilità</span><span></span><span class="hr">L10</span>${sl ? "<span></span>" : ""}</div>
       ${lines}</div>`;
   }
 
@@ -488,7 +494,7 @@
       </div>
     </div>${w}
     <h3>Proiezioni contro ${esc(d.opponent.name)}</h3>
-    <div class="grid">${d.stats.map(statCard).join("")}</div>
+    <div class="grid">${d.stats.map(s => statCard(s, d)).join("")}</div>
     ${oppChips(d.opp_profile)}
     <div class="two">
       <div><h3>Ultime 10 partite</h3><table><tr><th>Data</th><th>Avv.</th><th>Min</th><th>Pt</th><th>Rb</th><th>As</th><th>3P</th></tr>${recent}</table></div>
@@ -563,6 +569,12 @@
       { key: "fga", label: "Tiri", get: r => r.fga, thr: 1.5 },
     ],
   };
+
+  // ------------------------------------------------------------ schedina
+  const slipTeam = t => (t ? t.tri : "");
+  const slipBadge = () => { const t = document.querySelector('.tab[data-mode="slip"]'); if (t) t.innerHTML = `Schedina${Slip.count() ? `<span class="slipn0">${Slip.count()}</span>` : ""}`; };
+  Slip.init("nba", slipBadge);
+  function showSlip() { $("#out").innerHTML = Slip.render(); Slip.bindPage(showSlip); }
 
   // ------------------------------------------------------------ confronto fra squadre
   function cmpOptions() {

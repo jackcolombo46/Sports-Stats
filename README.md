@@ -78,6 +78,15 @@ tipo la più ambiziosa che supera il minimo:
   NBA 13 punti sullo scarto e 19 sul totale, LBA 12 e 16).
 "Storico" = quante volte è successo nelle ultime partite di ciascuna squadra in questa stagione.
 
+## Schedina
+
+`docs/slip.js`: il pulsante **+** accanto alle previsioni (pagina Occasioni, giocatori e squadre, e soglie nella scheda
+giocatore) le aggiunge alla scheda **Schedina**. Calcola la probabilità combinata (prodotto delle singole), la quota
+giusta (1 / probabilità) e, con le quote del bookmaker (per previsione o totale) e l'importo, il valore atteso:
+"conviene" se probabilità × quota > 1. Avvisa quando ci sono previsioni della stessa partita o dello stesso giocatore
+(collegate fra loro); due soglie della stessa statistica dello stesso giocatore contano una volta sola (la più alta).
+Salvata nel browser, una per sport; le probabilità sono quelle del momento dell'aggiunta.
+
 ## Quanto ci azzecca il modello
 
 `tools/backtest/backtest.js` (Node, senza dipendenze) rifà le proiezioni di ogni partita già giocata (stagione in corso e
