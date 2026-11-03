@@ -88,6 +88,17 @@ tipo la più ambiziosa che supera il minimo:
   (verde/grigio/rosso) e, a scomparsa, le proiezioni complete di ciascuna squadra e cosa concede l'avversario.
   Se le due squadre si affrontano a breve si usa il campo vero, altrimenti campo neutro.
 
+## Andamento e confronto fra giocatori
+
+- `docs/trend.js`: grafici SVG senza librerie. Nella scheda giocatore, **Andamento**: ultime 20 partite della
+  statistica scelta, barre verdi se raggiunge la soglia (scelta fra quelle della proiezione), media, separazione fra
+  stagioni.
+- **Confronta → Confronta giocatori** (anche dalla scheda giocatore con "⇄ Confronta"): due giocatori qualsiasi,
+  anche della stessa squadra, affiancati verde/grigio/rosso: proiezione della prossima partita, stagione, ultime 10,
+  statistiche avanzate; sotto, l'andamento dei due sovrapposto. Se sono di squadre diverse ognuno è proiettato contro
+  il proprio avversario (la pagina lo dice).
+- Calcio: se ESPN manda la colonna xG tutta a zero, le voci xG non compaiono.
+
 ## Schedina
 
 `docs/slip.js`: il pulsante **+** accanto alle previsioni (pagina Occasioni, giocatori e squadre, e soglie nella scheda
