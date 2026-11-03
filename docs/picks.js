@@ -7,6 +7,7 @@
   const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const pct = p => Math.round(p * 100) + "%";
   const MAX_ROWS = 60;
+  const sbtn = item => (window.Slip ? Slip.button(item) : "");
   const state = { all: false };
 
   /* partite della prossima giornata: dalla prima partita non ancora iniziata, entro windowH ore */
@@ -107,11 +108,13 @@
         <td><span class="who">${cfg.photo(p.pid, p.name)}<span>${esc(p.name)}<small class="pkm">${cfg.logo(p.tid, "s")} ${esc(cfg.short(p.tid))} ${p.home ? "vs" : "@"} ${esc(cfg.short(p.opp))}${gid ? "" : " · " + esc(whenShort(p.utc))}</small></span></span></td>
         <td class="pkl">${esc(p.label)} <b>${p.line}+</b><small class="pkm">proiezione ${p.proj}</small></td>
         <td class="pkp" style="--p:${Math.round(p.prob * 100)}%">${pct(p.prob)}</td>
-        <td class="${l10c}">${l10}</td></tr>`;
+        <td class="${l10c}">${l10}</td>
+        <td class="pks">${sbtn({ key: `p|${p.gid}|${p.pid}|${p.stat}|${p.line}`, kind: "p", gid: p.gid, utc: p.utc, pid: p.pid, prob: p.prob,
+          text: `${p.name}: ${p.label.toLowerCase()} almeno ${p.line}`, sub: `${cfg.short(p.tid)} ${p.home ? "vs" : "@"} ${cfg.short(p.opp)}` })}</td></tr>`;
     }).join("");
     const more = picks.length > MAX_ROWS
       ? `<button class="advclose" id="pkMore">${state.all ? "Mostra solo le prime " + MAX_ROWS : `Mostra tutte (${picks.length})`}</button>` : "";
-    return head + `<div class="scroll"><table class="pkt"><tr><th>Giocatore</th><th>Previsione</th><th>Prob.</th><th>U10</th></tr>${rows}</table></div>${more}` + backtest(cfg.backtest, false, cfg.sportName);
+    return head + `<div class="scroll"><table class="pkt"><tr><th>Giocatore</th><th>Previsione</th><th>Prob.</th><th>U10</th><th></th></tr>${rows}</table></div>${more}` + backtest(cfg.backtest, false, cfg.sportName);
   }
 
 
@@ -217,11 +220,13 @@
         <td class="pkl"><b class="pkt1">${esc(p.text)}</b>
           <small class="pkm">${cfg.logo(p.home, "s")} ${esc(cfg.short(p.home))} – ${cfg.logo(p.away, "s")} ${esc(cfg.short(p.away))} · ${esc(whenShort(p.utc))} · ${esc(p.group)}</small></td>
         <td class="pkp" style="--p:${Math.round(p.prob * 100)}%">${pct(p.prob)}</td>
-        <td class="pkh ${hc}">${hist}</td></tr>`;
+        <td class="pkh ${hc}">${hist}</td>
+        <td class="pks">${sbtn({ key: `t|${p.gid}|${p.text}`, kind: "t", gid: p.gid, utc: p.utc, prob: p.prob, text: p.text,
+          sub: `${cfg.short(p.home)} – ${cfg.short(p.away)}` })}</td></tr>`;
     }).join("");
     const more = picks.length > MAX_ROWS
       ? `<button class="advclose" id="pkMore">${state.all ? "Mostra solo le prime " + MAX_ROWS : `Mostra tutte (${picks.length})`}</button>` : "";
-    return head + `<div class="scroll"><table class="pkt"><tr><th>Previsione</th><th>Prob.</th><th>Storico</th></tr>${rows}</table></div>${more}`;
+    return head + `<div class="scroll"><table class="pkt"><tr><th>Previsione</th><th>Prob.</th><th>Storico</th><th></th></tr>${rows}</table></div>${more}`;
   }
 
 
@@ -281,6 +286,7 @@
   table.pkt td.pkl b { font-family: var(--mono); color: var(--accent2); }
   table.pkt td.pkl b.pkt1 { color: var(--text); font-family: inherit; font-weight: 600; }
   table.pkt td.pkh { white-space: nowrap; }
+  table.pkt td.pks { width: 34px; text-align: center; padding-left: 2px; padding-right: 6px; }
   .btsum { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
   .btsum > div { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; display: grid; gap: 2px; }
   .btsum b { font-family: var(--mono); font-size: 26px; color: var(--accent2); }
