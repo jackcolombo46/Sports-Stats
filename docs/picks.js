@@ -52,19 +52,40 @@
   const when = utc => new Date(utc).toLocaleString("it-IT", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
   const whenShort = utc => new Date(utc).toLocaleString("it-IT", { weekday: "short", hour: "2-digit", minute: "2-digit" });
 
+
+  function headOf(cfg, games, gid, teams) {
+    const day = utc => when(utc).replace(/,? \d\d:\d\d$/, "");
+    const first = games[0], last = games[games.length - 1];
+    const span = day(first.utc) === day(last.utc) ? day(first.utc) : `${day(first.utc)} – ${day(last.utc)}`;
+    const note = teams
+      ? `Per ogni partita e tipo di previsione la più ambiziosa che supera la probabilità scelta (es. "Over 2,5" invece di "Over 1,5" se supera il minimo).
+         Storico = quante volte è successo nelle ultime partite di ciascuna squadra in questa stagione. Tocca una partita per il confronto fra le due squadre. ${cfg.teamNote || ""}`
+      : `Per ogni giocatore e statistica la soglia più alta che supera la probabilità scelta. U10 = quante volte l'ha raggiunta nelle ultime 10 partite.
+         Tocca un giocatore per la proiezione completa.`;
+    return `<h3 style="margin-top:0">Migliori occasioni · ${esc(span)} <small class="nt">(${gid ? "1 partita" : games.length + (games.length === 1 ? " partita" : " partite")})</small></h3>
+      <div class="advnote">${note}</div>`;
+  }
+
   /* cfg: { ctx, schedule, windowH, project(tid, opp, home), name(tid), short(tid), logo(tid, size), photo(pid, name, size),
             stats: [[codice, etichetta]], skip: Set, minLine: {codice: soglia minima}, defMin, el: {game, stat, min} } */
   function render(cfg) {
     const games = nextGames(cfg.schedule, cfg.windowH);
     if (!games.length) return `<div class="msg">Nessuna partita in programma nei prossimi giorni.</div>`;
     cfg.games = games;
-    const items = collect(cfg);
+    if (!cfg.el.kind.options.length) fill(cfg.el.kind, [["players", "Giocatori"], ["teams", "Squadre e partite"]], "players");
+    const teams = cfg.el.kind.value === "teams";
+    if (cfg.el.kind.dataset.last !== cfg.el.kind.value) { cfg.el.stat.value = ""; cfg.el.kind.dataset.last = cfg.el.kind.value; }
 
     // filtri
     fill(cfg.el.game, [["", `Tutte le partite (${games.length})`], ...games.map(g => [g.id, `${cfg.short(g.home)} – ${cfg.short(g.away)} · ${whenShort(g.utc)}`])]);
-    fill(cfg.el.stat, [["", "Tutte le statistiche"], ...cfg.stats.filter(([s]) => items.some(i => i.stat === s))]);
     if (!cfg.el.min.options.length) fill(cfg.el.min, [50, 55, 60, 65, 70, 75, 80, 85, 90].map(v => [v, `Probabilità almeno ${v}%`]), cfg.defMin);
-    const gid = cfg.el.game.value, stat = cfg.el.stat.value, min = +cfg.el.min.value / 100;
+    const gid = cfg.el.game.value, min = +cfg.el.min.value / 100;
+    const head = headOf(cfg, games, gid, teams);
+    if (teams) return renderTeams(cfg, games, head, gid, min);
+
+    const items = collect(cfg);
+    fill(cfg.el.stat, [["", "Tutte le statistiche"], ...cfg.stats.filter(([s]) => items.some(i => i.stat === s))]);
+    const stat = cfg.el.stat.value;
 
     const picks = [];
     for (const it of items) {
@@ -76,12 +97,6 @@
     }
     picks.sort((a, b) => b.prob - a.prob || b.line - a.line);
 
-    const first = games[0], last = games[games.length - 1];
-    const span = new Date(first.utc).toDateString() === new Date(last.utc).toDateString()
-      ? when(first.utc).replace(/,? \d\d:\d\d$/, "") : `${when(first.utc).replace(/,? \d\d:\d\d$/, "")} – ${when(last.utc).replace(/,? \d\d:\d\d$/, "")}`;
-    const head = `<h3 style="margin-top:0">Migliori occasioni · ${esc(span)} <small class="nt">(${gid ? "1 partita" : games.length + (games.length === 1 ? " partita" : " partite")})</small></h3>
-      <div class="advnote">Per ogni giocatore e statistica la soglia più alta che supera la probabilità scelta. U10 = quante volte l'ha raggiunta nelle ultime 10 partite.
-      Tocca un giocatore per la proiezione completa.</div>`;
     if (!picks.length) return head + `<div class="msg">Nessuna previsione sopra il ${Math.round(min * 100)}%: prova ad abbassare la probabilità minima.</div>`;
 
     const shown = state.all ? picks : picks.slice(0, MAX_ROWS);
@@ -99,9 +114,120 @@
     return head + `<div class="scroll"><table class="pkt"><tr><th>Giocatore</th><th>Previsione</th><th>Prob.</th><th>U10</th></tr>${rows}</table></div>${more}`;
   }
 
-  function bindMore(rerun) {
+
+  /* ======================================================== occasioni di squadra */
+  const erf = x => { const t = 1 / (1 + 0.3275911 * Math.abs(x));
+    const y = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x);
+    return x >= 0 ? y : -y; };
+  const cdf = z => 0.5 * (1 + erf(z / Math.SQRT2));
+  const ge = (x, mu, sd) => 1 - cdf((x - 0.5 - mu) / sd);   // P(valore intero >= x)
+  const le = (x, mu, sd) => cdf((x + 0.5 - mu) / sd);       // P(valore intero <= x)
+  const pois = (k, l) => { let p = Math.exp(-l); for (let i = 1; i <= k; i++) p *= l / i; return p; };
+  const cnt = (list, f) => list.length ? [list.filter(f).length, list.length] : null;
+
+  /* calcio: dai gol attesi delle due squadre (Poisson, come il riquadro 1-X-2 della scheda squadra) */
+  function soccerMarkets(g, m, sh, sa, hh, ha) {
+    const P = [];
+    for (let i = 0; i <= 10; i++) for (let j = 0; j <= 10; j++) P.push([i, j, pois(i, m.lh) * pois(j, m.la)]);
+    const pr = f => P.reduce((a, [i, j, p]) => a + (f(i, j) ? p : 0), 0);
+    const both = (f) => [cnt(hh, x => f(x.pf, x.pa)), cnt(ha, x => f(x.pf, x.pa))];
+    const mk = (market, group, lines) => ({ market, group, lines });
+    const out = [];
+    for (const [side, name, hist, me] of [["h", sh, hh, (i, j) => [i, j]], ["a", sa, ha, (i, j) => [j, i]]]) {
+      const f = (cond) => (i, j) => cond(...me(i, j));
+      out.push(mk(`res-${side}`, "Risultato", [
+        { text: `${name} vince con 2+ gol di scarto`, prob: pr(f((x, y) => x - y >= 2)), hist: [cnt(hist, x => x.pf - x.pa >= 2)] },
+        { text: `Vince ${name}`, prob: pr(f((x, y) => x > y)), hist: [cnt(hist, x => x.pf > x.pa)] },
+        { text: `${name} non perde`, prob: pr(f((x, y) => x >= y)), hist: [cnt(hist, x => x.pf >= x.pa)] }]));
+      out.push(mk(`gol-${side}`, "Gol di squadra", [1, 2, 3].map(k =>
+        ({ text: `${name} segna almeno ${k} gol`, prob: pr(f(x => x >= k)), hist: [cnt(hist, x => x.pf >= k)] }))));
+      out.push(mk(`cs-${side}`, "Porta inviolata", [
+        { text: `${name} non subisce gol`, prob: pr(f((x, y) => y === 0)), hist: [cnt(hist, x => x.pa === 0)] }]));
+    }
+    out.push(mk("ov", "Gol totali", [1.5, 2.5, 3.5, 4.5].map(k =>
+      ({ text: `Over ${k} (almeno ${Math.ceil(k)} gol)`, prob: pr((i, j) => i + j > k), hist: both((a, b) => a + b > k) }))));
+    out.push(mk("un", "Gol totali", [4.5, 3.5, 2.5, 1.5].map(k =>
+      ({ text: `Under ${k} (al massimo ${Math.floor(k)} gol)`, prob: pr((i, j) => i + j < k), hist: both((a, b) => a + b < k) }))));
+    out.push(mk("gg", "Gol / No gol", [{ text: "Gol (segnano entrambe)", prob: pr((i, j) => i > 0 && j > 0), hist: both((a, b) => a > 0 && b > 0) }]));
+    out.push(mk("ng", "Gol / No gol", [{ text: "No gol (almeno una non segna)", prob: pr((i, j) => !i || !j), hist: both((a, b) => !a || !b) }]));
+    return out;
+  }
+
+  /* basket: punti attesi delle due squadre e variabilità tipica (distribuzione normale) */
+  function basketMarkets(g, m, sh, sa, hh, ha) {
+    const out = [], mk = (market, group, lines) => ({ market, group, lines });
+    const diff = m.ph - m.pa, tot = m.ph + m.pa;
+    const both = f => [cnt(hh, x => f(x.pf, x.pa)), cnt(ha, x => f(x.pf, x.pa))];
+    const steps = (mu, w) => { const a = Math.floor((mu - w) / 5) * 5, r = []; for (let x = a; x <= mu + w; x += 5) r.push(x); return r; };
+    for (const [side, name, hist, d, pts] of [["h", sh, hh, diff, m.ph], ["a", sa, ha, -diff, m.pa]]) {
+      out.push(mk(`res-${side}`, "Risultato", [15, 10, 5].map(k =>
+        ({ text: `${name} vince con ${k}+ punti di scarto`, prob: ge(k, d, m.sd.diff), hist: [cnt(hist, x => x.pf - x.pa >= k)] }))
+        .concat([{ text: `Vince ${name}`, prob: 1 - cdf((0 - d) / m.sd.diff), hist: [cnt(hist, x => x.pf > x.pa)] }])));
+      out.push(mk(`pt-${side}`, "Punti di squadra", steps(pts, 25).reverse().map(k =>
+        ({ text: `${name} segna almeno ${k} punti`, prob: ge(k, pts, m.sd.team), hist: [cnt(hist, x => x.pf >= k)] }))));
+      out.push(mk(`pu-${side}`, "Punti di squadra", steps(pts, 25).map(k =>
+        ({ text: `${name} segna al massimo ${k} punti`, prob: le(k, pts, m.sd.team), hist: [cnt(hist, x => x.pf <= k)] }))));
+    }
+    out.push(mk("ov", "Punti totali", steps(tot, 35).reverse().map(k =>
+      ({ text: `Almeno ${k} punti in totale`, prob: ge(k, tot, m.sd.tot), hist: both((a, b) => a + b >= k) }))));
+    out.push(mk("un", "Punti totali", steps(tot, 35).map(k =>
+      ({ text: `Al massimo ${k} punti in totale`, prob: le(k, tot, m.sd.tot), hist: both((a, b) => a + b <= k) }))));
+    return out;
+  }
+
+  function teamItems(cfg) {
+    const key = "T" + cfg.games.map(g => g.id).join(",");
+    if (cfg.ctx._picksT && cfg.ctx._picksT.key === key) return cfg.ctx._picksT.items;
+    const items = [];
+    for (const g of cfg.games) {
+      let m; try { m = cfg.teamModel(g.home, g.away); } catch { m = null; }
+      if (!m) continue;
+      const fn = cfg.sport === "basket" ? basketMarkets : soccerMarkets;
+      for (const mk of fn(g, m, cfg.short(g.home), cfg.short(g.away), cfg.teamHist(g.home), cfg.teamHist(g.away)))
+        items.push({ ...mk, gid: g.id, utc: g.utc, home: g.home, away: g.away });
+    }
+    cfg.ctx._picksT = { key, items };
+    return items;
+  }
+
+  function renderTeams(cfg, games, head, gid, min) {
+    const items = teamItems(cfg);
+    const groups = [...new Set(items.map(i => i.group))];
+    fill(cfg.el.stat, [["", "Tutti i tipi di previsione"], ...groups.map(x => [x, x])]);
+    const grp = cfg.el.stat.value;
+    const picks = [];
+    for (const it of items) {
+      if ((gid && it.gid !== gid) || (grp && it.group !== grp)) continue;
+      const ok = it.lines.filter(l => l.prob >= min && l.prob < 0.995);
+      if (!ok.length) continue;
+      const best = ok.reduce((a, b) => (b.prob < a.prob ? b : a));   // la più ambiziosa che supera il minimo
+      picks.push({ ...it, ...best });
+    }
+    picks.sort((a, b) => b.prob - a.prob);
+    if (!picks.length) return head + `<div class="msg">Nessuna previsione sopra il ${Math.round(min * 100)}%: prova ad abbassare la probabilità minima.</div>`;
+    const shown = state.all ? picks : picks.slice(0, MAX_ROWS);
+    const h = (c) => c ? `${c[0]}/${c[1]}` : "–";
+    const rows = shown.map(p => {
+      const hist = p.hist.length === 2
+        ? `${esc(cfg.short(p.home))} ${h(p.hist[0])}<br>${esc(cfg.short(p.away))} ${h(p.hist[1])}` : h(p.hist[0]);
+      const rate = p.hist.filter(Boolean).map(c => c[0] / c[1]);
+      const hc = rate.length ? (Math.min(...rate) >= 0.7 ? "up" : Math.max(...rate) < 0.5 ? "dn" : "") : "";
+      return `<tr class="click" data-cmp="${esc(p.home)}|${esc(p.away)}">
+        <td class="pkl"><b class="pkt1">${esc(p.text)}</b>
+          <small class="pkm">${cfg.logo(p.home, "s")} ${esc(cfg.short(p.home))} – ${cfg.logo(p.away, "s")} ${esc(cfg.short(p.away))} · ${esc(whenShort(p.utc))} · ${esc(p.group)}</small></td>
+        <td class="pkp" style="--p:${Math.round(p.prob * 100)}%">${pct(p.prob)}</td>
+        <td class="pkh ${hc}">${hist}</td></tr>`;
+    }).join("");
+    const more = picks.length > MAX_ROWS
+      ? `<button class="advclose" id="pkMore">${state.all ? "Mostra solo le prime " + MAX_ROWS : `Mostra tutte (${picks.length})`}</button>` : "";
+    return head + `<div class="scroll"><table class="pkt"><tr><th>Previsione</th><th>Prob.</th><th>Storico</th></tr>${rows}</table></div>${more}`;
+  }
+
+  /* openMatch(casa, ospite): toccando una partita si apre il confronto fra le due squadre */
+  function bindMore(rerun, openMatch) {
     const b = document.getElementById("pkMore");
     if (b) b.onclick = () => { state.all = !state.all; rerun(); };
+    if (openMatch) document.querySelectorAll("tr[data-cmp]").forEach(tr => tr.onclick = () => openMatch(...tr.dataset.cmp.split("|")));
   }
 
   const css = `
@@ -113,6 +239,9 @@
   table.pkt .pkm .ph { width: 14px; height: 14px; }
   table.pkt td.pkl { text-align: left; font-family: inherit; }
   table.pkt td.pkl b { font-family: var(--mono); color: var(--accent2); }
+  table.pkt td.pkl b.pkt1 { color: var(--text); font-family: inherit; font-weight: 600; }
+  table.pkt td.pkh { white-space: nowrap; }
+  table.pkt td.pkh { font-size: 12px; line-height: 1.5; }
   table.pkt td.pkp { font-weight: 700; background: linear-gradient(90deg, rgba(62,207,142,.18) var(--p), transparent var(--p)); }
   @media (max-width: 600px) {
     .tabs { display: grid; grid-template-columns: repeat(3, 1fr); }

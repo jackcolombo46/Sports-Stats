@@ -151,7 +151,7 @@
   $("#go").onclick = run;
   $("#team").onchange = run;
   $("#cmpA").onchange = $("#cmpB").onchange = run;
-  $("#pkGame").onchange = $("#pkStat").onchange = $("#pkMin").onchange = run;
+  $("#pkKind").onchange = $("#pkGame").onchange = $("#pkStat").onchange = $("#pkMin").onchange = run;
   $("#opp").onchange = () => { if (selected || $("#team").value) run(); };
 
   function run() {
@@ -159,7 +159,7 @@
     try {
       if (mode === "watch") return renderWatch();
       if (mode === "compare") { $("#out").innerHTML = renderCompare(); return; }
-      if (mode === "picks") { $("#out").innerHTML = renderPicks(); Picks.bindMore(run); return bindRows(); }
+      if (mode === "picks") { $("#out").innerHTML = renderPicks(); Picks.bindMore(run, (h, a) => { $("#cmpA").dataset.set = 1; $("#cmpA").value = h; $("#cmpB").value = a; document.querySelector('.tab[data-mode="compare"]').click(); window.scrollTo({ top: 0, behavior: "smooth" }); }); return bindRows(); }
       if (mode === "player") {
         if (!selected) { if (suggList.length) return pick(0); return; }
         $("#out").innerHTML = renderPlayer(playerResult(selected.id));
@@ -372,7 +372,11 @@
       logo: (id, size) => L(id, size), photo: (pid, nm) => P(pid, nm),
       stats: M.ALL_STATS.map(s => [s, M.LABELS[s]]),
       minLine: { PTS: 10, REB: 4, AST: 3, FG3M: 2, STL: 1, BLK: 1, TOV: 2, PRA: 15 },
-      el: { game: $("#pkGame"), stat: $("#pkStat"), min: $("#pkMin") },
+      sport: "basket",
+      teamModel: (h, a) => BasketAdv.gameModel(ctx, M, GM, h, a),
+      teamHist: tri => BasketAdv.teamGames(ctx, M, GM, tri),
+      teamNote: "Punti attesi da ritmo e rating offensivo/difensivo delle due squadre in questa stagione (vantaggio del campo incluso).",
+      el: { kind: $("#pkKind"), game: $("#pkGame"), stat: $("#pkStat"), min: $("#pkMin") },
     });
   }
 
