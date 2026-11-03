@@ -5,3 +5,22 @@ Stagione 2026-27: 54 partite nuove
   statistiche di squadra ESPN: accurateCrosses, accurateLongBalls, accuratePasses, blockedShots, crossPct, effectiveClearance, effectiveTackles, foulsCommitted, interceptions, longballPct, offsides, passPct, penaltyKickGoals, penaltyKickShots, possessionPct, redCards, saves, shotPct, shotsOnTarget, tacklePct, totalClearance, totalCrosses, totalLongBalls, totalPasses, totalShots, totalTackles, wonCorners, yellowCards
 Understat: competizione non coperta, si usa solo l'xG di ESPN
 Fatto: 2026-11-03T09:10:04Z 2 file, 54 partite in calendario, 1172 giocatori in rosa
+Competizione uefa.champions -> docs/ucl/data
+Stagione 2024-25: scarico il calendario...
+Stagione 2024-25: 189 partite, scarico i tabellini...
+  50/189 partite
+  100/189 partite
+  150/189 partite
+  statistiche di squadra ESPN: accurateCrosses, accurateLongBalls, accuratePasses, blockedShots, crossPct, effectiveClearance, effectiveTackles, foulsCommitted, interceptions, longballPct, offsides, passPct, penaltyKickGoals, penaltyKickShots, possessionPct, redCards, saves, shotPct, shotsOnTarget, tacklePct, totalClearance, totalCrosses, totalLongBalls, totalPasses, totalShots, totalTackles, wonCorners, yellowCards
+Stagione 2024-25: salvate 5825 righe, 189 partite
+Stagione 2025-26: scarico il calendario...
+Stagione 2025-26: 189 partite, scarico i tabellini...
+  50/189 partite
+  100/189 partite
+  150/189 partite
+  statistiche di squadra ESPN: accurateCrosses, accurateLongBalls, accuratePasses, blockedShots, crossPct, effectiveClearance, effectiveTackles, foulsCommitted, interceptions, longballPct, offsides, passPct, penaltyKickGoals, penaltyKickShots, possessionPct, redCards, saves, shotPct, shotsOnTarget, tacklePct, totalClearance, totalCrosses, totalLongBalls, totalPasses, totalShots, totalTackles, wonCorners, yellowCards
+Stagione 2025-26: salvate 5850 righe, 189 partite
+Stagione 2026-27: controllo le partite dal 2026-10-18 al 2026-11-03
+Stagione 2026-27: 0 partite nuove
+Understat: competizione non coperta, si usa solo l'xG di ESPN
+Fatto: 2026-11-03T09:10:21Z 4 file, 54 partite in calendario, 1172 giocatori in rosa
