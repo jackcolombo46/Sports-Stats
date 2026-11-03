@@ -259,8 +259,8 @@
     $("#controls").classList.toggle("hidden", m === "table" || m === "slip");
     $("#playerBox").classList.toggle("hidden", m === "team" || m === "compare" || m === "picks");
     $("#team").classList.toggle("hidden", m !== "team");
-    $("#bothBox").classList.toggle("hidden", m !== "team");
-    $("#opp").classList.toggle("hidden", m === "watch" || m === "compare" || m === "picks");
+    $("#bothBox").classList.add("hidden");
+    $("#opp").classList.toggle("hidden", m === "watch" || m === "compare" || m === "picks" || m === "team");
     $("#go").classList.toggle("hidden", m === "watch" || m === "compare" || m === "picks");
     $("#cmpBox").classList.toggle("hidden", m !== "compare");
     $("#pickBox").classList.toggle("hidden", m !== "picks");
@@ -306,7 +306,7 @@
     if (e.key === "Escape") $("#sugg").classList.add("hidden");
   });
   $("#pq").addEventListener("blur", () => setTimeout(() => $("#sugg").classList.add("hidden"), 150));
-  $("#go").onclick = run;
+  $("#go").onclick = () => (mode === "team" ? ($("#team").value && openCompare($("#team").value)) : run());
   $("#team").onchange = run;
   $("#cmpA").onchange = $("#cmpB").onchange = run;
   $("#pkKind").onchange = $("#pkGame").onchange = $("#pkStat").onchange = $("#pkMin").onchange = run;
@@ -318,7 +318,7 @@
       if (mode === "watch") return renderWatch();
       if (mode === "table") { $("#out").innerHTML = renderTable(); return bindRows(); }
       if (mode === "slip") return showSlip();
-      if (mode === "compare") { $("#out").innerHTML = renderCompare(); return; }
+      if (mode === "compare") { $("#out").innerHTML = renderCompare(); Adv.bind($("#out")); Slip.bind($("#out")); return bindRows(); }
       if (mode === "picks") { $("#out").innerHTML = renderPicks(); Adv.bind($("#out")); Slip.bind($("#out")); Picks.bindMore(run, (h, a) => { $("#cmpA").dataset.set = 1; $("#cmpA").value = h; $("#cmpB").value = a; setMode("compare"); window.scrollTo({ top: 0, behavior: "smooth" }); run(); }); return bindRows(); }
       if (mode === "player") {
         if (!selected) { if (suggList.length) return pick(0); return; }
@@ -327,7 +327,8 @@
       } else {
         const t = $("#team").value;
         if (!t) return;
-        $("#out").innerHTML = renderTeam(teamResult(t, $("#both").checked));
+        $("#out").innerHTML = renderTeam(t);
+        const tc = $("#toCmp"); if (tc) tc.onclick = () => openCompare(t);
       }
       Adv.bind($("#out"));
       Slip.bind($("#out"));
@@ -554,17 +555,64 @@
       ${gks ? `<div class="opp" style="margin-top:10px">${gks}</div>` : ""}${absent}`;
   }
 
-  function renderTeam(d) {
-    const t = d.team;
+  // ------------------------------------------------------------ scheda squadra (solo la squadra) e confronto
+  /* rosa con i numeri della stagione in corso, senza avversario */
+  function rosterBlock(tid) {
+    const list = ctx.teamPlayers(tid).map(pid => {
+      const cur = (ctx.playerLogs.get(pid) || []).filter(g => g.season === ctx.season && g.min > 0);
+      if (!cur.length) return null;
+      const t = k => cur.reduce((x, g) => x + (+g[k] || 0), 0);
+      return { pid, name: ctx.names.get(pid), n: cur.length, st: cur.filter(g => g.start).length, min: t("min") / cur.length,
+               gol: t("gol"), ast: t("ast"), sh: t("sh"), sot: t("sot"), yc: t("yc"), sv: t("sv"), keeper: ctx.isKeeper(pid), inj: ctx.injury(pid) };
+    }).filter(Boolean).sort((x, y) => (x.keeper - y.keeper) || y.n * y.min - x.n * x.min);
+    if (!list.length) return "";
+    const rows = list.map(p => {
+      const warn = p.inj ? ` <span class="inj" title="${esc(p.inj.status)}">${esc((p.inj.status || "").slice(0, 3))}</span>` : "";
+      return `<tr class="click" data-pid="${p.pid}" data-name="${esc(p.name)}"><td>${who(P(p.pid, p.name), (p.keeper ? "🧤 " : "") + esc(p.name) + warn)}</td>
+        <td>${p.n}<small class="hm2"> (${p.st})</small></td><td class="hm2">${Math.round(p.min)}'</td><td>${p.gol}</td><td>${p.ast}</td><td>${p.sh}</td><td class="hm2">${p.sot}</td><td>${p.yc}</td><td class="hm2">${p.keeper ? p.sv : ""}</td></tr>`;
+    }).join("");
+    return `<h3>Rosa · numeri della stagione <small class="nt">(presenze, tra parentesi da titolare · tocca un nome per il dettaglio)</small></h3>
+      <div class="scroll"><table><tr><th>Giocatore</th><th>Pres.</th><th class="hm2">Min</th><th>Gol</th><th>Ass.</th><th>Tiri</th><th class="hm2">InP</th><th>Gialli</th><th class="hm2">Parate</th></tr>${rows}</table></div>`;
+  }
+
+  function renderTeam(tid) {
+    const g = ctx.nextGame(tid);
+    let absent = [], playing = [];
+    if (g) { const r = ctx.projectTeam(tid, g.opp, g.home); absent = r.absent; playing = r.players.map(p => p.player); }
+    const out = absent.length ? `<div class="warn">Assenti o in dubbio: ${absent.map(a => `${esc(a.name)} <small>(${esc(a.reason)})</small>`).join(", ")}</div>` : "";
     return `
-    <div class="hero"><div class="idt">${L(t.team.tid, "l")}<div><h2>${esc(t.team.name)}</h2>${matchupLine(t.team.tid, d.game, t.opponent.tid)}</div></div></div>
-    ${matchBox(t.team.tid, t.opponent.tid, t.match, d.game.home)}
-    ${SoccerAdv.teamTiles(ctx, TSTATS, XG, t.team.tid)}
-    ${teamBlock(t)}
-    ${oppChips(d.opp_profile)}
-    ${d.opponent ? `<div class="sep"></div>${SoccerAdv.teamTiles(ctx, TSTATS, XG, d.opponent.team.tid)}${teamBlock(d.opponent)}${oppChips(d.own_profile)}` : ""}
-    ${SoccerAdv.teamSection(ctx, TSTATS, XG, t.team.tid)}
-    ${Absence.teamSection(ctx, ABS, t.team.tid, t.absent, t.players.map(p => p.player))}`;
+    <div class="hero"><div class="idt">${L(tid, "l")}<div><h2>${esc(T(tid).name)}</h2>
+      <div class="sub">${g ? `Prossima partita: ${g.home ? "vs" : "@"} ${esc(T(g.opp).short)} · ${esc(fmtDate(g.utc))}` : "Nessuna partita in calendario"}</div>
+      <button class="link" id="toCmp">Confronta con un'altra squadra →</button></div></div></div>
+    ${SoccerAdv.teamTiles(ctx, TSTATS, XG, tid)}
+    ${rosterBlock(tid)}${out}
+    ${SoccerAdv.teamSection(ctx, TSTATS, XG, tid)}
+    ${Absence.teamSection(ctx, ABS, tid, absent, playing)}`;
+  }
+
+  /* "Analizza" dalla scheda squadra: va al confronto con quella squadra (avversario di partenza: la prossima partita) */
+  function openCompare(tid) {
+    const g = ctx.nextGame(tid);
+    $("#cmpA").value = tid;
+    $("#cmpB").value = g ? g.opp : ctx.TEAMS.find(t => t.tid !== tid).tid;
+    $("#cmpA").dataset.set = 1;
+    setMode("compare");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    run();
+  }
+
+  /* giocatori delle due squadre a confronto, statistica per statistica (proiezioni nella partita fra le due) */
+  function duel(tA, tB) {
+    const cards = tA.leaders.map(l => {
+      const lb = tB.leaders.find(x => x.stat === l.stat) || { players: [] };
+      const pctStat = l.stat === "GOL" || l.stat === "AST" || l.stat === "YC";
+      const all = [...l.players.slice(0, 5).map(p => ({ ...p, tid: tA.team.tid })), ...lb.players.slice(0, 5).map(p => ({ ...p, tid: tB.team.tid }))]
+        .sort((x, y) => y.proj - x.proj).slice(0, 6);
+      return `<div class="card leader"><div class="name">${esc(l.label)}</div><ol>
+        ${all.map(p => `<li data-pid="${p.id}" data-name="${esc(p.name)}" class="click"><span>${L(p.tid, "s")} ${who(P(p.id, p.name), esc(p.name))}</span><span class="v">${pctStat ? pct(p.p1) : p.proj.toFixed(1)}</span></li>`).join("")}
+      </ol></div>`;
+    }).join("");
+    return `<h3>Giocatori a confronto · proiezioni nella partita <small class="nt">(i migliori delle due squadre per ogni statistica · % = probabilità di almeno 1)</small></h3><div class="grid">${cards}</div>`;
   }
 
   function renderTable() {
@@ -638,7 +686,16 @@
     const next = g && g.opp === b ? `<div class="advnote" style="margin:0 0 10px">Si affrontano ${esc(fmtDate(g.utc))} in casa di ${esc(T(g.home ? a : b).name)}.</div>` : "";
     const head = (tid, t) => `<div class="tname">${L(tid, "m")}<span>${esc(T(tid).name)}</span></div>
       <div class="tsub">${t ? `${t.w}V ${t.d}N ${t.l}P · ${t.pts} punti` : "nessuna partita"}</div>`;
-    return `<h3 style="margin-top:0">Confronta squadre · stagione ${esc(ctx.season)}</h3>${next}` + SoccerAdv.compare(ctx, TSTATS, XG, a, b, head);
+    // proiezioni nella partita fra le due (in casa di chi gioca davvero, altrimenti campo neutro)
+    const home = g && g.opp === b ? g.home : null;
+    const tA = ctx.projectTeam(a, b, home), tB = ctx.projectTeam(b, a, home == null ? null : !home);
+    const where = home == null ? `<div class="advnote" style="margin:0 0 10px">Non si affrontano a breve: proiezioni a campo neutro.</div>` : "";
+    return `<h3 style="margin-top:0">Confronta squadre · stagione ${esc(ctx.season)}</h3>${next}${where}`
+      + matchBox(a, b, tA.match, home)
+      + duel(tA, tB)
+      + `<h3>Squadre a confronto</h3>` + SoccerAdv.compare(ctx, TSTATS, XG, a, b, head)
+      + Adv.section("cmpA:" + a, `Proiezioni · ${T(a).name} contro ${T(b).name}`, teamBlock(tA) + oppChips(ctx.opponentProfile(b)))
+      + Adv.section("cmpB:" + b, `Proiezioni · ${T(b).name} contro ${T(a).name}`, teamBlock(tB) + oppChips(ctx.opponentProfile(a)));
   }
 
   // ------------------------------------------------------------ avvio

@@ -221,8 +221,8 @@
     mode = b.dataset.mode;
     $("#playerBox").classList.toggle("hidden", mode === "team" || mode === "compare" || mode === "picks");
     $("#team").classList.toggle("hidden", mode !== "team");
-    $("#bothBox").classList.toggle("hidden", mode !== "team");
-    $("#opp").classList.toggle("hidden", mode === "watch" || mode === "compare" || mode === "picks");
+    $("#bothBox").classList.add("hidden");
+    $("#opp").classList.toggle("hidden", mode === "watch" || mode === "compare" || mode === "picks" || mode === "team");
     $("#go").classList.toggle("hidden", mode === "watch" || mode === "compare" || mode === "picks");
     $("#cmpBox").classList.toggle("hidden", mode !== "compare");
     document.querySelector(".controls").classList.toggle("hidden", mode === "slip");
@@ -266,7 +266,7 @@
     if (e.key === "Escape") $("#sugg").classList.add("hidden");
   });
   $("#pq").addEventListener("blur", () => setTimeout(() => $("#sugg").classList.add("hidden"), 150));
-  $("#go").onclick = run;
+  $("#go").onclick = () => (mode === "team" ? ($("#team").value && openCompare($("#team").value)) : run());
   $("#team").onchange = run;
   $("#cmpA").onchange = $("#cmpB").onchange = run;
   $("#pkKind").onchange = $("#pkGame").onchange = $("#pkStat").onchange = $("#pkMin").onchange = run;
@@ -277,7 +277,7 @@
     try {
       if (mode === "watch") return renderWatch();
       if (mode === "slip") return showSlip();
-      if (mode === "compare") { $("#out").innerHTML = renderCompare(); return; }
+      if (mode === "compare") { $("#out").innerHTML = renderCompare(); Adv.bind($("#out")); Slip.bind($("#out")); return bindRows(); }
       if (mode === "picks") { $("#out").innerHTML = renderPicks(); Adv.bind($("#out")); Slip.bind($("#out")); Picks.bindMore(run, (h, a) => { $("#cmpA").dataset.set = 1; $("#cmpA").value = h; $("#cmpB").value = a; document.querySelector('.tab[data-mode="compare"]').click(); window.scrollTo({ top: 0, behavior: "smooth" }); }); return bindRows(); }
       if (mode === "player") {
         if (!selected) { if (suggList.length) return pick(0); return; }
@@ -286,7 +286,8 @@
       } else {
         const t = $("#team").value;
         if (!t) return;
-        $("#out").innerHTML = renderTeam(teamResult(t, $("#both").checked));
+        $("#out").innerHTML = renderTeam(t);
+        const tc = $("#toCmp"); if (tc) tc.onclick = () => openCompare(t);
       }
       Adv.bind($("#out"));
       Slip.bind($("#out"));
@@ -296,7 +297,7 @@
     }
   }
   function bindRows() {
-    document.querySelectorAll("tr[data-pid]").forEach(tr => tr.onclick = () => {
+    document.querySelectorAll("tr[data-pid], li[data-pid]").forEach(tr => tr.onclick = () => {
       selected = { id: +tr.dataset.pid, name: tr.dataset.name };
       document.querySelector('.tab[data-mode="player"]').click();
       $("#pq").value = selected.name;
@@ -526,17 +527,64 @@
       <div class="scroll"><table><tr><th>Giocatore</th><th>Min</th>${COLS.map(c => `<th${HIDE_M.has(c) ? ' class="hm2"' : ""}>${SHORT[c]}</th>`).join("")}</tr>${rows}</table></div>${absent}`;
   }
 
-  function renderTeam(d) {
-    const t = d.team;
-    return `
-    <div class="hero"><div class="idt">${L(t.team.tri, "l")}<div><h2>${esc(t.team.name)}</h2>${matchupLine(t.team.tri, d.game, t.opponent.tri)}</div></div></div>
-    ${BasketAdv.teamTiles(ctx, M, GM, t.team.tri)}
-    ${teamBlock(t)}
-    ${oppChips(d.opp_profile)}
-    ${d.opponent ? `<div class="sep"></div>${BasketAdv.teamTiles(ctx, M, GM, d.opponent.team.tri)}${teamBlock(d.opponent)}${oppChips(d.own_profile)}` : ""}
-    ${BasketAdv.teamSection(ctx, M, GM, t.team.tri)}
-    ${Absence.teamSection(ctx, ABS, t.team.tri, t.absent, t.players.map(p => p.player))}`;
+  // ------------------------------------------------------------ scheda squadra (solo la squadra) e confronto
+  /* rosa con le medie della stagione in corso, senza avversario */
+  function rosterBlock(tri) {
+    const list = ctx.teamPlayers(tri).map(pid => {
+      const cur = (ctx.playerLogs.get(pid) || []).filter(g => g.season === ctx.season && g.min > 0);
+      if (!cur.length) return null;
+      const a = f => cur.reduce((x, g) => x + f(g), 0) / cur.length;
+      return { pid, name: ctx.names.get(pid), n: cur.length, min: a(g => g.min), inj: ctx.injury(pid),
+               v: { PTS: a(g => g.pts), REB: a(g => g.reb), AST: a(g => g.ast), FG3M: a(g => g.fg3m), STL: a(g => g.stl), BLK: a(g => g.blk), PRA: a(g => g.pts + g.reb + g.ast) } };
+    }).filter(Boolean).sort((x, y) => y.min - x.min);
+    if (!list.length) return "";
+    const rows = list.map(p => {
+      const warn = p.inj ? ` <span class="inj" title="${esc(p.inj.status)}">${esc((p.inj.status || "").slice(0, 3))}</span>` : "";
+      return `<tr class="click" data-pid="${p.pid}" data-name="${esc(p.name)}"><td>${who(P(p.pid, p.name), esc(p.name) + warn)}</td><td class="hm2">${p.n}</td><td>${p.min.toFixed(1)}</td>${COLS.map(c => `<td${HIDE_M.has(c) ? ' class="hm2"' : ""}>${p.v[c].toFixed(1)}</td>`).join("")}</tr>`;
+    }).join("");
+    return `<h3>Rosa · medie della stagione <small class="nt">(tocca un nome per il dettaglio)</small></h3>
+      <div class="scroll"><table><tr><th>Giocatore</th><th class="hm2">Gare</th><th>Min</th>${COLS.map(c => `<th${HIDE_M.has(c) ? ' class="hm2"' : ""}>${SHORT[c]}</th>`).join("")}</tr>${rows}</table></div>`;
   }
+
+  function renderTeam(tri) {
+    const g = ctx.nextGame(tri);
+    let absent = [], playing = [];
+    if (g) { const r = ctx.projectTeam(tri, g.opp, g.home); absent = r.absent; playing = r.players.map(p => p.player); }
+    const out = absent.length ? `<div class="warn">Assenti o in dubbio: ${absent.map(a => `${esc(a.name)} <small>(${esc(a.reason)})</small>`).join(", ")}</div>` : "";
+    return `
+    <div class="hero"><div class="idt">${L(tri, "l")}<div><h2>${esc(M.TEAM[tri].name)}</h2>
+      <div class="sub">${g ? `Prossima partita: ${g.home ? "vs" : "@"} ${esc(g.opp)} · ${esc(fmtDate(g.utc))}` : "Nessuna partita in calendario"}</div>
+      <button class="link" id="toCmp">Confronta con un'altra squadra →</button></div></div></div>
+    ${BasketAdv.teamTiles(ctx, M, GM, tri)}
+    ${rosterBlock(tri)}${out}
+    ${BasketAdv.teamSection(ctx, M, GM, tri)}
+    ${Absence.teamSection(ctx, ABS, tri, absent, playing)}`;
+  }
+
+  /* "Analizza" dalla scheda squadra: va al confronto con quella squadra (avversario di partenza: la prossima partita) */
+  function openCompare(tri) {
+    if (!$("#cmpA").options.length) cmpOptions();
+    const g = ctx.nextGame(tri);
+    $("#cmpA").value = tri;
+    $("#cmpB").value = g ? g.opp : M.TEAMS.find(t => t.tri !== tri).tri;
+    $("#cmpA").dataset.set = 1;
+    document.querySelector('.tab[data-mode="compare"]').click();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  /* giocatori delle due squadre a confronto, statistica per statistica (proiezioni nella partita fra le due) */
+  function duel(tA, tB) {
+    const cards = tA.leaders.filter(l => l.stat !== "TOV").map(l => {
+      const lb = tB.leaders.find(x => x.stat === l.stat) || { players: [] };
+      const all = [...l.players.slice(0, 5).map(p => ({ ...p, tri: tA.team.tri })), ...lb.players.slice(0, 5).map(p => ({ ...p, tri: tB.team.tri }))]
+        .sort((x, y) => y.proj - x.proj).slice(0, 6);
+      return `<div class="card leader"><div class="name">${esc(l.label)}</div><ol>
+        ${all.map(p => `<li class="click" data-pid="${p.id}" data-name="${esc(p.name)}"><span>${L(p.tri, "s")} ${who(P(p.id, p.name), esc(p.name))} ${p.likely ? `<small>≥${p.likely.line} ${pct(p.likely.prob)}</small>` : ""}</span><span class="v">${p.proj}</span></li>`).join("")}
+      </ol></div>`;
+    }).join("");
+    return `<h3>Giocatori a confronto · proiezioni nella partita <small class="nt">(i migliori delle due squadre per ogni statistica)</small></h3><div class="grid">${cards}</div>`;
+  }
+
 
   // ------------------------------------------------------------ occasioni (previsioni più probabili della prossima giornata)
   let BT = null;   // verifica del modello (data/backtest.json), caricata senza far aspettare l'app
@@ -602,7 +650,15 @@
     const next = g && g.opp === b ? `<div class="advnote" style="margin:0 0 10px">Si affrontano ${esc(fmtDate(g.utc))}${g.home === false ? ` in casa di ${esc(M.TEAM[b].name)}` : g.home ? ` in casa di ${esc(M.TEAM[a].name)}` : ""}.</div>` : "";
     const head = (tri, t) => `<div class="tname">${L(tri, "m")}<span>${esc(M.TEAM[tri].name)}</span></div>
       <div class="tsub">${t ? `${t.w} vinte · ${t.gp - t.w} perse` : "nessuna partita"}</div>`;
-    return `<h3 style="margin-top:0">Confronta squadre · stagione ${esc(ctx.season)}</h3>${next}` + BasketAdv.compare(ctx, M, GM, a, b, head);
+    // proiezioni dei giocatori nella partita fra le due (in casa di chi gioca davvero, altrimenti campo neutro)
+    const home = g && g.opp === b ? g.home : null;
+    const tA = ctx.projectTeam(a, b, home), tB = ctx.projectTeam(b, a, home == null ? null : !home);
+    const where = home == null ? `<div class="advnote" style="margin:0 0 10px">Non si affrontano a breve: proiezioni a campo neutro.</div>` : "";
+    return `<h3 style="margin-top:0">Confronta squadre · stagione ${esc(ctx.season)}</h3>${next}${where}`
+      + duel(tA, tB)
+      + `<h3>Squadre a confronto</h3>` + BasketAdv.compare(ctx, M, GM, a, b, head)
+      + Adv.section("cmpA:" + a, `Proiezioni · ${M.TEAM[a].name} contro ${M.TEAM[b].name}`, teamBlock(tA) + oppChips(ctx.opponentProfile(b)))
+      + Adv.section("cmpB:" + b, `Proiezioni · ${M.TEAM[b].name} contro ${M.TEAM[a].name}`, teamBlock(tB) + oppChips(ctx.opponentProfile(a)));
   }
 
   // ------------------------------------------------------------ avvio

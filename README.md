@@ -78,6 +78,16 @@ tipo la più ambiziosa che supera il minimo:
   NBA 13 punti sullo scarto e 19 sul totale, LBA 12 e 16).
 "Storico" = quante volte è successo nelle ultime partite di ciascuna squadra in questa stagione.
 
+## Squadra e Confronta
+
+- **Squadra**: solo la squadra, senza riferimenti all'avversario: statistiche generali con posizione nel campionato,
+  rosa con le medie (basket) o i numeri (calcio) della stagione, statistiche avanzate, effetto assenze.
+  "Analizza" (o "Confronta con un'altra squadra") porta a Confronta con la squadra scelta.
+- **Confronta**: tutto ciò che dipende dall'avversario. 1-X-2 e gol attesi (calcio), **giocatori a confronto**
+  (per ogni statistica i migliori delle due squadre insieme, proiettati nella partita fra le due), tabella delle squadre
+  (verde/grigio/rosso) e, a scomparsa, le proiezioni complete di ciascuna squadra e cosa concede l'avversario.
+  Se le due squadre si affrontano a breve si usa il campo vero, altrimenti campo neutro.
+
 ## Schedina
 
 `docs/slip.js`: il pulsante **+** accanto alle previsioni (pagina Occasioni, giocatori e squadre, e soglie nella scheda
