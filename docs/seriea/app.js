@@ -176,6 +176,7 @@
   async function loadData() {
     $("#status").textContent = "Caricamento dati…";
     const meta = await getJSON("data/meta.json", { cache: "no-store" });
+    getJSON(`data/backtest.json?v=${encodeURIComponent(meta.updated_at || "")}`).then(j => { BT = j; if (mode === "picks") run(); }).catch(() => {});
     if (meta.league) ESPN = `https://site.api.espn.com/apis/site/v2/sports/soccer/${meta.league}/`;
     const v = encodeURIComponent(meta.updated_at || "");
     const files = await Promise.all(meta.files.map(f => getJSON(`data/${f}?v=${v}`).then(j => [f, j])));
@@ -317,7 +318,7 @@
       if (mode === "watch") return renderWatch();
       if (mode === "table") { $("#out").innerHTML = renderTable(); return bindRows(); }
       if (mode === "compare") { $("#out").innerHTML = renderCompare(); return; }
-      if (mode === "picks") { $("#out").innerHTML = renderPicks(); Picks.bindMore(run, (h, a) => { $("#cmpA").dataset.set = 1; $("#cmpA").value = h; $("#cmpB").value = a; setMode("compare"); window.scrollTo({ top: 0, behavior: "smooth" }); run(); }); return bindRows(); }
+      if (mode === "picks") { $("#out").innerHTML = renderPicks(); Adv.bind($("#out")); Picks.bindMore(run, (h, a) => { $("#cmpA").dataset.set = 1; $("#cmpA").value = h; $("#cmpB").value = a; setMode("compare"); window.scrollTo({ top: 0, behavior: "smooth" }); run(); }); return bindRows(); }
       if (mode === "player") {
         if (!selected) { if (suggList.length) return pick(0); return; }
         $("#out").innerHTML = renderPlayer(playerResult(selected.id));
@@ -569,8 +570,10 @@
   }
 
   // ------------------------------------------------------------ occasioni (previsioni più probabili della prossima giornata)
+  let BT = null;   // verifica del modello (data/backtest.json), caricata senza far aspettare l'app
   function renderPicks() {
     return Picks.render({
+      backtest: BT, sportName: "Serie A",
       ctx, schedule: ctx.schedule, windowH: 96, defMin: 65,
       project: (tid, opp, home) => ctx.projectTeam(tid, opp, home),
       short: id => T(id).short, name: id => T(id).name,

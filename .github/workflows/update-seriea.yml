@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ["tools/seriea/**", ".github/workflows/update-seriea.yml"]
+    paths: ["tools/seriea/**", ".github/workflows/update-seriea.yml", "tools/backtest/**", "docs/seriea/model.js", "docs/picks.js"]
 
 permissions:
   contents: write
@@ -32,6 +32,9 @@ jobs:
           set -o pipefail
           mkdir -p docs/seriea/data
           python tools/seriea/update_data.py --skip-past 2>&1 | tee docs/seriea/data/update-log.txt
+      - name: Verifica del modello (quanto ci azzecca)
+        continue-on-error: true
+        run: node tools/backtest/backtest.js seriea 2>&1 | tee -a docs/seriea/data/update-log.txt
       - name: Salva (stagione in corso)
         if: always()
         run: |

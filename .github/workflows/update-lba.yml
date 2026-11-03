@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ["tools/lba/**", ".github/workflows/update-lba.yml"]
+    paths: ["tools/lba/**", ".github/workflows/update-lba.yml", "tools/backtest/**", "docs/lba/model.js", "docs/picks.js", "docs/adv-basket.js"]
 
 permissions:
   contents: write
@@ -30,6 +30,9 @@ jobs:
           set -o pipefail
           mkdir -p docs/lba/data
           python tools/lba/update_data.py --skip-past 2>&1 | tee docs/lba/data/update-log.txt
+      - name: Verifica del modello (quanto ci azzecca)
+        continue-on-error: true
+        run: node tools/backtest/backtest.js lba 2>&1 | tee -a docs/lba/data/update-log.txt
       - name: Salva (stagione in corso)
         if: always()
         run: |
