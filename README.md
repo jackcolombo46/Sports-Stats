@@ -1,7 +1,8 @@
 # Sports Stats
 
 Un'unica web app con le proiezioni statistiche dei giocatori di **NBA**, **Serie A**, **Champions League** e **Serie A di basket (LBA)**
-contro il prossimo avversario. All'apertura si sceglie lo sport; da ogni schermata il pulsante **⇄ Sport** riporta alla scelta.
+contro il prossimo avversario. All'apertura si sceglie lo sport; da ogni schermata il titolo in alto (es. **NBA Stats ▾**)
+apre il menu per passare a un altro sport.
 Funziona dal telefono e dal computer e si installa come app (una sola icona per entrambi gli sport).
 
 App: https://jackcolombo46.github.io/Sports-Stats/
@@ -61,9 +62,50 @@ La scheda **Confronta** mette due squadre una accanto all'altra: verde = meglio,
 
 Quando i file della stagione in corso sono nel formato vecchio, l'aggiornamento automatico li riscarica da solo.
 
+## Navigazione
+
+`docs/nav.js`: barra con 5 voci, in basso sul telefono e in alto sul computer. Alcune voci hanno due viste (linguette).
+
+| Voce | Viste | Cosa contiene |
+|---|---|---|
+| **Oggi** (prima pagina) | Partite · Occasioni | partite del giorno; la vista Occasioni è la vecchia pagina Occasioni |
+| **Cerca** | — | ricerca unica di giocatori e squadre; senza ricerca, tutte le squadre da toccare |
+| **Confronta** | — | squadre o giocatori, come prima |
+| **Classifiche** | Squadre · Giocatori | classifica delle squadre e classifiche dei giocatori per categoria |
+| **Schedina** | Schedina · Osservati | la schedina e i giocatori osservati |
+
+Toccando di nuovo **Cerca** si torna alla ricerca vuota. Ogni cambio di pagina finisce nella cronologia del browser,
+quindi il tasto Indietro del telefono torna alla pagina precedente invece di chiudere l'app; l'indirizzo
+(es. `nba/#leaders`) riapre la stessa pagina. Internamente ogni app ha i modi `today, picks, player, team, compare,
+table, leaders, slip, watch` (`setMode`/`go` in `app.js`).
+
+## Oggi
+
+`docs/today.js`: le partite del giorno, oppure, se oggi non si gioca, del primo giorno con partite (sopra si sceglie
+fra i prossimi 7 giorni con partite). Per ogni partita:
+- previsioni di squadra dallo stesso modello di Occasioni e Confronta: calcio 1-X-2 con i gol attesi, over/under 2,5,
+  gol/no gol e risultato più probabile; basket vittoria con i punti attesi, scarto e totale attesi;
+- **Da tenere d'occhio**: fino a 4 giocatori con le previsioni più probabili della partita (stesse soglie di Occasioni,
+  al massimo 2 dello stesso tipo; esclusi palle perse e parate);
+- "+" per la schedina; toccando la partita si apre Confronta.
+Le giornate NBA seguono la data americana (le partite in Italia sono di notte), le altre la data italiana.
+
+## Classifiche
+
+- **Squadre**: calcio come prima; basket nuova, calcolata dai tabellini della stagione (vinte, perse, % vittorie, punti
+  fatti e subiti a partita, ultime 5; NBA divisa in Est e Ovest; `BasketAdv.standings`).
+- **Giocatori** (`docs/leaders.js`): senza categoria i primi 5 di ogni categoria, con una categoria la classifica completa
+  (primi 10, poi "Mostra tutti"). Filtri: totali / a partita (calcio anche ogni 90 minuti), minimo di partite (di partenza
+  il 35% delle partite del giocatore che ne ha di più), squadra, stagione (in corso o precedenti).
+  Categorie basket: punti, rimbalzi, assist, triple, rubate, stoppate, P+R+A, rimbalzi offensivi, palle perse, minuti,
+  tiri e liberi tentati, % dal campo / da tre / ai liberi, true shooting, eFG%, usage. Calcio: gol, assist, gol+assist,
+  tiri, tiri in porta, xG (se ESPN lo manda), tiri in porta %, gol ogni tiro, falli commessi e subiti, ammonizioni,
+  espulsioni, parate, minuti. Le percentuali richiedono un minimo di tentativi; "ogni 90 minuti" esclude chi ha giocato
+  poco. Champions League: solo partite di Champions.
+
 ## Occasioni
 
-La scheda **Occasioni** (`docs/picks.js`) elenca le previsioni più probabili per tutti i giocatori della prossima
+La vista **Oggi → Occasioni** (`docs/picks.js`) elenca le previsioni più probabili per tutti i giocatori della prossima
 giornata, usando le stesse proiezioni delle schede Giocatore e Squadra. Per ogni giocatore e statistica prende la soglia
 più alta che supera la probabilità minima scelta e ordina per probabilità; si filtra per partita, statistica e
 probabilità minima. `minLine` (in `app.js` di ogni app) esclude le soglie troppo basse (es. "almeno 5 punti"), e
@@ -80,7 +122,7 @@ tipo la più ambiziosa che supera il minimo:
 
 ## Squadra e Confronta
 
-- **Squadra**: solo la squadra, senza riferimenti all'avversario: statistiche generali con posizione nel campionato,
+- **Squadra** (da Cerca): solo la squadra, senza riferimenti all'avversario: statistiche generali con posizione nel campionato,
   rosa con le medie (basket) o i numeri (calcio) della stagione, statistiche avanzate, effetto assenze.
   "Analizza" (o "Confronta con un'altra squadra") porta a Confronta con la squadra scelta.
 - **Confronta**: tutto ciò che dipende dall'avversario. 1-X-2 e gol attesi (calcio), **giocatori a confronto**

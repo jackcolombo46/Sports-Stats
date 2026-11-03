@@ -196,5 +196,15 @@
     return { metrics, vals: x ? Object.fromEntries(metrics.map(m => [m.key, fin(m.val(x))])) : {} };
   }
 
-  window.BasketAdv = { build, teamSection, playerSection, compare, gameModel, teamGames, teamTiles, playerVals };
+  /* classifica della stagione in corso dai tabellini: vinte, perse, punti fatti e subiti, ultime 5 */
+  function standings(ctx, M, gameMin) {
+    const A = build(ctx, M, gameMin);
+    return Object.entries(A.teams).filter(([tri]) => M.TEAM[tri]).map(([tri, t]) => {
+      const g = A.games[tri] || [];
+      return { tri, gp: t.gp, w: t.w, l: t.gp - t.w, pf: t.T.pts, pa: t.O.pts,
+               form: g.slice(0, 5).reverse().map(x => (x.pf > x.pa ? "V" : "P")) };
+    }).sort((a, b) => b.w / (b.gp || 1) - a.w / (a.gp || 1) || b.w - a.w || (b.pf - b.pa) - (a.pf - a.pa));
+  }
+
+  window.BasketAdv = { build, teamSection, playerSection, compare, gameModel, teamGames, teamTiles, playerVals, standings };
 })();

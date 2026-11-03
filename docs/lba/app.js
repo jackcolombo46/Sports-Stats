@@ -60,7 +60,7 @@
       ? `Stagione ${esc(ctx.season)} · statistiche al ${esc(upd)} <button id="refresh">Ricarica</button>`
       : `Stagione ${esc(ctx.season)} · statistiche al ${esc(upd)} <button id="refresh">Ricarica</button>`;
     $("#refresh").onclick = async () => { await loadData(); run(); };
-    if (selected || $("#team").value) run();
+    run();
   }
 
   function teamOptions() {
@@ -101,47 +101,82 @@
   }
 
   // ------------------------------------------------------------ UI
-  document.querySelectorAll(".tab").forEach(b => b.onclick = () => {
-    document.querySelectorAll(".tab").forEach(x => x.classList.toggle("on", x === b));
-    mode = b.dataset.mode;
-    $("#playerBox").classList.toggle("hidden", mode === "team" || mode === "compare" || mode === "picks");
-    $("#team").classList.toggle("hidden", mode !== "team");
+  /* modi interni: today, picks (voce Oggi) · player, team (Cerca) · compare · table, leaders (Classifiche) · slip, watch (Schedina) */
+  const SEARCH_PH = "Cerca un giocatore o una squadra (es. Shengelia, Virtus)…";
+  function setMode(m, fromHistory) {
+    mode = m;
+    Nav.set(m, fromHistory);
+    const search = m === "player" || m === "team";
+    $("#controls").classList.toggle("hidden", !(search || m === "watch" || m === "compare" || m === "picks"));
+    $("#playerBox").classList.toggle("hidden", !(search || m === "watch"));
+    $("#team").classList.add("hidden");
     $("#bothBox").classList.add("hidden");
-    $("#opp").classList.toggle("hidden", mode === "watch" || mode === "compare" || mode === "picks" || mode === "team");
-    $("#go").classList.toggle("hidden", mode === "watch" || mode === "compare" || mode === "picks");
-    $("#cmpBox").classList.toggle("hidden", mode !== "compare");
-    document.querySelector(".controls").classList.toggle("hidden", mode === "slip");
-    $("#pickBox").classList.toggle("hidden", mode !== "picks");
-    $("#pq").placeholder = mode === "watch" ? "Aggiungi un giocatore da osservare…" : "Cerca un giocatore (es. Ross, Shengelia, Mirotic)…";
-    if (mode === "watch") { $("#pq").value = ""; selected = null; }
-    if (mode === "watch" || mode === "compare" || mode === "picks" || mode === "slip" || selected || $("#team").value) run();
-    else $("#out").innerHTML = `<div class="msg">${mode === "team" ? "Scegli una squadra." : "Cerca un giocatore."}</div>`;
-  });
+    $("#opp").classList.toggle("hidden", !(m === "player" && selected));
+    $("#go").classList.toggle("hidden", !((m === "player" && selected) || (m === "team" && $("#team").value)));
+    $("#cmpBox").classList.toggle("hidden", m !== "compare");
+    $("#pickBox").classList.toggle("hidden", m !== "picks");
+    $("#sugg").classList.add("hidden");
+    $("#pq").placeholder = m === "watch" ? "Aggiungi un giocatore da osservare…" : SEARCH_PH;
+    $("#pq").value = m === "player" && selected ? selected.name : m === "team" && $("#team").value ? (M.TEAM[$("#team").value] || {}).name || "" : "";
+  }
+  /* dalla barra di navigazione o dalle linguette; reset = "Cerca" toccato di nuovo: ricerca vuota */
+  function go(m, reset, fromHistory) {
+    if (reset) { selected = null; $("#team").value = ""; suggList = []; m = "player"; }
+    setMode(m, fromHistory);
+    run();
+  }
+  function openPlayer(id, name) {
+    selected = { id, name: name || ctx.names.get(id) };
+    setMode("player");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    run();
+  }
+  function openTeam(tri) {
+    $("#team").value = tri;
+    setMode("team");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    run();
+  }
+  /* partita (casa, ospite) → confronto fra le due squadre */
+  function openMatch(h, a) {
+    $("#cmpKind").value = "teams"; cmpKindSync();
+    $("#cmpA").dataset.set = 1; $("#cmpA").value = h; $("#cmpB").value = a;
+    setMode("compare");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    run();
+  }
 
+  // ricerca unica: squadre (in cima) e giocatori
+  const nrm = s => String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   $("#pq").addEventListener("input", () => {
     selected = null;
     const q = $("#pq").value.trim();
-    if (q.length < 2 || !ctx) return $("#sugg").classList.add("hidden");
-    suggList = ctx.searchPlayers(q);
+    if (q.length < 2 || !ctx) { suggList = []; return $("#sugg").classList.add("hidden"); }
+    const n = nrm(q);
+    const teams = mode === "watch" ? [] : M.TEAMS.filter(t => [t.name, t.full, t.tri].some(x => x && nrm(x).includes(n)))
+      .slice(0, 3).map(t => ({ isTeam: true, tid: t.tri, name: t.name }));
+    suggList = [...teams, ...ctx.searchPlayers(q)];
     suggIdx = -1;
     renderSugg();
   });
   function renderSugg() {
     const box = $("#sugg");
-    box.innerHTML = suggList.length ? suggList.map((p, i) =>
-      `<div data-i="${i}" class="${i === suggIdx ? "hl" : ""}">${who(P(p.id, p.name), esc(p.name))} <small>${esc(p.team)} · ${p.games} gare</small></div>`).join("")
-      : `<div><small>Nessun giocatore trovato</small></div>`;
+    box.innerHTML = suggList.length ? suggList.map((p, i) => p.isTeam
+      ? `<div data-i="${i}" class="${i === suggIdx ? "hl" : ""}">${who(L(p.tid, "s"), esc(p.name))} <small>squadra</small></div>`
+      : `<div data-i="${i}" class="${i === suggIdx ? "hl" : ""}">${who(P(p.id, p.name), esc(p.name))} <small>${esc(p.team)} · ${p.games} gare</small></div>`).join("")
+      : `<div><small>Nessun risultato</small></div>`;
     box.classList.remove("hidden");
     box.querySelectorAll("[data-i]").forEach(d => d.onmousedown = d.ontouchstart = e => { e.preventDefault(); pick(+d.dataset.i); });
   }
   function pick(i) {
-    if (!suggList[i]) return;   // Invio senza giocatori trovati
-    selected = suggList[i];
-    $("#pq").value = selected.name;
+    const s = suggList[i];
+    if (!s) return;   // Invio senza risultati
     $("#sugg").classList.add("hidden");
     $("#pq").blur();
-    if (mode === "watch") { addWatch(selected); $("#pq").value = ""; selected = null; suggList = []; }
-    run();
+    suggList = [];
+    if (mode === "watch") { if (!s.isTeam) addWatch(s); $("#pq").value = ""; return renderWatch(); }
+    if (s.isTeam) return openTeam(s.tid);
+    openPlayer(s.id, s.name);
   }
   $("#pq").addEventListener("keydown", e => {
     if ($("#sugg").classList.contains("hidden")) { if (e.key === "Enter") run(); return; }
@@ -160,19 +195,22 @@
   function run() {
     if (!ctx) return;
     try {
+      if (mode === "today") { $("#out").innerHTML = renderToday(); Today.bind(run, openMatch, () => go("picks")); Slip.bind($("#out")); return bindRows(); }
+      if (mode === "table") { $("#out").innerHTML = renderStandings(); return bindRows(); }
+      if (mode === "leaders") { $("#out").innerHTML = renderLeaders(); Leaders.bind(run); return bindRows(); }
       if (mode === "watch") return renderWatch();
       if (mode === "slip") return showSlip();
       if (mode === "compare") { $("#out").innerHTML = renderCompare(); mountTrend(); Adv.bind($("#out")); Slip.bind($("#out")); return bindRows(); }
-      if (mode === "picks") { $("#out").innerHTML = renderPicks(); Adv.bind($("#out")); Slip.bind($("#out")); Picks.bindMore(run, (h, a) => { $("#cmpA").dataset.set = 1; $("#cmpA").value = h; $("#cmpB").value = a; document.querySelector('.tab[data-mode="compare"]').click(); window.scrollTo({ top: 0, behavior: "smooth" }); }); return bindRows(); }
+      if (mode === "picks") { $("#out").innerHTML = renderPicks(); Adv.bind($("#out")); Slip.bind($("#out")); Picks.bindMore(run, openMatch); return bindRows(); }
       if (mode === "player") {
-        if (!selected) { if (suggList.length) return pick(0); return; }
+        if (!selected) { if (suggList.length && $("#pq").value.trim()) return pick(0); $("#out").innerHTML = searchHome(); return bindRows(); }
         $("#out").innerHTML = renderPlayer(playerResult(selected.id));
         $("#addw").onclick = () => { addWatch({ id: selected.id, name: selected.name }); $("#addw").textContent = "✓ tra gli osservati"; };
         $("#toPcmp").onclick = () => openPlayerCompare(selected.id);
         mountTrend();
       } else {
         const t = $("#team").value;
-        if (!t) return;
+        if (!t) { $("#out").innerHTML = searchHome(); return bindRows(); }
         $("#out").innerHTML = renderTeam(t);
         const tc = $("#toCmp"); if (tc) tc.onclick = () => openCompare(t);
       }
@@ -184,13 +222,14 @@
     }
   }
   function bindRows() {
-    document.querySelectorAll("tr[data-pid], li[data-pid]").forEach(tr => tr.onclick = () => {
-      selected = { id: +tr.dataset.pid, name: tr.dataset.name };
-      document.querySelector('.tab[data-mode="player"]').click();
-      $("#pq").value = selected.name;
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      run();
-    });
+    document.querySelectorAll("[data-pid]").forEach(el => el.onclick = e => { if (!e.target.closest("[data-slip]")) openPlayer(+el.dataset.pid, el.dataset.name); });
+    document.querySelectorAll("[data-tid]").forEach(el => el.onclick = () => openTeam(el.dataset.tid));
+  }
+
+  /* "Cerca" senza niente di scelto: tutte le squadre da toccare */
+  function searchHome() {
+    return `<h3 style="margin-top:0">Squadre <small class="nt">(oppure cerca un giocatore o una squadra qui sopra)</small></h3>
+      <div class="tlist">${M.TEAMS.map(t => `<button class="tbtn" data-tid="${t.tri}">${L(t.tri, "m")}<span>${esc(t.name)}</span></button>`).join("")}</div>`;
   }
 
 
@@ -266,11 +305,7 @@
     document.querySelectorAll("[data-up]").forEach(b => b.onclick = () => moveWatch(+b.dataset.up, -1));
     document.querySelectorAll("[data-dn]").forEach(b => b.onclick = () => moveWatch(+b.dataset.dn, 1));
     document.querySelectorAll("[data-proj]").forEach(b => b.onclick = () => {
-      const id = +b.dataset.proj;
-      selected = { id, name: ctx.names.get(id) };
-      document.querySelector('.tab[data-mode="player"]').click();
-      $("#pq").value = selected.name;
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      openPlayer(+b.dataset.proj);
     });
     watch.forEach(enrichWatch);
   }
@@ -408,8 +443,10 @@
     $("#cmpA").value = tri;
     $("#cmpB").value = g ? g.opp : M.TEAMS.find(t => t.tri !== tri).tri;
     $("#cmpA").dataset.set = 1;
-    document.querySelector('.tab[data-mode="compare"]').click();
+    $("#cmpKind").value = "teams"; cmpKindSync();
+    setMode("compare");
     window.scrollTo({ top: 0, behavior: "smooth" });
+    run();
   }
 
   /* giocatori delle due squadre a confronto, statistica per statistica (proiezioni nella partita fra le due) */
@@ -427,6 +464,7 @@
 
 
   // ------------------------------------------------------------ occasioni (previsioni più probabili della prossima giornata)
+  const PICK_MIN = { PTS: 10, REB: 4, AST: 3, FG3M: 2, STL: 1, BLK: 1, TOV: 2, PRA: 15 };   // soglie minime (sotto sono previsioni banali)
   let BT = null;   // verifica del modello (data/backtest.json), caricata senza far aspettare l'app
   function renderPicks() {
     return Picks.render({
@@ -436,7 +474,7 @@
       short: id => id, name: id => (M.TEAM[id] || {}).name || id,
       logo: (id, size) => L(id, size), photo: (pid, nm) => P(pid, nm),
       stats: M.ALL_STATS.map(s => [s, M.LABELS[s]]),
-      minLine: { PTS: 10, REB: 4, AST: 3, FG3M: 2, STL: 1, BLK: 1, TOV: 2, PRA: 15 },
+      minLine: PICK_MIN,
       sport: "basket",
       teamModel: (h, a) => BasketAdv.gameModel(ctx, M, GM, h, a),
       teamHist: tri => BasketAdv.teamGames(ctx, M, GM, tri),
@@ -461,7 +499,7 @@
 
   // ------------------------------------------------------------ schedina
   const slipTeam = t => (t ? t.tri : "");
-  const slipBadge = () => { const t = document.querySelector('.tab[data-mode="slip"]'); if (t) t.innerHTML = `Schedina${Slip.count() ? `<span class="slipn0">${Slip.count()}</span>` : ""}`; };
+  const slipBadge = () => Nav.badge(Slip.count());
   Slip.init("lba", slipBadge);
   function showSlip() { $("#out").innerHTML = Slip.render(); Slip.bindPage(showSlip); }
 
@@ -532,8 +570,9 @@
     if (!PLMAP.size) playerOptions();
     $("#cmpKind").value = "players"; cmpKindSync();
     $("#cmpPA").value = labelOf(pid); $("#cmpPB").value = "";
-    document.querySelector('.tab[data-mode="compare"]').click();
+    setMode("compare");
     window.scrollTo({ top: 0, behavior: "smooth" });
+    run();
     setTimeout(() => $("#cmpPB").focus(), 300);
   }
 
@@ -611,8 +650,45 @@
       + Adv.section("cmpB:" + b, `Proiezioni · ${M.TEAM[b].name} contro ${M.TEAM[a].name}`, teamBlock(tB) + oppChips(ctx.opponentProfile(a)));
   }
 
+  // ------------------------------------------------------------ oggi, classifiche
+  function renderToday() {
+    return Today.render({
+      ctx, schedule: ctx.schedule, sport: "basket", defMin: 70, tz: "Europe/Rome",
+      teamModel: (h, a) => BasketAdv.gameModel(ctx, M, GM, h, a),
+      project: (tri, opp, home) => ctx.projectTeam(tri, opp, home),
+      short: id => id, name: id => (M.TEAM[id] || {}).name || id,
+      logo: (id, size) => L(id, size), photo: (pid, nm) => P(pid, nm),
+      minLine: PICK_MIN, skip: new Set(["TOV"]),
+    });
+  }
+
+  function renderStandings() {
+    const all = BasketAdv.standings(ctx, M, GM);
+    if (!all.length) return `<div class="msg">Nessuna partita giocata in questa stagione.</div>`;
+    const sg = v => (v > 0 ? "+" : "") + v.toFixed(1).replace(".", ",");
+    const table = (list, title) => `<h3${title ? "" : ' style="margin-top:0"'}>${title || `Classifica ${esc(ctx.season)} <small class="nt">(calcolata dai risultati · tocca una squadra per la scheda)</small>`}</h3>
+      <div class="scroll"><table class="std"><tr><th>Squadra</th><th>G</th><th>V</th><th>P</th><th>%V</th><th class="hm2">Fatti</th><th class="hm2">Subiti</th><th>Diff.</th><th>Forma</th></tr>
+      ${list.map((x, i) => `<tr class="click" data-tid="${x.tri}"><td><span class="pos">${i + 1}</span> ${who(L(x.tri, "s"), esc((M.TEAM[x.tri] || {}).name || x.tri))}</td>
+        <td>${x.gp}</td><td>${x.w}</td><td>${x.l}</td><td>${Math.round(x.w / x.gp * 100)}%</td><td class="hm2">${(x.pf / x.gp).toFixed(1)}</td><td class="hm2">${(x.pa / x.gp).toFixed(1)}</td>
+        <td class="${x.pf > x.pa ? "up" : x.pf < x.pa ? "dn" : ""}">${sg((x.pf - x.pa) / x.gp)}</td><td class="form">${x.form.map(r => `<i class="${r}">${r}</i>`).join("")}</td></tr>`).join("")}</table></div>`;
+    return table(all);
+  }
+
+  function renderLeaders() {
+    return Leaders.render({
+      ctx, sport: "lba", seasons: ctx.seasons,
+      rows: season => { const out = []; for (const l of ctx.playerLogs.values()) for (const g of l) if (g.season === season && g.min > 0) out.push(g); return out; },
+      team: r => r.tri, sums: Leaders.BASKET_SUMS, teamSums: true, cats: Leaders.BASKET,
+      modes: [["pg", "A partita"], ["tot", "Totali"]],
+      name: pid => ctx.names.get(pid), teamName: t => (M.TEAM[t] || {}).name || t, short: t => t,
+      photo: (pid, nm) => P(pid, nm), logo: (t, s) => L(t, s), canOpen: pid => !!ctx.playerTeam(pid),
+    });
+  }
+
   // ------------------------------------------------------------ avvio
   teamOptions();
+  setMode(Nav.init({ sport: "lba", go }));
+  $("#out").innerHTML = `<div class="msg">Caricamento dati…</div>`;
   loadData().catch(e => {
     $("#status").innerHTML = `<span style="color:var(--bad)">Dati non disponibili: ${esc(e.message)}</span>`;
     $("#out").innerHTML = `<div class="err">Non riesco a caricare i dati. Se l'app è appena stata creata, il primo aggiornamento potrebbe essere ancora in corso.</div>`;
