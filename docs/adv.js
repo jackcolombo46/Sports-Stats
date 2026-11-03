@@ -129,6 +129,13 @@
 
   const css = `
   .advwrap { margin-top: 30px; }
+  .tls { display: grid; grid-template-columns: repeat(auto-fill, minmax(128px, 1fr)); gap: 8px; }
+  .tl { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; display: grid; gap: 1px; }
+  .tl span { color: var(--muted); font-size: 11.5px; line-height: 1.25; }
+  .tl b { font-family: var(--mono); font-size: 19px; }
+  .tl small { color: var(--muted); font-size: 11px; }
+  .tl.rec b { color: var(--accent2); }
+  @media (max-width: 600px) { .tls { grid-template-columns: repeat(3, 1fr); gap: 6px; } .tl { padding: 7px 8px; } .tl b { font-size: 16px; } }
   .advbtn { width: 100%; text-align: left; background: var(--panel); color: var(--text); border: 1px solid var(--line);
             border-radius: 12px; padding: 12px 16px; font: inherit; font-weight: 700; cursor: pointer; }
   .advbtn { display: flex; align-items: center; gap: 8px; }
@@ -183,5 +190,17 @@
   st.textContent = css;
   document.head.appendChild(st);
 
-  window.Adv = { FMT, section, bind, table, compare, ranksAndAvg, ok };
+  /* riquadri compatti (statistiche generali in cima alla scheda squadra): head = riquadro iniziale (es. record) */
+  function tiles(title, metrics, keys, vals, ranks, head) {
+    const byKey = Object.fromEntries(metrics.map(m => [m.key, m]));
+    const cells = keys.map(k => byKey[k]).filter(m => m && ok(vals[m.key])).map(m => {
+      const r = ranks && ranks[m.key];
+      const cls = r && m.dir ? (r[0] <= Math.ceil(r[1] / 4) ? "up" : r[0] > r[1] - Math.ceil(r[1] / 4) ? "dn" : "") : "";
+      return `<div class="tl" title="${esc(m.help || m.label)}"><span>${esc(m.label)}</span><b class="${cls}">${show(m, vals[m.key])}</b>${r && m.dir ? `<small>${ord(r[0])} su ${r[1]}</small>` : ""}</div>`;
+    }).join("");
+    return `<h3>${esc(title)} <small class="nt">(stagione in corso · posizione nel campionato, verde = fra le migliori)</small></h3>
+      <div class="tls">${head || ""}${cells}</div>`;
+  }
+
+  window.Adv = { FMT, section, bind, table, compare, ranksAndAvg, ok, tiles };
 })();

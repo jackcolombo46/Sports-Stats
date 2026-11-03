@@ -193,6 +193,15 @@
       + (n ? `<div class="advnote" style="margin-top:10px">${n.trim()}</div>` : "");
   }
 
+  /* statistiche generali in cima alla scheda squadra */
+  function teamTiles(ctx, tstats, xgMeta, tid) {
+    const A = build(ctx, tstats, xgMeta), t = A.T[tid];
+    if (!t || !A.teamVals[tid]) return "";
+    const head = `<div class="tl rec"><span>Record</span><b>${t.w}-${t.d}-${t.l}</b><small>${t.pts} punti · ${t.gp} partite</small></div>`;
+    return Adv.tiles(`Statistiche di squadra · ${ctx.TEAM[tid].name}`, A.TM,
+      ["ppg", "gf", "ga", "cs", "xg", "xga", "pos", "pasp", "sh", "sot", "sha", "conv", "cor", "fc", "yc"], A.teamVals[tid], A.ranks[tid], head);
+  }
+
   const configure = o => Object.assign(CFG, o);
-  window.SoccerAdv = { build, teamSection, playerSection, compare, configure };
+  window.SoccerAdv = { build, teamSection, playerSection, compare, configure, teamTiles };
 })();

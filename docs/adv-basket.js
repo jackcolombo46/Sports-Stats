@@ -180,5 +180,14 @@
   /* ultime 10 partite della squadra in questa stagione: [{pf, pa}] dalla più recente */
   const teamGames = (ctx, M, gameMin, tri) => (build(ctx, M, gameMin).games[tri] || []).slice(0, 10);
 
-  window.BasketAdv = { build, teamSection, playerSection, compare, gameModel, teamGames };
+  /* statistiche generali in cima alla scheda squadra */
+  function teamTiles(ctx, M, gameMin, tri) {
+    const A = build(ctx, M, gameMin), t = A.teams[tri];
+    if (!t || !A.teamVals[tri]) return "";
+    const head = `<div class="tl rec"><span>Record</span><b>${t.w}-${t.gp - t.w}</b><small>${t.gp} partite</small></div>`;
+    return Adv.tiles(`Statistiche di squadra · ${(M.TEAM[tri] || {}).name || tri}`, A.TM,
+      ["ptsf", "ptsa", "net", "ortg", "drtg", "pace", "efg", "ts", "p3", "tov", "orb", "drb", "ast100"], A.teamVals[tri], A.ranks[tri], head);
+  }
+
+  window.BasketAdv = { build, teamSection, playerSection, compare, gameModel, teamGames, teamTiles };
 })();

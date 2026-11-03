@@ -560,9 +560,10 @@
     return `
     <div class="hero"><div class="idt">${L(t.team.tid, "l")}<div><h2>${esc(t.team.name)}</h2>${matchupLine(t.team.tid, d.game, t.opponent.tid)}</div></div></div>
     ${matchBox(t.team.tid, t.opponent.tid, t.match, d.game.home)}
+    ${SoccerAdv.teamTiles(ctx, TSTATS, XG, t.team.tid)}
     ${teamBlock(t)}
     ${oppChips(d.opp_profile)}
-    ${d.opponent ? `<div class="sep"></div>${teamBlock(d.opponent)}${oppChips(d.own_profile)}` : ""}
+    ${d.opponent ? `<div class="sep"></div>${SoccerAdv.teamTiles(ctx, TSTATS, XG, d.opponent.team.tid)}${teamBlock(d.opponent)}${oppChips(d.own_profile)}` : ""}
     ${SoccerAdv.teamSection(ctx, TSTATS, XG, t.team.tid)}
     ${Absence.teamSection(ctx, ABS, t.team.tid, t.absent, t.players.map(p => p.player))}`;
   }
