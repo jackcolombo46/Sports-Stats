@@ -1,6 +1,9 @@
-Stagione 2026-27: controllo le partite dal 2026-10-30 al 2026-11-03
-Stagione 2026-27: 0 partite nuove
-Fatto: 2026-11-03T06:58:45Z 6 file, 20 partite in calendario, 647 giocatori in rosa
-Stagione 2026-27: controllo le partite dal 2026-10-30 al 2026-11-03
-Stagione 2026-27: 0 partite nuove
-Fatto: 2026-11-03T06:58:51Z 6 file, 20 partite in calendario, 647 giocatori in rosa
+Stagione 2026-27: file nel formato vecchio, riscarico la stagione in corso
+Stagione 2026-27: controllo le partite dal 2026-08-01 al 2026-11-03
+Stagione 2026-27: 100 partite nuove
+  50/100 partite
+  100/100 partite
+  statistiche di squadra ESPN: accurateCrosses, accurateLongBalls, accuratePasses, blockedShots, crossPct, effectiveClearance, effectiveTackles, foulsCommitted, interceptions, longballPct, offsides, passPct, penaltyKickGoals, penaltyKickShots, possessionPct, redCards, saves, shotPct, shotsOnTarget, tacklePct, totalClearance, totalCrosses, totalLongBalls, totalPasses, totalShots, totalTackles, wonCorners, yellowCards
+  Understat (dati): <urlopen error timed out>
+ATTENZIONE Understat: <urlopen error timed out>
+Fatto: 2026-11-03T08:51:29Z 6 file, 20 partite in calendario, 647 giocatori in rosa
