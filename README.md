@@ -38,8 +38,10 @@ del giocatore o la sigla della squadra.
 
 - **NBA e Serie A**: immagini dal CDN di ESPN, calcolate dagli id già presenti nei dati
   (`a.espncdn.com/i/headshots/...` e `/i/teamlogos/...`). Per la Serie A ESPN non ha la foto di tutti i giocatori.
-- **LBA**: l'aggiornamento automatico cerca nei dati delle partite di legabasket.it i campi che contengono
-  immagini e li salva in `meta.json` → `images`. Il log dell'Action riporta quanti loghi/foto ha trovato e in quali campi.
+- **LBA**: nei dati delle partite legabasket.it dà un *codice immagine* (`player_p_key`, `home_logo_key`, `v_logo_key`),
+  salvato in `meta.json` → `images`. L'immagine è `{archivio}/variants/{codice}/thumb`; l'indirizzo dell'archivio non è
+  documentato e l'aggiornamento automatico lo cerca da solo nelle pagine del sito (`find_cdn`), verificandolo con
+  un'immagine vera. Il log dell'Action riporta le righe "Immagini: ..." con quanti loghi/foto e quale archivio ha trovato.
 
 ## Statistiche avanzate e "Confronta squadre"
 

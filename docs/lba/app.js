@@ -26,8 +26,16 @@
   // ------------------------------------------------------------ immagini
   // raccolte da legabasket.it dall'aggiornamento automatico (meta.images); senza immagine restano iniziali e sigla
   let IMGS = { teams: {}, players: {} };
-  const P = (id, name, size) => Media.player(IMGS.players[id], name, size);
-  const L = (tri, size) => Media.team(IMGS.teams[tri], tri, size, (M.TEAM[tri] || {}).name);
+  // il valore salvato è un indirizzo completo oppure il codice immagine di legabasket.it (va unito all'archivio)
+  const imgSrc = v => {
+    if (!v) return null;
+    if (/^https?:\/\//.test(v)) return [v];
+    if (!IMGS.cdn) return null;
+    const k = encodeURI(String(v).replace(/^\/+/, ""));
+    return [`${IMGS.cdn}/variants/${k}/thumb`, `${IMGS.cdn}/${k}`];
+  };
+  const P = (id, name, size) => Media.player(imgSrc(IMGS.players[id]), name, size);
+  const L = (tri, size) => Media.team(imgSrc(IMGS.teams[tri]), tri, size, (M.TEAM[tri] || {}).name);
   const who = (img, text) => `<span class="who">${img}<span>${text}</span></span>`;
 
   async function loadData() {

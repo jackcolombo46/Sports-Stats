@@ -44,17 +44,28 @@
   function section(id, title, body, note) {
     const on = open.has(id.split(":")[0]);
     return `<div class="advwrap">
-      <button class="advbtn" data-adv="${esc(id)}" aria-expanded="${on}">${on ? "▾" : "▸"} ${esc(title)}</button>
-      <div class="advbody${on ? "" : " hidden"}">${note ? `<div class="advnote">${note}</div>` : ""}${body}</div></div>`;
+      <button class="advbtn" data-adv="${esc(id)}" aria-expanded="${on}"><span class="arw">${on ? "▾" : "▸"}</span> ${esc(title)}<span class="advhint">${on ? "nascondi" : "mostra"}</span></button>
+      <div class="advbody${on ? "" : " hidden"}">${note ? `<div class="advnote">${note}</div>` : ""}${body}
+        <button class="advclose" data-advclose>▴ Chiudi le statistiche avanzate</button></div></div>`;
+  }
+
+  function setOpen(b, on) {
+    const kind = b.dataset.adv.split(":")[0];
+    b.nextElementSibling.classList.toggle("hidden", !on);
+    on ? open.add(kind) : open.delete(kind);
+    b.setAttribute("aria-expanded", on);
+    b.querySelector(".arw").textContent = on ? "▾" : "▸";
+    b.querySelector(".advhint").textContent = on ? "nascondi" : "mostra";
   }
 
   function bind(root) {
-    (root || document).querySelectorAll("[data-adv]").forEach(b => b.onclick = () => {
-      const body = b.nextElementSibling, kind = b.dataset.adv.split(":")[0];
-      const on = body.classList.toggle("hidden") === false;
-      on ? open.add(kind) : open.delete(kind);
-      b.setAttribute("aria-expanded", on);
-      b.textContent = (on ? "▾ " : "▸ ") + b.textContent.slice(2);
+    const r = root || document;
+    r.querySelectorAll("[data-adv]").forEach(b => b.onclick = () => setOpen(b, b.getAttribute("aria-expanded") !== "true"));
+    // pulsante in fondo: chiude e riporta al pulsante in alto
+    r.querySelectorAll("[data-advclose]").forEach(c => c.onclick = () => {
+      const b = c.closest(".advwrap").querySelector("[data-adv]");
+      setOpen(b, false);
+      b.scrollIntoView({ block: "nearest", behavior: "smooth" });
     });
   }
 
@@ -120,7 +131,12 @@
   .advwrap { margin-top: 30px; }
   .advbtn { width: 100%; text-align: left; background: var(--panel); color: var(--text); border: 1px solid var(--line);
             border-radius: 12px; padding: 12px 16px; font: inherit; font-weight: 700; cursor: pointer; }
+  .advbtn { display: flex; align-items: center; gap: 8px; }
+  .advbtn .advhint { margin-left: auto; color: var(--accent2); font-weight: 600; font-size: 13px; }
   .advbtn:hover, .advbtn[aria-expanded="true"] { border-color: var(--accent); }
+  .advclose { display: block; width: 100%; margin-top: 14px; background: var(--panel2); color: var(--text);
+              border: 1px solid var(--line); border-radius: 10px; padding: 10px; font: inherit; font-weight: 600; cursor: pointer; }
+  .advclose:hover { border-color: var(--accent); }
   .advbody { margin-top: 10px; }
   .advnote { color: var(--muted); font-size: 12.5px; margin: 0 0 10px; }
   table.advt tr.grp th, table.cmpt tr.grp th { text-align: left; background: var(--panel2); color: var(--accent2);
