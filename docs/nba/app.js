@@ -530,9 +530,10 @@
     const t = d.team;
     return `
     <div class="hero"><div class="idt">${L(t.team.tri, "l")}<div><h2>${esc(t.team.name)}</h2>${matchupLine(t.team.tri, d.game, t.opponent.tri)}</div></div></div>
+    ${BasketAdv.teamTiles(ctx, M, GM, t.team.tri)}
     ${teamBlock(t)}
     ${oppChips(d.opp_profile)}
-    ${d.opponent ? `<div class="sep"></div>${teamBlock(d.opponent)}${oppChips(d.own_profile)}` : ""}
+    ${d.opponent ? `<div class="sep"></div>${BasketAdv.teamTiles(ctx, M, GM, d.opponent.team.tri)}${teamBlock(d.opponent)}${oppChips(d.own_profile)}` : ""}
     ${BasketAdv.teamSection(ctx, M, GM, t.team.tri)}
     ${Absence.teamSection(ctx, ABS, t.team.tri, t.absent, t.players.map(p => p.player))}`;
   }
