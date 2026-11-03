@@ -3,11 +3,5 @@ Stagione 2026-27: controllo le partite dal 2026-10-30 al 2026-11-03
 Stagione 2026-27: 0 partite nuove
   Understat (dati): <urlopen error timed out>
 ATTENZIONE Understat: <urlopen error timed out>
-Fatto: 2026-11-03T15:36:44Z 6 file, 20 partite in calendario, 647 giocatori in rosa
+Fatto: 2026-11-03T15:58:39Z 6 file, 20 partite in calendario, 647 giocatori in rosa
 seriea: 166 giornate, 480 partite in 6s; occasioni giocatori 1074 (previste 0.726, riuscite 0.752); squadre 1934 (previste 0.742, riuscite 0.731)
-Competizione ita.1 -> docs/seriea/data
-Stagione 2026-27: controllo le partite dal 2026-10-30 al 2026-11-03
-Stagione 2026-27: 0 partite nuove
-  Understat (dati): <urlopen error timed out>
-ATTENZIONE Understat: <urlopen error timed out>
-Fatto: 2026-11-03T15:37:59Z 6 file, 20 partite in calendario, 647 giocatori in rosa
