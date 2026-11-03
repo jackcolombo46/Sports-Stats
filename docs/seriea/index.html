@@ -191,6 +191,7 @@
     <button class="tab on" data-mode="player">Giocatore</button>
     <button class="tab" data-mode="team">Squadra</button>
     <button class="tab" data-mode="compare">Confronta</button>
+    <button class="tab" data-mode="picks">Occasioni</button>
     <button class="tab" data-mode="table">Classifica</button>
     <button class="tab" data-mode="watch">Osservati</button>
   </div>
@@ -203,6 +204,7 @@
     <select id="opp" title="Avversario"></select>
     <label class="chk hidden" id="bothBox"><input type="checkbox" id="both" checked> anche i giocatori avversari</label>
     <div class="cmpsel hidden" id="cmpBox"><select id="cmpA" title="Prima squadra"></select><span class="vsx">vs</span><select id="cmpB" title="Seconda squadra"></select></div>
+    <div class="pksel hidden" id="pickBox"><select id="pkGame" title="Partita"></select><select id="pkStat" title="Statistica"></select><select id="pkMin" title="Probabilità minima"></select></div>
     <button class="go" id="go">Analizza</button>
   </div>
   <div id="out"><div class="msg">Cerca un giocatore o scegli una squadra.</div></div>
@@ -215,8 +217,9 @@
 </main>
 <script src="../media.js?v=1"></script>
 <script src="../adv.js?v=2"></script>
+<script src="../picks.js?v=1"></script>
 <script src="../adv-soccer.js?v=2"></script>
 <script src="model.js?v=2"></script>
-<script src="app.js?v=5"></script>
+<script src="app.js?v=6"></script>
 </body>
 </html>

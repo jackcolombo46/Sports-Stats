@@ -218,15 +218,16 @@
   document.querySelectorAll(".tab").forEach(b => b.onclick = () => {
     document.querySelectorAll(".tab").forEach(x => x.classList.toggle("on", x === b));
     mode = b.dataset.mode;
-    $("#playerBox").classList.toggle("hidden", mode === "team" || mode === "compare");
+    $("#playerBox").classList.toggle("hidden", mode === "team" || mode === "compare" || mode === "picks");
     $("#team").classList.toggle("hidden", mode !== "team");
     $("#bothBox").classList.toggle("hidden", mode !== "team");
-    $("#opp").classList.toggle("hidden", mode === "watch" || mode === "compare");
-    $("#go").classList.toggle("hidden", mode === "watch" || mode === "compare");
+    $("#opp").classList.toggle("hidden", mode === "watch" || mode === "compare" || mode === "picks");
+    $("#go").classList.toggle("hidden", mode === "watch" || mode === "compare" || mode === "picks");
     $("#cmpBox").classList.toggle("hidden", mode !== "compare");
+    $("#pickBox").classList.toggle("hidden", mode !== "picks");
     $("#pq").placeholder = mode === "watch" ? "Aggiungi un giocatore da osservare…" : "Cerca un giocatore (es. Jokic, Tatum, Doncic)…";
     if (mode === "watch") { $("#pq").value = ""; selected = null; }
-    if (mode === "watch" || mode === "compare" || selected || $("#team").value) run();
+    if (mode === "watch" || mode === "compare" || mode === "picks" || selected || $("#team").value) run();
     else $("#out").innerHTML = `<div class="msg">${mode === "team" ? "Scegli una squadra." : "Cerca un giocatore."}</div>`;
   });
 
@@ -265,6 +266,7 @@
   $("#go").onclick = run;
   $("#team").onchange = run;
   $("#cmpA").onchange = $("#cmpB").onchange = run;
+  $("#pkGame").onchange = $("#pkStat").onchange = $("#pkMin").onchange = run;
   $("#opp").onchange = () => { if (selected || $("#team").value) run(); };
 
   function run() {
@@ -272,6 +274,7 @@
     try {
       if (mode === "watch") return renderWatch();
       if (mode === "compare") { $("#out").innerHTML = renderCompare(); return; }
+      if (mode === "picks") { $("#out").innerHTML = renderPicks(); Picks.bindMore(run); return bindRows(); }
       if (mode === "player") {
         if (!selected) { if (suggList.length) return pick(0); return; }
         $("#out").innerHTML = renderPlayer(playerResult(selected.id));
@@ -522,6 +525,19 @@
     ${oppChips(d.opp_profile)}
     ${d.opponent ? `<div class="sep"></div>${teamBlock(d.opponent)}${oppChips(d.own_profile)}` : ""}
     ${BasketAdv.teamSection(ctx, M, GM, t.team.tri)}`;
+  }
+
+  // ------------------------------------------------------------ occasioni (previsioni più probabili della prossima giornata)
+  function renderPicks() {
+    return Picks.render({
+      ctx, schedule: ctx.schedule, windowH: 20, defMin: 70,
+      project: (tri, opp, home) => ctx.projectTeam(tri, opp, home),
+      short: id => id, name: id => (M.TEAM[id] || {}).name || id,
+      logo: (id, size) => L(id, size), photo: (pid, nm) => P(pid, nm),
+      stats: M.ALL_STATS.map(s => [s, M.LABELS[s]]),
+      minLine: { PTS: 10, REB: 4, AST: 4, FG3M: 2, STL: 1, BLK: 1, TOV: 2, PRA: 20 },
+      el: { game: $("#pkGame"), stat: $("#pkStat"), min: $("#pkMin") },
+    });
   }
 
   // ------------------------------------------------------------ confronto fra squadre

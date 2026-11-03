@@ -209,7 +209,7 @@
       ? `Stagione ${esc(ctx.season)} · statistiche aggiornate${esc(liveNote)} <button id="refresh">Ricarica</button>`
       : `Stagione ${esc(ctx.season)} · statistiche al ${esc(upd)} <button id="refresh">Ricarica</button>`;
     $("#refresh").onclick = async () => { await loadData(); run(); };
-    if (selected || $("#team").value || mode === "table" || mode === "watch" || mode === "compare") run();
+    if (selected || $("#team").value || mode === "table" || mode === "watch" || mode === "compare" || mode === "picks") run();
   }
 
   function teamOptions() {
@@ -256,18 +256,19 @@
     document.querySelectorAll(".tab").forEach(x => x.classList.toggle("on", x.dataset.mode === m));
     mode = m;
     $("#controls").classList.toggle("hidden", m === "table");
-    $("#playerBox").classList.toggle("hidden", m === "team" || m === "compare");
+    $("#playerBox").classList.toggle("hidden", m === "team" || m === "compare" || m === "picks");
     $("#team").classList.toggle("hidden", m !== "team");
     $("#bothBox").classList.toggle("hidden", m !== "team");
-    $("#opp").classList.toggle("hidden", m === "watch" || m === "compare");
-    $("#go").classList.toggle("hidden", m === "watch" || m === "compare");
+    $("#opp").classList.toggle("hidden", m === "watch" || m === "compare" || m === "picks");
+    $("#go").classList.toggle("hidden", m === "watch" || m === "compare" || m === "picks");
     $("#cmpBox").classList.toggle("hidden", m !== "compare");
+    $("#pickBox").classList.toggle("hidden", m !== "picks");
     $("#pq").placeholder = m === "watch" ? "Aggiungi un giocatore da osservare…" : "Cerca un giocatore (es. Lautaro, Leão, Dybala)…";
     if (m === "watch") { $("#pq").value = ""; selected = null; }
   }
   document.querySelectorAll(".tab").forEach(b => b.onclick = () => {
     setMode(b.dataset.mode);
-    if (mode === "watch" || mode === "table" || mode === "compare" || (mode === "player" && selected) || (mode === "team" && $("#team").value)) run();
+    if (mode === "watch" || mode === "table" || mode === "compare" || mode === "picks" || (mode === "player" && selected) || (mode === "team" && $("#team").value)) run();
     else $("#out").innerHTML = `<div class="msg">${mode === "team" ? "Scegli una squadra." : "Cerca un giocatore."}</div>`;
   });
 
@@ -306,6 +307,7 @@
   $("#go").onclick = run;
   $("#team").onchange = run;
   $("#cmpA").onchange = $("#cmpB").onchange = run;
+  $("#pkGame").onchange = $("#pkStat").onchange = $("#pkMin").onchange = run;
   $("#opp").onchange = () => { if (selected || $("#team").value) run(); };
 
   function run() {
@@ -314,6 +316,7 @@
       if (mode === "watch") return renderWatch();
       if (mode === "table") { $("#out").innerHTML = renderTable(); return bindRows(); }
       if (mode === "compare") { $("#out").innerHTML = renderCompare(); return; }
+      if (mode === "picks") { $("#out").innerHTML = renderPicks(); Picks.bindMore(run); return bindRows(); }
       if (mode === "player") {
         if (!selected) { if (suggList.length) return pick(0); return; }
         $("#out").innerHTML = renderPlayer(playerResult(selected.id));
@@ -560,6 +563,19 @@
       <td class="form">${x.form.map(r => `<i class="${r}">${r}</i>`).join("")}</td></tr>`).join("");
     return `<h3>Classifica ${esc(ctx.season)} <small class="nt">(calcolata dai risultati · tocca una squadra per le proiezioni)</small></h3>
       <div class="scroll"><table class="std"><tr><th>Squadra</th><th>G</th><th class="hm">V</th><th class="hm">N</th><th class="hm">P</th><th class="hm">Gol</th><th>DR</th><th>Pt</th><th>Forma</th></tr>${rows}</table></div>`;
+  }
+
+  // ------------------------------------------------------------ occasioni (previsioni più probabili della prossima giornata)
+  function renderPicks() {
+    return Picks.render({
+      ctx, schedule: ctx.schedule, windowH: 96, defMin: 65,
+      project: (tid, opp, home) => ctx.projectTeam(tid, opp, home),
+      short: id => T(id).short, name: id => T(id).name,
+      logo: (id, size) => L(id, size), photo: (pid, nm) => P(pid, nm),
+      stats: M.ALL_STATS.map(s => [s, M.LABELS[s]]),
+      minLine: { SH: 2, FC: 2, FS: 2, SV: 2 },
+      el: { game: $("#pkGame"), stat: $("#pkStat"), min: $("#pkMin") },
+    });
   }
 
   // ------------------------------------------------------------ confronto fra squadre
