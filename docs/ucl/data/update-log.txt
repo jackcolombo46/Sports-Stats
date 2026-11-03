@@ -1,0 +1,7 @@
+Competizione uefa.champions -> docs/ucl/data
+Stagione 2026-27: controllo le partite dal 2026-08-01 al 2026-11-03
+Stagione 2026-27: 54 partite nuove
+  50/54 partite
+  statistiche di squadra ESPN: accurateCrosses, accurateLongBalls, accuratePasses, blockedShots, crossPct, effectiveClearance, effectiveTackles, foulsCommitted, interceptions, longballPct, offsides, passPct, penaltyKickGoals, penaltyKickShots, possessionPct, redCards, saves, shotPct, shotsOnTarget, tacklePct, totalClearance, totalCrosses, totalLongBalls, totalPasses, totalShots, totalTackles, wonCorners, yellowCards
+Understat: competizione non coperta, si usa solo l'xG di ESPN
+Fatto: 2026-11-03T09:10:04Z 2 file, 54 partite in calendario, 1172 giocatori in rosa
