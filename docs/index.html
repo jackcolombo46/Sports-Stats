@@ -32,7 +32,7 @@
   a.sport::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 4px; background: var(--c); }
   a.sport:hover, a.sport:focus-visible { border-color: var(--c); outline: none; }
   a.sport:active { transform: scale(.985); }
-  .nba { --c: #ff7a1a; --c2: #ffb36b; } .lba { --c: #1fb57a; --c2: #7be0b4; } .seriea { --c: #2f8cff; --c2: #8cc4ff; }
+  .nba { --c: #ff7a1a; --c2: #ffb36b; } .lba { --c: #1fb57a; --c2: #7be0b4; } .seriea { --c: #2f8cff; --c2: #8cc4ff; } .ucl { --c: #7c6cff; --c2: #bdb4ff; }
   .top { display: flex; align-items: center; gap: 14px; }
   .ball { width: 52px; height: 52px; flex: none; }
   .sport h2 { margin: 0; font-size: 22px; }
@@ -69,6 +69,16 @@
       </div>
       <div class="info" id="info-seriea">Caricamento…</div>
     </a>
+    <a class="sport ucl" href="ucl/">
+      <div class="top">
+        <svg class="ball" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24" fill="#7c6cff"/>
+          <g fill="#0e1116"><path d="M26 18l7.6 5.5-2.9 9h-9.4l-2.9-9z"/><path d="M26 2l6 2.5-6 4.5-6-4.5zM48.5 20l-.5 6.5-5.5-3.5 2-7zM40 46l-6.5 3 1-7 7-1zM12 46l-1.5-5 7 1 1 7zM3.5 20l3.5-4 2 7-5.5 3.5z"/></g>
+          <g stroke="#0e1116" stroke-width="2"><path d="M26 18V9M33.6 23.5l8.9-1M30.7 32.5l4 9.5M21.3 32.5l-3.5 9.5M18.4 23.5l-9.4-.5"/></g></svg>
+        <h2>Champions League<small>Solo partite di Champions · gol, assist, tiri…</small></h2>
+        <span class="go">→</span>
+      </div>
+      <div class="info" id="info-ucl">Caricamento…</div>
+    </a>
     <a class="sport lba" href="lba/">
       <div class="top">
         <svg class="ball" viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="24" fill="#1fb57a"/>
@@ -80,7 +90,7 @@
     </a>
   </div>
   <footer>
-    Dati ESPN (NBA, Serie A) e legabasket.it (Serie A basket), aggiornati automaticamente più volte al giorno. Le proiezioni sono stime statistiche.<br>
+    Dati ESPN (NBA, Serie A, Champions League) e legabasket.it (Serie A basket), aggiornati automaticamente più volte al giorno. Le proiezioni sono stime statistiche.<br>
     Sul telefono: Condividi → "Aggiungi a schermata Home" (iPhone) oppure menu ⋮ → "Installa app" (Android).
   </footer>
 </main>
@@ -121,6 +131,7 @@
   }
   info("nba", (m, t) => t);
   info("seriea", (m, t) => ((m.teams || {})[t] || {}).short || t);
+  info("ucl", (m, t) => ((m.teams || {})[t] || {}).short || t);
   info("lba", (m, t) => ((m.teams || {})[t] || {}).short || t);
 })();
 </script>

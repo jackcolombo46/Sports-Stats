@@ -1,6 +1,6 @@
 # Sports Stats
 
-Un'unica web app con le proiezioni statistiche dei giocatori di **NBA**, **Serie A** e **Serie A di basket (LBA)**
+Un'unica web app con le proiezioni statistiche dei giocatori di **NBA**, **Serie A**, **Champions League** e **Serie A di basket (LBA)**
 contro il prossimo avversario. All'apertura si sceglie lo sport; da ogni schermata il pulsante **⇄ Sport** riporta alla scelta.
 Funziona dal telefono e dal computer e si installa come app (una sola icona per entrambi gli sport).
 
@@ -17,9 +17,11 @@ docs/manifest.webmanifest  installazione unica (icona e nome comuni)
 docs/nba/                  app NBA     (index.html, app.js, model.js, data/)
 docs/seriea/               app Serie A (index.html, app.js, model.js, data/)
 docs/lba/                  app Serie A di basket (stessa interfaccia e modello dell'NBA, partite da 40')
+docs/ucl/                  app Champions League (stessa interfaccia e modello della Serie A)
 tools/nba/update_data.py       scarica i dati NBA da ESPN       → docs/nba/data/
 tools/seriea/update_data.py    scarica i dati Serie A da ESPN   → docs/seriea/data/
 tools/lba/update_data.py       scarica i dati LBA da legabasket.it → docs/lba/data/
+tools/ucl/update_data.py       scarica i dati Champions League da ESPN → docs/ucl/data/
 .github/workflows/update-nba.yml, update-seriea.yml, update-lba.yml   aggiornamenti automatici, separati
 ```
 
@@ -52,12 +54,28 @@ La scheda **Confronta** mette due squadre una accanto all'altra: verde = meglio,
 - `docs/adv.js`: parti comuni (sezione a scomparsa, tabelle, confronto, posizioni e medie del campionato)
 - `docs/adv-basket.js`: NBA e LBA, calcolate dai tabellini (possessi, rating offensivo/difensivo, four factors,
   true shooting, usage, quote di rimbalzi e assist...). Servono tiri e liberi segnati: colonne `fgm`, `ftm`, `fg3a`.
-- `docs/seriea/adv.js`: Serie A. Statistiche di squadra di ogni partita da ESPN (possesso, passaggi, contrasti...,
+- `docs/adv-soccer.js`: calcio (Serie A e Champions League). Statistiche di squadra di ogni partita da ESPN (possesso, passaggi, contrasti...,
   salvate in `tstats` nei file dei log), xG dei giocatori da ESPN (colonna `xg`) e totali di
   [Understat](https://understat.com) in `meta.json` → `xg` (xG, PPDA, passaggi vicino all'area, punti attesi).
   Understat non è un servizio ufficiale: se cambia il sito, `understat_xg` in `tools/seriea/update_data.py` va aggiornato.
 
 Quando i file della stagione in corso sono nel formato vecchio, l'aggiornamento automatico li riscarica da solo.
+
+## Champions League
+
+L'app `docs/ucl/` usa lo stesso aggiornatore della Serie A con la competizione ESPN `uefa.champions`
+(`tools/ucl/update_data.py` chiama `tools/seriea/update_data.py --league uefa.champions --data docs/ucl/data`).
+Si scaricano **solo le partite di Champions League**: statistiche, proiezioni, statistiche avanzate e confronti
+non contengono le partite dei campionati nazionali. Differenze rispetto alla Serie A:
+
+- squalifica UEFA alla 3ª ammonizione, poi alla 5ª, 7ª, ... (`suspendAt` in `docs/ucl/model.js`)
+- la classifica conta solo la fase campionato (settembre-gennaio)
+- calendario guardato fino a 50 giorni avanti (fra una giornata e l'altra possono passare settimane)
+- niente Understat (non copre la Champions): l'xG è solo quello di ESPN
+- lista dei giocatori osservati separata da quella della Serie A
+
+`docs/ucl/app.js` e `docs/ucl/model.js` sono copie di quelli della Serie A con queste modifiche: una correzione
+all'interfaccia o al modello del calcio va riportata in entrambe le cartelle.
 
 ## Aggiungere uno sport
 

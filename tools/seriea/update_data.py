@@ -1,4 +1,8 @@
-"""Scarica i dati della Serie A da ESPN e li salva in docs/seriea/data/ per la pagina web.
+"""Scarica i dati di una competizione di calcio da ESPN (di default la Serie A) e li salva per la pagina web.
+
+Lo stesso programma serve anche per la Champions League (vedi tools/ucl/update_data.py):
+--league sceglie la competizione ESPN, --data la cartella. Si scaricano solo le partite di quella
+competizione, quindi tutte le statistiche si riferiscono esclusivamente a essa.
 
 Gira su GitHub Actions (vedi .github/workflows/update-data.yml). Usa solo la
 libreria standard di Python.
@@ -28,8 +32,24 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 DATA = os.path.join(ROOT, "docs", "seriea", "data")
 LOGS = os.path.join(DATA, "logs")
 
-LEAGUE = "ita.1"   # Serie A. Per altri campionati: eng.1, esp.1, ger.1, fra.1 ...
+LEAGUE = "ita.1"   # Serie A. Altre: eng.1, esp.1, ger.1, fra.1, uefa.champions ... (si cambia con --league)
 BASE = f"https://site.api.espn.com/apis/site/v2/sports/soccer/{LEAGUE}/"
+# competizioni coperte da Understat (xG, PPDA): le altre (es. Champions League) usano solo l'xG di ESPN
+UNDERSTAT_LEAGUES = {"ita.1": "Serie_A", "eng.1": "EPL", "esp.1": "La_liga", "ger.1": "Bundesliga", "fra.1": "Ligue_1"}
+
+
+UPCOMING_DAYS = 21
+
+
+def configure(league, data_dir):
+    global LEAGUE, BASE, DATA, LOGS, UNDERSTAT_LEAGUE, UPCOMING_DAYS
+    LEAGUE = league
+    BASE = f"https://site.api.espn.com/apis/site/v2/sports/soccer/{LEAGUE}/"
+    DATA = data_dir if os.path.isabs(data_dir) else os.path.join(ROOT, data_dir)
+    LOGS = os.path.join(DATA, "logs")
+    UNDERSTAT_LEAGUE = UNDERSTAT_LEAGUES.get(LEAGUE)
+    # nelle coppe europee fra una partita e l'altra possono passare più settimane (es. dicembre-gennaio)
+    UPCOMING_DAYS = 50 if LEAGUE.startswith("uefa.") else 21
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36")
 
@@ -452,7 +472,8 @@ def update_current(y_cur, today, teams):
     return [f"logs/{s}_{m}.json" for m in sorted(by_month)]
 
 
-def upcoming(today, teams, days=21):
+def upcoming(today, teams, days=None):
+    days = days or UPCOMING_DAYS
     evs = scoreboards(list(daterange(today - dt.timedelta(days=1), today + dt.timedelta(days=days))))
     merge_teams(teams, evs)
     return sorted(({"id": e["id"], "utc": e["utc"], "home": e["home"], "away": e["away"], "state": e["state"]}
@@ -557,11 +578,15 @@ def understat_xg(y, teams, cur):
     return out
 
 
-def main():
+def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--past", type=int, default=2, help="stagioni passate da tenere")
     ap.add_argument("--skip-past", action="store_true", help="non scaricare stagioni passate mancanti")
-    args = ap.parse_args()
+    ap.add_argument("--league", default="ita.1", help="competizione ESPN (ita.1 = Serie A, uefa.champions = Champions League)")
+    ap.add_argument("--data", default=os.path.join("docs", "seriea", "data"), help="cartella dei dati")
+    args = ap.parse_args(argv)
+    configure(args.league, args.data)
+    log(f"Competizione {LEAGUE} -> {os.path.relpath(DATA, ROOT)}")
     today = dt.date.today()
     y = season_start_year(today)
     os.makedirs(LOGS, exist_ok=True)
@@ -581,12 +606,15 @@ def main():
         meta["rosters"], meta["injuries"], meta["current_teams"] = rosters(teams)
     except Exception as e:  # noqa: BLE001
         log(f"ATTENZIONE rose: {e}")
-    try:
-        xg = understat_xg(y, teams, meta.get("current_teams") or list(teams))
-        meta["xg"] = {"source": "understat", "season": season_str(y), "teams": xg}
-        log(f"Understat: {len(xg)} squadre")
-    except Exception as e:  # noqa: BLE001  - si tiene il dato precedente
-        log(f"ATTENZIONE Understat: {e}")
+    if UNDERSTAT_LEAGUE:
+        try:
+            xg = understat_xg(y, teams, meta.get("current_teams") or list(teams))
+            meta["xg"] = {"source": "understat", "season": season_str(y), "teams": xg}
+            log(f"Understat: {len(xg)} squadre")
+        except Exception as e:  # noqa: BLE001  - si tiene il dato precedente
+            log(f"ATTENZIONE Understat: {e}")
+    else:
+        log("Understat: competizione non coperta, si usa solo l'xG di ESPN")
     meta["teams"] = teams
     meta["updated_at"] = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     write_json(os.path.join(DATA, "meta.json"), meta)
