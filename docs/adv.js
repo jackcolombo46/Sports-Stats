@@ -46,7 +46,7 @@
     return `<div class="advwrap">
       <button class="advbtn" data-adv="${esc(id)}" aria-expanded="${on}"><span class="arw">${on ? "▾" : "▸"}</span> ${esc(title)}<span class="advhint">${on ? "nascondi" : "mostra"}</span></button>
       <div class="advbody${on ? "" : " hidden"}">${note ? `<div class="advnote">${note}</div>` : ""}${body}
-        <button class="advclose" data-advclose>▴ Chiudi le statistiche avanzate</button></div></div>`;
+        <button class="advclose" data-advclose>▴ Chiudi</button></div></div>`;
   }
 
   function setOpen(b, on) {

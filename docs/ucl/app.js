@@ -290,6 +290,7 @@
     box.querySelectorAll("[data-i]").forEach(d => d.onmousedown = d.ontouchstart = e => { e.preventDefault(); pick(+d.dataset.i); });
   }
   function pick(i) {
+    if (!suggList[i]) return;   // Invio senza giocatori trovati
     selected = suggList[i];
     $("#pq").value = selected.name;
     $("#sugg").classList.add("hidden");
@@ -520,7 +521,8 @@
       <div><h3>Ultime 10 presenze <small class="nt">(* = entrato dalla panchina)</small></h3><div class="scroll"><table><tr><th>Data</th><th>Avv.</th><th>Min</th>${head}<th></th></tr>${recent}</table></div></div>
       <div><h3>Precedenti contro ${esc(d.opponent.short)}</h3><div class="scroll"><table><tr><th>Data</th><th>Min</th>${head2}<th></th></tr>${h2h}</table></div></div>
     </div>
-    ${SoccerAdv.playerSection(ctx, TSTATS, XG, d.player.id)}`;
+    ${SoccerAdv.playerSection(ctx, TSTATS, XG, d.player.id)}
+    ${Absence.playerSection(ctx, ABS, d.player.id)}`;
   }
 
   function teamBlock(t) {
@@ -555,7 +557,8 @@
     ${teamBlock(t)}
     ${oppChips(d.opp_profile)}
     ${d.opponent ? `<div class="sep"></div>${teamBlock(d.opponent)}${oppChips(d.own_profile)}` : ""}
-    ${SoccerAdv.teamSection(ctx, TSTATS, XG, t.team.tid)}`;
+    ${SoccerAdv.teamSection(ctx, TSTATS, XG, t.team.tid)}
+    ${Absence.teamSection(ctx, ABS, t.team.tid, t.absent, t.players.map(p => p.player))}`;
   }
 
   function renderTable() {
@@ -584,6 +587,19 @@
       el: { kind: $("#pkKind"), game: $("#pkGame"), stat: $("#pkStat"), min: $("#pkMin") },
     });
   }
+
+  // ------------------------------------------------------------ effetto assenze dei compagni
+  const ABS = {
+    team: r => r.tid, main: "sh", mainVerb: "tirano", minRole: 45, minWith: 3, minWithout: 2,
+    photo: (pid, nm) => P(pid, nm),
+    stats: [
+      { key: "min", label: "Min", get: r => r.min, dec: 0, thr: 10 },
+      { key: "sh", label: "Tiri", get: r => r.sh, dec: 2, thr: 0.4 },
+      { key: "sot", label: "In porta", get: r => r.sot, dec: 2, thr: 0.25 },
+      { key: "gol", label: "Gol", get: r => r.gol, dec: 2, thr: 0.15 },
+      { key: "ast", label: "Assist", get: r => r.ast, dec: 2, thr: 0.1 },
+    ],
+  };
 
   // ------------------------------------------------------------ confronto fra squadre
   function cmpOptions() {
