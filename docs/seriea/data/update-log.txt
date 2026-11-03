@@ -4,3 +4,9 @@ Stagione 2026-27: 0 partite nuove
   Understat (dati): <urlopen error timed out>
 ATTENZIONE Understat: <urlopen error timed out>
 Fatto: 2026-11-03T09:11:03Z 6 file, 20 partite in calendario, 647 giocatori in rosa
+Competizione ita.1 -> docs/seriea/data
+Stagione 2026-27: controllo le partite dal 2026-10-30 al 2026-11-03
+Stagione 2026-27: 0 partite nuove
+  Understat (dati): <urlopen error timed out>
+ATTENZIONE Understat: <urlopen error timed out>
+Fatto: 2026-11-03T09:12:09Z 6 file, 20 partite in calendario, 647 giocatori in rosa
