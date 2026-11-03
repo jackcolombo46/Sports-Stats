@@ -33,6 +33,19 @@
   };
   const ymd = d => d.toISOString().slice(0, 10);
 
+  // ------------------------------------------------------------ immagini (ESPN)
+  const CDN = "https://a.espncdn.com";
+  const crop = (path, w, h) => `${CDN}/combiner/i?img=${path}&w=${w}&h=${h}`;
+  const P = (id, name, size) => {
+    const p = `/i/headshots/soccer/players/full/${id}.png`;
+    return Media.player([crop(p, 160, 116), CDN + p], name, size);
+  };
+  const L = (tid, size) => {
+    const p = `/i/teamlogos/soccer/500/${tid}.png`;
+    return Media.team([crop(p, 96, 96), CDN + p], T(tid).abbr, size, T(tid).name);
+  };
+  const who = (img, text) => `<span class="who">${img}<span>${text}</span></span>`;
+
   async function espn(path, ms = 8000) {
     const ctrl = new AbortController();
     const t = setTimeout(() => ctrl.abort(), ms);
@@ -249,7 +262,7 @@
   function renderSugg() {
     const box = $("#sugg");
     box.innerHTML = suggList.length ? suggList.map((p, i) =>
-      `<div data-i="${i}" class="${i === suggIdx ? "hl" : ""}">${esc(p.name)} <small>${esc(T(p.team).short)} · ${p.games} pres.</small></div>`).join("")
+      `<div data-i="${i}" class="${i === suggIdx ? "hl" : ""}">${who(P(p.id, p.name), esc(p.name))} <small>${esc(T(p.team).short)} · ${p.games} pres.</small></div>`).join("")
       : `<div><small>Nessun giocatore trovato</small></div>`;
     box.classList.remove("hidden");
     box.querySelectorAll("[data-i]").forEach(d => d.onmousedown = d.ontouchstart = e => { e.preventDefault(); pick(+d.dataset.i); });
@@ -359,8 +372,8 @@
       : `<div class="avg">Stagione (${avg.n} pres.): <b>${avg.gol}</b> gol · <b>${avg.ast}</b> assist · <b>${avg.sh.toFixed(1)}</b> tiri a partita · <b>${avg.yc}</b> gialli · ${avg.min.toFixed(0)} min</div>`) : "";
     const nextLine = next && !live ? `<div class="avg">Prossima: ${next.home ? "vs" : "@"} <b>${esc(T(next.opp).short)}</b> · ${esc(fmtDate(next.utc))}</div>` : "";
     return `<div class="card wcard" id="w-${w.id}">
-      <div class="top"><div><span class="name">${esc(ctx.names.get(w.id) || w.name)}</span> <small class="tm">${esc(tid ? T(tid).short : "—")}</small>
-        ${inj ? `<span class="inj" title="${esc(inj.comment)}">${esc(inj.status)}</span>` : ""}</div>
+      <div class="top"><div class="who">${P(w.id, ctx.names.get(w.id) || w.name, "m")}<div><span class="name">${esc(ctx.names.get(w.id) || w.name)}</span> <small class="tm">${tid ? L(tid, "s") : ""} ${esc(tid ? T(tid).short : "—")}</small>
+        ${inj ? `<span class="inj" title="${esc(inj.comment)}">${esc(inj.status)}</span>` : ""}</div></div>
         <div class="wbtn"><button data-up="${w.id}" title="Su">↑</button><button data-dn="${w.id}" title="Giù">↓</button><button data-rm="${w.id}" title="Rimuovi">✕</button></div></div>
       <div class="wbody" data-gid="${live ? live.id : ""}" data-live="${live ? 1 : ""}">${body}</div>
       ${avgLine}${nextLine}
@@ -405,13 +418,13 @@
   function matchupLine(tid, game, opp) {
     const where = game.home === false ? "@" : "vs";
     const when = game.manual ? "avversario scelto a mano (campo neutro)" : (game.live ? "IN CORSO · " : "") + fmtDate(game.utc) + (game.home ? " · in casa" : " · in trasferta");
-    return `<div class="vs">${esc(T(tid).short)} ${where} <b>${esc(T(opp).short)}</b></div><div class="sub">${esc(when)}</div>`;
+    return `<div class="vs">${L(tid, "s")} ${esc(T(tid).short)} ${where} ${L(opp, "s")} <b>${esc(T(opp).short)}</b></div><div class="sub">${esc(when)}</div>`;
   }
 
   function matchBox(tid, opp, m, home) {
     const [h, a, lh, la, ph, pa] = home === false ? [opp, tid, m.xg_opp, m.xg, m.loss, m.win] : [tid, opp, m.xg, m.xg_opp, m.win, m.loss];
     return `<div class="match">
-      <div class="mrow"><span>${esc(T(h).short)}</span><b>${lh.toFixed(1)}</b><small>gol attesi</small><b>${la.toFixed(1)}</b><span>${esc(T(a).short)}</span></div>
+      <div class="mrow"><span>${L(h, "s")} ${esc(T(h).short)}</span><b>${lh.toFixed(1)}</b><small>gol attesi</small><b>${la.toFixed(1)}</b><span>${esc(T(a).short)} ${L(a, "s")}</span></div>
       <div class="odds"><div><span>1</span><b>${pct(ph)}</b></div><div><span>X</span><b>${pct(m.draw)}</b></div><div><span>2</span><b>${pct(pa)}</b></div>
         <div><span>Over 2,5</span><b>${pct(m.over25)}</b></div><div><span>Gol/Gol</span><b>${pct(m.btts)}</b></div></div></div>`;
   }
@@ -422,7 +435,7 @@
       return `<span class="chip">${esc(label)}: <b class="${d > 0 ? "up" : d < 0 ? "dn" : ""}">${d > 0 ? "+" : ""}${d}%</b> <small>(${ord(rank)})</small></span>`;
     };
     const c = [chip("Gol subiti", prof.goals.factor, prof.goals.rank), ...prof.allowed.map(a => chip(a.label + " avversari", a.factor, a.rank))];
-    return `<h3>Cosa concede ${esc(prof.team.name)} rispetto alla media <small class="nt">(1ª = la più permissiva)</small></h3><div class="opp">${c.join("")}</div>`;
+    return `<h3>Cosa concede ${L(prof.team.tid, "s")} ${esc(prof.team.name)} rispetto alla media <small class="nt">(1ª = la più permissiva)</small></h3><div class="opp">${c.join("")}</div>`;
   }
 
   function statCard(s) {
@@ -462,9 +475,9 @@
     const head2 = k ? "<th>Par</th>" : "<th>Gol</th><th>As</th><th>Tiri</th><th>InP</th>";
     return `
     <div class="hero">
-      <div><h2>${esc(d.player.name)}</h2><div class="sub">${esc(d.player.team.name)}${k ? " · portiere" : ""}
+      <div class="idt">${P(d.player.id, d.player.name, "l")}<div><h2>${esc(d.player.name)}</h2><div class="sub">${L(d.player.team.tid, "s")} ${esc(d.player.team.name)}${k ? " · portiere" : ""}
         <button class="link" id="addw" data-id="${d.player.id}">${watch.some(x => x.id === d.player.id) ? "✓ tra gli osservati" : "+ Osserva"}</button></div>
-        ${matchupLine(d.player.team.tid, d.game, d.opponent.tid)}</div>
+        ${matchupLine(d.player.team.tid, d.game, d.opponent.tid)}</div></div>
       <div class="kpis">
         <div class="kpi"><b>${d.minutes}'</b><span>minuti attesi</span></div>
         <div class="kpi"><b>${d.starts5}/${Math.min(5, d.games.season)}</b><span>titolare ult. 5</span></div>
@@ -485,21 +498,21 @@
   function teamBlock(t) {
     const leaders = t.leaders.map(l => `
       <div class="card leader"><div class="name">${esc(l.label)}</div><ol>
-        ${l.players.slice(0, 3).map(p => `<li data-pid="${p.id}" data-name="${esc(p.name)}" class="click"><span>${esc(p.name)}</span><span class="v">${
+        ${l.players.slice(0, 3).map(p => `<li data-pid="${p.id}" data-name="${esc(p.name)}" class="click"><span>${who(P(p.id, p.name), esc(p.name))}</span><span class="v">${
           l.stat === "GOL" || l.stat === "AST" || l.stat === "YC" ? pct(p.p1) : p.proj.toFixed(1)}</span></li>`).join("")}
       </ol></div>`).join("");
     const st = (p, s) => p.stats.find(x => x.stat === s);
     const rows = t.players.filter(p => !p.player.keeper).map(p => {
       const warn = p.injury ? ` <span class="inj" title="${esc(p.injury.status)}">${esc((p.injury.status || "").slice(0, 3))}</span>` : "";
-      return `<tr class="click" data-pid="${p.player.id}" data-name="${esc(p.player.name)}"><td>${esc(p.player.name)}${warn}</td><td class="hm2">${p.minutes}'</td>
+      return `<tr class="click" data-pid="${p.player.id}" data-name="${esc(p.player.name)}"><td>${who(P(p.player.id, p.player.name), esc(p.player.name) + warn)}</td><td class="hm2">${p.minutes}'</td>
         <td>${pct(st(p, "GOL").p1)}</td><td>${pct(st(p, "AST").p1)}</td><td>${st(p, "SH").proj.toFixed(1)}</td><td>${st(p, "SOT").proj.toFixed(1)}</td>
         <td class="hm2">${st(p, "FC").proj.toFixed(1)}</td><td>${st(p, "FS").proj.toFixed(1)}</td><td>${pct(st(p, "YC").p1)}</td></tr>`;
     }).join("");
     const gks = t.players.filter(p => p.player.keeper).map(p =>
-      `<span class="chip click" data-pid="${p.player.id}" data-name="${esc(p.player.name)}">🧤 ${esc(p.player.name)}: <b>${st(p, "SV").proj.toFixed(1)}</b> parate · porta inviolata <b>${pct(st(p, "CS").p1)}</b></span>`).join("");
+      `<span class="chip click" data-pid="${p.player.id}" data-name="${esc(p.player.name)}">🧤 ${P(p.player.id, p.player.name)} ${esc(p.player.name)}: <b>${st(p, "SV").proj.toFixed(1)}</b> parate · porta inviolata <b>${pct(st(p, "CS").p1)}</b></span>`).join("");
     const absent = t.absent.length ? `<div class="warn">Esclusi: ${t.absent.map(a => `${esc(a.name)} <small>(${esc(a.reason)})</small>`).join(", ")}</div>` : "";
     return `
-      <h3>Chi è più probabile che faccia cosa · ${esc(t.team.name)} contro ${esc(t.opponent.short)}</h3>
+      <h3>Chi è più probabile che faccia cosa · ${L(t.team.tid, "s")} ${esc(t.team.name)} contro ${L(t.opponent.tid, "s")} ${esc(t.opponent.short)}</h3>
       <div class="grid">${leaders}</div>
       <h3>Proiezioni per giocatore <small class="nt">(tocca un nome per il dettaglio · % = probabilità di almeno 1)</small></h3>
       <div class="scroll"><table><tr><th>Giocatore</th><th class="hm2">Min</th><th>Gol</th><th>Ass.</th><th>Tiri</th><th>InP</th><th class="hm2">Falli</th><th>F.sub</th><th>Giallo</th></tr>${rows}</table></div>
@@ -509,7 +522,7 @@
   function renderTeam(d) {
     const t = d.team;
     return `
-    <div class="hero"><div><h2>${esc(t.team.name)}</h2>${matchupLine(t.team.tid, d.game, t.opponent.tid)}</div></div>
+    <div class="hero"><div class="idt">${L(t.team.tid, "l")}<div><h2>${esc(t.team.name)}</h2>${matchupLine(t.team.tid, d.game, t.opponent.tid)}</div></div></div>
     ${matchBox(t.team.tid, t.opponent.tid, t.match, d.game.home)}
     ${teamBlock(t)}
     ${oppChips(d.opp_profile)}
@@ -517,7 +530,7 @@
   }
 
   function renderTable() {
-    const rows = ctx.standings().map((x, i) => `<tr class="click" data-tid="${x.team.tid}"><td><span class="pos">${i + 1}</span> ${esc(x.team.name)}</td>
+    const rows = ctx.standings().map((x, i) => `<tr class="click" data-tid="${x.team.tid}"><td><span class="pos">${i + 1}</span> ${who(L(x.team.tid, "s"), esc(x.team.name))}</td>
       <td>${x.gp}</td><td class="hm">${x.w}</td><td class="hm">${x.d}</td><td class="hm">${x.l}</td><td class="hm">${x.gf}:${x.ga}</td><td>${x.gf - x.ga > 0 ? "+" : ""}${x.gf - x.ga}</td><td><b>${x.pts}</b></td>
       <td class="form">${x.form.map(r => `<i class="${r}">${r}</i>`).join("")}</td></tr>`).join("");
     return `<h3>Classifica ${esc(ctx.season)} <small class="nt">(calcolata dai risultati · tocca una squadra per le proiezioni)</small></h3>

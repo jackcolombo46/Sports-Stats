@@ -22,9 +22,17 @@
   // LBA: niente infortuni in tempo reale (legabasket.it non li pubblica)
   async function liveInjuries() { return null; }
 
+  // ------------------------------------------------------------ immagini
+  // raccolte da legabasket.it dall'aggiornamento automatico (meta.images); senza immagine restano iniziali e sigla
+  let IMGS = { teams: {}, players: {} };
+  const P = (id, name, size) => Media.player(IMGS.players[id], name, size);
+  const L = (tri, size) => Media.team(IMGS.teams[tri], tri, size, (M.TEAM[tri] || {}).name);
+  const who = (img, text) => `<span class="who">${img}<span>${text}</span></span>`;
+
   async function loadData() {
     $("#status").textContent = "Caricamento dati…";
     const meta = await getJSON("data/meta.json", { cache: "no-store" });
+    IMGS = { teams: {}, players: {}, ...(meta.images || {}) };
     const v = encodeURIComponent(meta.updated_at || "");
     const files = await Promise.all(meta.files.map(f => getJSON(`data/${f}?v=${v}`).then(j => [f, j])));
     const logs = {};
@@ -107,7 +115,7 @@
   function renderSugg() {
     const box = $("#sugg");
     box.innerHTML = suggList.length ? suggList.map((p, i) =>
-      `<div data-i="${i}" class="${i === suggIdx ? "hl" : ""}">${esc(p.name)} <small>${esc(p.team)} · ${p.games} gare</small></div>`).join("")
+      `<div data-i="${i}" class="${i === suggIdx ? "hl" : ""}">${who(P(p.id, p.name), esc(p.name))} <small>${esc(p.team)} · ${p.games} gare</small></div>`).join("")
       : `<div><small>Nessun giocatore trovato</small></div>`;
     box.classList.remove("hidden");
     box.querySelectorAll("[data-i]").forEach(d => d.onmousedown = d.ontouchstart = e => { e.preventDefault(); pick(+d.dataset.i); });
@@ -209,8 +217,8 @@
     const avgLine = avg.n ? `<div class="avg">Media stagione (${avg.n} gare): <b>${avg.PTS.toFixed(1)}</b> pt · <b>${avg.REB.toFixed(1)}</b> rb · <b>${avg.AST.toFixed(1)}</b> as · <b>${avg.FG3M.toFixed(1)}</b> triple · ${avg.MIN.toFixed(0)} min</div>` : "";
     const nextLine = next && !live ? `<div class="avg">Prossima: ${next.home ? "vs" : "@"} <b>${esc(next.opp)}</b> · ${esc(fmtDate(next.utc))}</div>` : "";
     return `<div class="card wcard" id="w-${w.id}">
-      <div class="top"><div><span class="name">${esc(ctx.names.get(w.id) || w.name)}</span> <small class="tm">${esc(tri || "—")}</small>
-        ${inj ? `<span class="inj" title="${esc(inj.comment)}">${esc(inj.status)}</span>` : ""}</div>
+      <div class="top"><div class="who">${P(w.id, ctx.names.get(w.id) || w.name, "m")}<div><span class="name">${esc(ctx.names.get(w.id) || w.name)}</span> <small class="tm">${tri ? L(tri, "s") : ""} ${esc(tri || "—")}</small>
+        ${inj ? `<span class="inj" title="${esc(inj.comment)}">${esc(inj.status)}</span>` : ""}</div></div>
         <div class="wbtn"><button data-up="${w.id}" title="Su">↑</button><button data-dn="${w.id}" title="Giù">↓</button><button data-rm="${w.id}" title="Rimuovi">✕</button></div></div>
       <div class="wbody" data-gid="${live ? live.id : last ? last.gid : ""}" data-live="${live ? 1 : ""}">${body}</div>
       ${avgLine}${nextLine}
@@ -246,7 +254,7 @@
   function matchupLine(teamTri, game, oppTri) {
     const where = game.home === false ? "@" : "vs";
     const when = game.manual ? "avversario scelto a mano" : (game.live ? "IN CORSO · " : "") + fmtDate(game.utc);
-    return `<div class="vs">${esc(teamTri)} ${where} <b>${esc(oppTri)}</b></div><div class="sub">${esc(when)}</div>`;
+    return `<div class="vs">${L(teamTri, "s")} ${esc(teamTri)} ${where} ${L(oppTri, "s")} <b>${esc(oppTri)}</b></div><div class="sub">${esc(when)}</div>`;
   }
 
   function oppChips(prof) {
@@ -257,7 +265,7 @@
     });
     const pd = Math.round((prof.pace.rel - 1) * 100);
     c.unshift(`<span class="chip">Ritmo: <b class="${pd > 0 ? "up" : pd < 0 ? "dn" : ""}">${pd > 0 ? "+" : ""}${pd}%</b> <small>(${ord(prof.pace.rank)})</small></span>`);
-    return `<h3>Cosa concede ${esc(prof.team.name)} rispetto alla media LBA <small class="nt">(1ª = la più permissiva)</small></h3><div class="opp">${c.join("")}</div>`;
+    return `<h3>Cosa concede ${L(prof.team.tri, "s")} ${esc(prof.team.name)} rispetto alla media LBA <small class="nt">(1ª = la più permissiva)</small></h3><div class="opp">${c.join("")}</div>`;
   }
 
   function statCard(s) {
@@ -287,9 +295,9 @@
       : `<tr><td colspan="6" style="color:var(--muted)">Nessun precedente nelle ultime stagioni</td></tr>`;
     return `
     <div class="hero">
-      <div><h2>${esc(d.player.name)}</h2><div class="sub">${esc(d.player.team.name)}
+      <div class="idt">${P(d.player.id, d.player.name, "l")}<div><h2>${esc(d.player.name)}</h2><div class="sub">${L(d.player.team.tri, "s")} ${esc(d.player.team.name)}
         <button class="link" id="addw" data-id="${d.player.id}">${watch.some(w => w.id === d.player.id) ? "✓ tra gli osservati" : "+ Osserva"}</button></div>
-        ${matchupLine(d.player.team.tri, d.game, d.opponent.tri)}</div>
+        ${matchupLine(d.player.team.tri, d.game, d.opponent.tri)}</div></div>
       <div class="kpis">
         <div class="kpi"><b>${d.minutes}</b><span>minuti attesi</span></div>
         <div class="kpi"><b>${d.games.season}</b><span>gare stagione</span></div>
@@ -312,16 +320,16 @@
   function teamBlock(t) {
     const leaders = t.leaders.filter(l => l.stat !== "TOV").map(l => `
       <div class="card leader"><div class="name">${esc(l.label)}</div><ol>
-        ${l.players.slice(0, 3).map(p => `<li><span>${esc(p.name)} ${p.likely ? `<small>≥${p.likely.line} ${pct(p.likely.prob)}</small>` : ""}</span><span class="v">${p.proj}</span></li>`).join("")}
+        ${l.players.slice(0, 3).map(p => `<li><span>${who(P(p.id, p.name), esc(p.name))} ${p.likely ? `<small>≥${p.likely.line} ${pct(p.likely.prob)}</small>` : ""}</span><span class="v">${p.proj}</span></li>`).join("")}
       </ol></div>`).join("");
     const rows = t.players.map(p => {
       const m = Object.fromEntries(p.stats.map(s => [s.stat, s]));
       const warn = p.injury ? ` <span class="inj" title="${esc(p.injury.status)}">${esc((p.injury.status || "").slice(0, 3))}</span>` : "";
-      return `<tr class="click" data-pid="${p.player.id}" data-name="${esc(p.player.name)}"><td>${esc(p.player.name)}${warn}</td><td>${p.minutes}</td>${COLS.map(c => `<td${HIDE_M.has(c) ? ' class="hm2"' : ""}>${m[c].proj}</td>`).join("")}</tr>`;
+      return `<tr class="click" data-pid="${p.player.id}" data-name="${esc(p.player.name)}"><td>${who(P(p.player.id, p.player.name), esc(p.player.name) + warn)}</td><td>${p.minutes}</td>${COLS.map(c => `<td${HIDE_M.has(c) ? ' class="hm2"' : ""}>${m[c].proj}</td>`).join("")}</tr>`;
     }).join("");
     const absent = t.absent.length ? `<div class="warn">Esclusi: ${t.absent.map(a => `${esc(a.name)} <small>(${esc(a.reason)})</small>`).join(", ")}</div>` : "";
     return `
-      <h3>Chi è più probabile che faccia cosa · ${esc(t.team.name)} contro ${esc(t.opponent.tri)}</h3>
+      <h3>Chi è più probabile che faccia cosa · ${L(t.team.tri, "s")} ${esc(t.team.name)} contro ${L(t.opponent.tri, "s")} ${esc(t.opponent.tri)}</h3>
       <div class="grid">${leaders}</div>
       <h3>Proiezioni per giocatore <small class="nt">(tocca un nome per il dettaglio)</small></h3>
       <div class="scroll"><table><tr><th>Giocatore</th><th>Min</th>${COLS.map(c => `<th${HIDE_M.has(c) ? ' class="hm2"' : ""}>${SHORT[c]}</th>`).join("")}</tr>${rows}</table></div>${absent}`;
@@ -330,7 +338,7 @@
   function renderTeam(d) {
     const t = d.team;
     return `
-    <div class="hero"><div><h2>${esc(t.team.name)}</h2>${matchupLine(t.team.tri, d.game, t.opponent.tri)}</div></div>
+    <div class="hero"><div class="idt">${L(t.team.tri, "l")}<div><h2>${esc(t.team.name)}</h2>${matchupLine(t.team.tri, d.game, t.opponent.tri)}</div></div></div>
     ${teamBlock(t)}
     ${oppChips(d.opp_profile)}
     ${d.opponent ? `<div class="sep"></div>${teamBlock(d.opponent)}${oppChips(d.own_profile)}` : ""}`;
