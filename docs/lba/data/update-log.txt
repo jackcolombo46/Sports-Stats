@@ -1,30 +1,4 @@
 Campionati di regular season: {2024: 567, 2025: 596, 2026: 602}
-Stagione 2026-27: 240 partite in calendario, 46 nuove da scaricare
-  25/46 partite
-Calendario: aggiorno 194 partite
-Fatto: 2026-11-02T17:58:44Z 3 file, 26 partite in calendario, 199 giocatori, 16 squadre
-Campionati di regular season: {2024: 567, 2025: 596, 2026: 602}
-Stagione 2024-25: 240 partite, scarico i tabellini (circa 8 minuti)...
-  25/240 partite
-  50/240 partite
-  75/240 partite
-  100/240 partite
-  125/240 partite
-  150/240 partite
-  175/240 partite
-  200/240 partite
-  225/240 partite
-Stagione 2024-25: salvate 4835 righe
-Stagione 2025-26: 210 partite, scarico i tabellini (circa 7 minuti)...
-  25/210 partite
-  50/210 partite
-  75/210 partite
-  100/210 partite
-  125/210 partite
-  150/210 partite
-  175/210 partite
-  200/210 partite
-Stagione 2025-26: salvate 4187 righe
-Stagione 2026-27: 240 partite in calendario, 0 nuove da scaricare
-Calendario: aggiorno 26 partite
-Fatto: 2026-11-02T18:15:49Z 5 file, 26 partite in calendario, 199 giocatori, 16 squadre
+Stagione 2026-27: 240 partite in calendario, 2 nuove da scaricare
+Calendario: aggiorno 24 partite
+Fatto: 2026-11-03T02:08:19Z 5 file, 24 partite in calendario, 201 giocatori, 16 squadre
