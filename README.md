@@ -78,6 +78,18 @@ tipo la più ambiziosa che supera il minimo:
   NBA 13 punti sullo scarto e 19 sul totale, LBA 12 e 16).
 "Storico" = quante volte è successo nelle ultime partite di ciascuna squadra in questa stagione.
 
+## Effetto assenze
+
+`docs/absence.js`: per ogni coppia di compagni confronta le partite di un giocatore giocate con e senza il compagno
+(stagione in corso e precedente, solo quando erano nella stessa squadra; una partita conta come "senza" solo se il
+compagno era già in squadra e non se n'era andato). Due sezioni a scomparsa:
+- scheda Giocatore, **Effetto assenze dei compagni**: media senza il compagno e differenza rispetto a quando gioca
+  (in cima i compagni assenti adesso); servono almeno 2 partite senza e 3 con, e un compagno con un ruolo vero
+  (minuti medi: NBA 20, LBA 18, calcio 45);
+- scheda Squadra, **Chi guadagna dalle assenze**: per ogni assente della prossima partita, i compagni che segnano
+  (basket) o tirano (calcio) di più senza di lui.
+La configurazione (statistiche, soglie) è l'oggetto `ABS` in `app.js` di ogni app. Le proiezioni non cambiano.
+
 ## Champions League
 
 L'app `docs/ucl/` usa lo stesso aggiornatore della Serie A con la competizione ESPN `uefa.champions`

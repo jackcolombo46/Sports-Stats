@@ -133,6 +133,7 @@
     box.querySelectorAll("[data-i]").forEach(d => d.onmousedown = d.ontouchstart = e => { e.preventDefault(); pick(+d.dataset.i); });
   }
   function pick(i) {
+    if (!suggList[i]) return;   // Invio senza giocatori trovati
     selected = suggList[i];
     $("#pq").value = selected.name;
     $("#sugg").classList.add("hidden");
@@ -328,7 +329,8 @@
       <div><h3>Ultime 10 partite</h3><table><tr><th>Data</th><th>Avv.</th><th>Min</th><th>Pt</th><th>Rb</th><th>As</th><th>3P</th></tr>${recent}</table></div>
       <div><h3>Precedenti contro ${esc(d.opponent.tri)}</h3><table><tr><th>Data</th><th>Min</th><th>Pt</th><th>Rb</th><th>As</th><th>3P</th></tr>${h2h}</table></div>
     </div>
-    ${BasketAdv.playerSection(ctx, M, GM, d.player.id)}`;
+    ${BasketAdv.playerSection(ctx, M, GM, d.player.id)}
+    ${Absence.playerSection(ctx, ABS, d.player.id)}`;
   }
 
   const COLS = ["PTS", "REB", "AST", "FG3M", "STL", "BLK", "PRA"];
@@ -360,7 +362,8 @@
     ${teamBlock(t)}
     ${oppChips(d.opp_profile)}
     ${d.opponent ? `<div class="sep"></div>${teamBlock(d.opponent)}${oppChips(d.own_profile)}` : ""}
-    ${BasketAdv.teamSection(ctx, M, GM, t.team.tri)}`;
+    ${BasketAdv.teamSection(ctx, M, GM, t.team.tri)}
+    ${Absence.teamSection(ctx, ABS, t.team.tri, t.absent, t.players.map(p => p.player))}`;
   }
 
   // ------------------------------------------------------------ occasioni (previsioni più probabili della prossima giornata)
@@ -379,6 +382,20 @@
       el: { kind: $("#pkKind"), game: $("#pkGame"), stat: $("#pkStat"), min: $("#pkMin") },
     });
   }
+
+  // ------------------------------------------------------------ effetto assenze dei compagni
+  const ABS = {
+    team: r => r.tri, main: "pts", mainVerb: "segnano", minRole: 18, minWith: 3, minWithout: 2,
+    photo: (pid, nm) => P(pid, nm),
+    stats: [
+      { key: "min", label: "Min", get: r => r.min, thr: 2 },
+      { key: "pts", label: "Pt", get: r => r.pts, thr: 1.5 },
+      { key: "reb", label: "Rb", get: r => r.reb, thr: 1 },
+      { key: "ast", label: "As", get: r => r.ast, thr: 1 },
+      { key: "fg3m", label: "3P", get: r => r.fg3m, thr: 0.5 },
+      { key: "fga", label: "Tiri", get: r => r.fga, thr: 1.5 },
+    ],
+  };
 
   // ------------------------------------------------------------ confronto fra squadre
   function cmpOptions() {
