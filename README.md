@@ -78,6 +78,15 @@ tipo la più ambiziosa che supera il minimo:
   NBA 13 punti sullo scarto e 19 sul totale, LBA 12 e 16).
 "Storico" = quante volte è successo nelle ultime partite di ciascuna squadra in questa stagione.
 
+## Quanto ci azzecca il modello
+
+`tools/backtest/backtest.js` (Node, senza dipendenze) rifà le proiezioni di ogni partita già giocata (stagione in corso e
+precedente) con lo stesso `model.js` dell'app, usando **solo i dati precedenti a quella partita**, e le confronta con i
+risultati. Valuta sia le proiezioni dei giocatori (tutte le soglie e le "occasioni" che la pagina avrebbe mostrato) sia
+le previsioni di squadra (stessi calcoli di `docs/picks.js`). Scrive `docs/<sport>/data/backtest.json`; gira a ogni
+aggiornamento automatico (passo "Verifica del modello", da pochi secondi a ~30 s) e l'app lo mostra in fondo alla
+pagina Occasioni, sezione **Quanto ci azzecca il modello**. Contano solo i giocatori scesi in campo.
+
 ## Effetto assenze
 
 `docs/absence.js`: per ogni coppia di compagni confronta le partite di un giocatore giocate con e senza il compagno

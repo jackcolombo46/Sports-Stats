@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ["tools/nba/**", ".github/workflows/update-nba.yml"]
+    paths: ["tools/nba/**", ".github/workflows/update-nba.yml", "tools/backtest/**", "docs/nba/model.js", "docs/picks.js", "docs/adv-basket.js"]
 
 permissions:
   contents: write
@@ -32,6 +32,9 @@ jobs:
           set -o pipefail
           mkdir -p docs/nba/data
           python tools/nba/update_data.py --skip-past 2>&1 | tee docs/nba/data/update-log.txt
+      - name: Verifica del modello (quanto ci azzecca)
+        continue-on-error: true
+        run: node tools/backtest/backtest.js nba 2>&1 | tee -a docs/nba/data/update-log.txt
       - name: Salva (stagione in corso)
         if: always()
         run: |

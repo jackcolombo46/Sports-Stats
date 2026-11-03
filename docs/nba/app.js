@@ -146,6 +146,7 @@
   async function loadData() {
     $("#status").textContent = "Caricamento dati…";
     const meta = await getJSON("data/meta.json", { cache: "no-store" });
+    getJSON(`data/backtest.json?v=${encodeURIComponent(meta.updated_at || "")}`).then(j => { BT = j; if (mode === "picks") run(); }).catch(() => {});
     const v = encodeURIComponent(meta.updated_at || "");
     const files = await Promise.all(meta.files.map(f => getJSON(`data/${f}?v=${v}`).then(j => [f, j])));
     const logs = {};
@@ -275,7 +276,7 @@
     try {
       if (mode === "watch") return renderWatch();
       if (mode === "compare") { $("#out").innerHTML = renderCompare(); return; }
-      if (mode === "picks") { $("#out").innerHTML = renderPicks(); Picks.bindMore(run, (h, a) => { $("#cmpA").dataset.set = 1; $("#cmpA").value = h; $("#cmpB").value = a; document.querySelector('.tab[data-mode="compare"]').click(); window.scrollTo({ top: 0, behavior: "smooth" }); }); return bindRows(); }
+      if (mode === "picks") { $("#out").innerHTML = renderPicks(); Adv.bind($("#out")); Picks.bindMore(run, (h, a) => { $("#cmpA").dataset.set = 1; $("#cmpA").value = h; $("#cmpB").value = a; document.querySelector('.tab[data-mode="compare"]').click(); window.scrollTo({ top: 0, behavior: "smooth" }); }); return bindRows(); }
       if (mode === "player") {
         if (!selected) { if (suggList.length) return pick(0); return; }
         $("#out").innerHTML = renderPlayer(playerResult(selected.id));
@@ -531,8 +532,10 @@
   }
 
   // ------------------------------------------------------------ occasioni (previsioni più probabili della prossima giornata)
+  let BT = null;   // verifica del modello (data/backtest.json), caricata senza far aspettare l'app
   function renderPicks() {
     return Picks.render({
+      backtest: BT, sportName: "NBA",
       ctx, schedule: ctx.schedule, windowH: 20, defMin: 70,
       project: (tri, opp, home) => ctx.projectTeam(tri, opp, home),
       short: id => id, name: id => (M.TEAM[id] || {}).name || id,
