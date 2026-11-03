@@ -81,7 +81,7 @@ tipo la più ambiziosa che supera il minimo:
 ## Effetto assenze
 
 `docs/absence.js`: per ogni coppia di compagni confronta le partite di un giocatore giocate con e senza il compagno
-(stagione in corso e precedente, solo quando erano nella stessa squadra; una partita conta come "senza" solo se il
+(stagione in corso e precedente, solo quando erano nella stessa squadra e solo per i compagni che sono ancora in squadra; una partita conta come "senza" solo se il
 compagno era già in squadra e non se n'era andato). Due sezioni a scomparsa:
 - scheda Giocatore, **Effetto assenze dei compagni**: media senza il compagno e differenza rispetto a quando gioca
   (in cima i compagni assenti adesso); servono almeno 2 partite senza e 3 con, e un compagno con un ruolo vero

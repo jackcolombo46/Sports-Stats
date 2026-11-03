@@ -52,7 +52,8 @@
     };
   }
 
-  /* compagni (della squadra attuale) che contano: abbastanza minuti di media */
+  /* compagni che sono ADESSO nella stessa squadra (chi è stato ceduto non conta, anche se la stagione scorsa
+     giocavano insieme); i minuti medi si controllano poi in playerSection */
   function teammates(ctx, cfg, pid) {
     const tid = ctx.playerTeam(pid);
     const T = index(ctx, cfg.team);
@@ -60,7 +61,7 @@
     for (const [k, t] of Object.entries(T)) {
       if (!t.players.has(pid)) continue;
       if (k.slice(k.indexOf("|") + 1) !== tid) continue;   // solo compagni della squadra attuale
-      for (const y of t.players.keys()) if (y !== pid) ids.add(y);
+      for (const y of t.players.keys()) if (y !== pid && ctx.playerTeam(y) === tid) ids.add(y);
     }
     return { tid, ids: [...ids] };
   }
