@@ -41,6 +41,22 @@ del giocatore o la sigla della squadra.
 - **LBA**: l'aggiornamento automatico cerca nei dati delle partite di legabasket.it i campi che contengono
   immagini e li salva in `meta.json` → `images`. Il log dell'Action riporta quanti loghi/foto ha trovato e in quali campi.
 
+## Statistiche avanzate e "Confronta squadre"
+
+In fondo alle schede di giocatore e squadra c'è il pulsante **Statistiche avanzate** (chiuso all'apertura).
+La scheda **Confronta** mette due squadre una accanto all'altra: verde = meglio, grigio = pari, rosso = peggio
+(per punti/gol subiti, palle perse e simili è meglio il valore più basso). Tutto riguarda la stagione in corso.
+
+- `docs/adv.js`: parti comuni (sezione a scomparsa, tabelle, confronto, posizioni e medie del campionato)
+- `docs/adv-basket.js`: NBA e LBA, calcolate dai tabellini (possessi, rating offensivo/difensivo, four factors,
+  true shooting, usage, quote di rimbalzi e assist...). Servono tiri e liberi segnati: colonne `fgm`, `ftm`, `fg3a`.
+- `docs/seriea/adv.js`: Serie A. Statistiche di squadra di ogni partita da ESPN (possesso, passaggi, contrasti...,
+  salvate in `tstats` nei file dei log), xG dei giocatori da ESPN (colonna `xg`) e totali di
+  [Understat](https://understat.com) in `meta.json` → `xg` (xG, PPDA, passaggi vicino all'area, punti attesi).
+  Understat non è un servizio ufficiale: se cambia il sito, `understat_xg` in `tools/seriea/update_data.py` va aggiornato.
+
+Quando i file della stagione in corso sono nel formato vecchio, l'aggiornamento automatico li riscarica da solo.
+
 ## Aggiungere uno sport
 
 1. `tools/<sport>/update_data.py` che scrive in `docs/<sport>/data/`

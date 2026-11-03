@@ -35,7 +35,8 @@ NBA_TRI = {"ATL", "BOS", "BKN", "CHA", "CHI", "CLE", "DAL", "DEN", "DET", "GSW",
            "POR", "SAC", "SAS", "TOR", "UTA", "WAS"}
 
 COLS = ["pid", "tri", "gid", "date", "opp", "home", "min", "pts", "reb", "oreb", "ast",
-        "fg3m", "stl", "blk", "tov", "fga", "fta"]
+        "fg3m", "stl", "blk", "tov", "fga", "fta", "fgm", "ftm", "fg3a"]
+NEW_COLS = ("fgm", "ftm", "fg3a")   # colonne aggiunte per le statistiche avanzate: i file della stagione in corso senza queste colonne vengono riscaricati
 
 
 def log(*a):
@@ -149,12 +150,12 @@ def parse_summary(summary, ev):
                 ath = a.get("athlete") or {}
                 pid = int(ath["id"])
                 names[pid] = ath.get("displayName") or ath.get("shortName") or str(pid)
-                _, fga = _made_att(v("FG"))
-                fg3m, _ = _made_att(v("3PT"))
-                _, fta = _made_att(v("FT"))
+                fgm, fga = _made_att(v("FG"))
+                fg3m, fg3a = _made_att(v("3PT"))
+                ftm, fta = _made_att(v("FT"))
                 rows.append([pid, t, ev["id"], ev["date"], opp, 1 if home else 0, round(mins, 1),
                              _num(v("PTS")), _num(v("REB")), _num(v("OREB")), _num(v("AST")),
-                             fg3m, _num(v("STL")), _num(v("BLK")), _num(v("TO")), fga, fta])
+                             fg3m, _num(v("STL")), _num(v("BLK")), _num(v("TO")), fga, fta, fgm, ftm, fg3a])
     return rows, names
 
 
@@ -239,7 +240,13 @@ def update_current(y_cur, today):
             d = read_json(os.path.join(LOGS, fn))
             by_month[fn[len(s) + 1:-5]] = d
             have |= {r[2] for r in d["rows"]}
-    last = max((r[3] for d in by_month.values() for r in d["rows"]), default=None)
+    if any(not all(c in d["cols"] for c in NEW_COLS) for d in by_month.values()):
+        # i file vecchi restano finché il nuovo download non va a buon fine
+        log(f"Stagione {s}: file nel formato vecchio, riscarico la stagione in corso")
+        have, stale = set(), True
+    else:
+        stale = False
+    last = None if stale else max((r[3] for d in by_month.values() for r in d["rows"]), default=None)
     start = dt.date(y_cur, 10, 1) if not last else dt.date.fromisoformat(last) - dt.timedelta(days=3)
     log(f"Stagione {s}: controllo le partite dal {start} al {today}")
     evs = []
@@ -248,6 +255,8 @@ def update_current(y_cur, today):
     log(f"Stagione {s}: {len(evs)} partite nuove")
     if evs:
         rows, names = fetch_games(evs)
+        if stale and rows:
+            by_month = {}
         for r in rows:
             m = r[3][:7]
             d = by_month.setdefault(m, {"cols": COLS, "names": {}, "rows": []})

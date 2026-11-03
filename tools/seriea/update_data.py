@@ -34,14 +34,14 @@ UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36")
 
 COLS = ["pid", "tid", "gid", "date", "opp", "home", "min", "start", "gk",
-        "gol", "ast", "sh", "sot", "fc", "fs", "yc", "rc", "sv", "gc"]
+        "gol", "ast", "sh", "sot", "fc", "fs", "yc", "rc", "sv", "gc", "xg"]
 GAME_COLS = ["gid", "date", "home", "away", "hg", "ag"]
 
 # nomi delle statistiche ESPN -> colonne
 STAT_KEYS = {
     "totalGoals": "gol", "goalAssists": "ast", "totalShots": "sh", "shotsOnTarget": "sot",
     "foulsCommitted": "fc", "foulsSuffered": "fs", "yellowCards": "yc", "redCards": "rc",
-    "saves": "sv", "goalsConceded": "gc",
+    "saves": "sv", "goalsConceded": "gc", "expectedGoals": "xg",
 }
 FULL = 90
 
@@ -190,7 +190,7 @@ def _stats(entry):
         k = STAT_KEYS.get(s.get("name") or s.get("abbreviation"))
         if k:
             v = _num(s.get("value", s.get("displayValue")))
-            out[k] = int(v) if v == int(v) else v
+            out[k] = int(v) if v == int(v) else round(v, 3)
     return out
 
 
@@ -272,8 +272,32 @@ def parse_summary(summary, ev):
             rows.append([pid, tid, ev["id"], ev["date"], opp, 1 if home else 0, mins,
                          1 if _flag(p.get("starter")) else 0, gk,
                          s["gol"], s["ast"], s["sh"], s["sot"], s["fc"], s["fs"],
-                         s["yc"], s["rc"], s["sv"], s["gc"]])
+                         s["yc"], s["rc"], s["sv"], s["gc"], s["xg"]])
     return rows, names
+
+
+def team_stats(summary):
+    """Statistiche di squadra della partita (possesso, tiri, passaggi, ...): {tid: {nome ESPN: valore}}"""
+    out = {}
+    for t in (summary.get("boxscore") or {}).get("teams") or []:
+        tid = str((t.get("team") or {}).get("id") or "")
+        if not tid:
+            continue
+        st = {}
+        for x in t.get("statistics") or []:
+            name = x.get("name")
+            raw = x.get("value", x.get("displayValue"))
+            if isinstance(raw, str):
+                raw = raw.replace("%", "").strip()
+            try:
+                v = float(raw)
+            except (TypeError, ValueError):
+                continue
+            if name:
+                st[name] = int(v) if v == int(v) else round(v, 3)
+        if st:
+            out[tid] = st
+    return out
 
 
 def score_from_summary(summary, ev):
@@ -298,20 +322,27 @@ def fetch_games(events, workers=4):
             s = get(f"summary?event={ev['id']}")
             rows, names = parse_summary(s, ev)
             hg, ag = score_from_summary(s, ev)
-            return rows, names, [ev["id"], ev["date"], ev["home"], ev["away"], hg, ag]
+            return rows, names, [ev["id"], ev["date"], ev["home"], ev["away"], hg, ag], team_stats(s)
         except RuntimeError as e:
             log("  saltata", ev["id"], e)
-            return [], {}, None
-    out_rows, out_names, out_games = [], {}, []
+            return [], {}, None, {}
+    out_rows, out_names, out_games, out_ts = [], {}, [], {}
     with ThreadPoolExecutor(workers) as ex:
-        for i, (rows, names, game) in enumerate(ex.map(one, events), 1):
+        for i, (rows, names, game, ts) in enumerate(ex.map(one, events), 1):
             out_rows += rows
             out_names.update(names)
             if game and game[4] is not None:
                 out_games.append(game)
+                if ts:
+                    out_ts[game[0]] = ts
             if i % 50 == 0:
                 log(f"  {i}/{len(events)} partite")
-    return out_rows, out_names, out_games
+    keys = sorted({k for ts in out_ts.values() for t in ts.values() for k in t})
+    if keys:
+        log("  statistiche di squadra ESPN:", ", ".join(keys))
+    if any(r[-1] for r in out_rows):
+        log("  xG dei giocatori presente")
+    return out_rows, out_names, out_games, out_ts
 
 
 # ------------------------------------------------------------ file
@@ -331,15 +362,17 @@ def write_json(path, obj):
     os.replace(tmp, path)
 
 
-def write_logs(path, rows, names, games, teams):
+def write_logs(path, rows, names, games, teams, tstats=None):
     rows.sort(key=lambda r: (r[3], r[2], r[0]))
     games.sort(key=lambda g: (g[1], g[0]))
     used = {r[0] for r in rows}
     tids = {g[2] for g in games} | {g[3] for g in games} | {r[1] for r in rows}
+    gids = {g[0] for g in games}
     write_json(path, {"cols": COLS, "game_cols": GAME_COLS,
                       "names": {str(k): v for k, v in names.items() if int(k) in used},
                       "teams": {t: teams[t] for t in sorted(tids) if t in teams},
-                      "rows": rows, "games": games})
+                      "rows": rows, "games": games,
+                      "tstats": {g: v for g, v in sorted((tstats or {}).items()) if g in gids}})
 
 
 def season_events(y, until):
@@ -369,11 +402,11 @@ def backfill_past(y_cur, n_past, teams, download=True):
         evs = season_events(y_cur - k, dt.date.today())
         merge_teams(teams, evs)
         log(f"Stagione {s}: {len(evs)} partite, scarico i tabellini...")
-        rows, names, games = fetch_games(evs)
+        rows, names, games, ts = fetch_games(evs)
         if not rows:
             log(f"Stagione {s}: nessun dato, salto")
             continue
-        write_logs(path, rows, names, games, teams)
+        write_logs(path, rows, names, games, teams, ts)
         files.append(f"logs/{s}.json")
         log(f"Stagione {s}: salvate {len(rows)} righe, {len(games)} partite")
     return files
@@ -388,24 +421,34 @@ def update_current(y_cur, today, teams):
             by_month[fn[len(s) + 1:-5]] = d
             have |= {g[0] for g in d.get("games", [])}
             teams.update(d.get("teams", {}))
-    last = max((g[1] for d in by_month.values() for g in d.get("games", [])), default=None)
+    # file senza statistiche di squadra / xG (formato vecchio): si riscarica la stagione in corso
+    stale = any("tstats" not in d or "xg" not in d.get("cols", []) for d in by_month.values())
+    if stale:
+        log(f"Stagione {s}: file nel formato vecchio, riscarico la stagione in corso")
+        have = set()
+    last = None if stale else max((g[1] for d in by_month.values() for g in d.get("games", [])), default=None)
     start = season_bounds(y_cur)[0] if not last else dt.date.fromisoformat(last) - dt.timedelta(days=3)
     log(f"Stagione {s}: controllo le partite dal {start} al {today}")
     evs = [e for e in scoreboards(list(daterange(start, today))) if e["completed"] and e["id"] not in have]
     merge_teams(teams, evs)
     log(f"Stagione {s}: {len(evs)} partite nuove")
     if evs:
-        rows, names, games = fetch_games(evs)
-        empty = lambda: {"cols": COLS, "game_cols": GAME_COLS, "names": {}, "teams": {}, "rows": [], "games": []}  # noqa: E731
+        rows, names, games, ts = fetch_games(evs)
+        if stale and rows:
+            by_month = {}
+        empty = lambda: {"cols": COLS, "game_cols": GAME_COLS, "names": {}, "teams": {}, "rows": [], "games": [], "tstats": {}}  # noqa: E731
         for g in games:
-            by_month.setdefault(g[1][:7], empty())["games"].append(g)
+            d = by_month.setdefault(g[1][:7], empty())
+            d["games"].append(g)
+            if g[0] in ts:
+                d.setdefault("tstats", {})[g[0]] = ts[g[0]]
         for r in rows:
             d = by_month.setdefault(r[3][:7], empty())
             d["rows"].append(r)
             d["names"][str(r[0])] = names.get(r[0], d["names"].get(str(r[0])))
         for m, d in by_month.items():
             write_logs(os.path.join(LOGS, f"{s}_{m}.json"), d["rows"],
-                       {int(k): v for k, v in d["names"].items()}, d["games"], teams)
+                       {int(k): v for k, v in d["names"].items()}, d["games"], teams, d.get("tstats"))
     return [f"logs/{s}_{m}.json" for m in sorted(by_month)]
 
 
@@ -447,6 +490,73 @@ def rosters(teams):
     return out, inj, cur
 
 
+# ------------------------------------------------------------ Understat (xG, PPDA, punti attesi)
+UNDERSTAT = "https://understat.com/"
+UNDERSTAT_LEAGUE = "Serie_A"
+# parole tolte dai nomi per confrontare quelli di Understat con quelli di ESPN
+_NAME_NOISE = {"ac", "as", "ss", "ssc", "fc", "cfc", "us", "uc", "calcio", "hellas", "bc", "1913", "1907", "1909"}
+_NAME_ALIAS = {"internazionale": "inter", "parmacalcio": "parma"}
+
+
+def _team_key(name):
+    import unicodedata
+    n = unicodedata.normalize("NFKD", name or "").encode("ascii", "ignore").decode().lower()
+    words = [w for w in re.split(r"[^a-z0-9]+", n) if w and w not in _NAME_NOISE]
+    k = "".join(words)
+    return _NAME_ALIAS.get(k, k)
+
+
+def _understat_get(url, ajax):
+    h = {"User-Agent": UA, "Referer": f"{UNDERSTAT}league/{UNDERSTAT_LEAGUE}"}
+    if ajax:
+        h.update({"X-Requested-With": "XMLHttpRequest", "Accept": "application/json"})
+    req = urllib.request.Request(url, headers=h)
+    with urllib.request.urlopen(req, timeout=30) as r:
+        return r.read().decode("utf-8", "replace")
+
+
+def understat_teams(y):
+    """{titolo Understat: [partite]} della stagione che inizia nell'anno y."""
+    try:
+        d = json.loads(_understat_get(f"{UNDERSTAT}getLeagueData/{UNDERSTAT_LEAGUE}/{y}", True))
+        if isinstance(d, dict) and d.get("teams"):
+            return {t["title"]: t.get("history") or [] for t in d["teams"].values()}
+    except (urllib.error.URLError, TimeoutError, ValueError, KeyError, ConnectionError) as e:
+        log("  Understat (dati):", e)
+    # formato vecchio: i dati sono dentro la pagina come JSON.parse('...')
+    html = _understat_get(f"{UNDERSTAT}league/{UNDERSTAT_LEAGUE}/{y}", False)
+    m = re.search(r"teamsData\s*=\s*JSON\.parse\('(.*?)'\)", html)
+    if not m:
+        raise RuntimeError("dati delle squadre non trovati nella pagina")
+    raw = re.sub(r"\\x([0-9a-fA-F]{2})", lambda g: chr(int(g.group(1), 16)), m.group(1))
+    d = json.loads(raw)
+    return {t["title"]: t.get("history") or [] for t in d.values()}
+
+
+def understat_xg(y, teams, cur):
+    """Totali di stagione per squadra (id ESPN): xG, xGA, xG senza rigori, PPDA, passaggi in area, punti attesi."""
+    data = understat_teams(y)
+    by_key = {_team_key(teams[t].get("name")): t for t in cur if t in teams}
+    by_key.update({_team_key(teams[t].get("short")): t for t in cur if t in teams})
+    out, missing = {}, []
+    for title, hist in data.items():
+        k = _team_key(title)
+        tid = by_key.get(k) or next((v for kk, v in by_key.items() if kk and (kk in k or k in kk)), None)
+        if not tid:
+            missing.append(title)
+            continue
+        f = lambda key: sum(float(h.get(key) or 0) for h in hist)  # noqa: E731
+        pp = lambda key, sub: sum(float((h.get(key) or {}).get(sub) or 0) for h in hist)  # noqa: E731
+        out[tid] = {"gp": len(hist), "xg": round(f("xG"), 2), "xga": round(f("xGA"), 2),
+                    "npxg": round(f("npxG"), 2), "npxga": round(f("npxGA"), 2),
+                    "ppda_att": pp("ppda", "att"), "ppda_def": pp("ppda", "def"),
+                    "oppda_att": pp("ppda_allowed", "att"), "oppda_def": pp("ppda_allowed", "def"),
+                    "deep": f("deep"), "deep_allowed": f("deep_allowed"), "xpts": round(f("xpts"), 2)}
+    if missing:
+        log("  Understat: squadre non riconosciute:", ", ".join(missing))
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--past", type=int, default=2, help="stagioni passate da tenere")
@@ -471,6 +581,12 @@ def main():
         meta["rosters"], meta["injuries"], meta["current_teams"] = rosters(teams)
     except Exception as e:  # noqa: BLE001
         log(f"ATTENZIONE rose: {e}")
+    try:
+        xg = understat_xg(y, teams, meta.get("current_teams") or list(teams))
+        meta["xg"] = {"source": "understat", "season": season_str(y), "teams": xg}
+        log(f"Understat: {len(xg)} squadre")
+    except Exception as e:  # noqa: BLE001  - si tiene il dato precedente
+        log(f"ATTENZIONE Understat: {e}")
     meta["teams"] = teams
     meta["updated_at"] = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     write_json(os.path.join(DATA, "meta.json"), meta)
