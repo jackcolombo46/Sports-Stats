@@ -69,6 +69,15 @@ più alta che supera la probabilità minima scelta e ordina per probabilità; si
 probabilità minima. `minLine` (in `app.js` di ogni app) esclude le soglie troppo basse (es. "almeno 5 punti"), e
 `windowH` è l'ampiezza della giornata in ore (NBA 20, LBA 60, calcio 96).
 
+Con il selettore **Squadre e partite** la stessa pagina mostra le previsioni di squadra, scegliendo per ogni partita e
+tipo la più ambiziosa che supera il minimo:
+- calcio: risultato (vittoria, vittoria con 2+ gol di scarto, non perde), gol di squadra, porta inviolata,
+  over/under, gol/no gol, dai gol attesi del modello (Poisson, come il riquadro 1-X-2);
+- basket: vittoria e scarto, punti di squadra e punti totali, da `BasketAdv.gameModel` (possessi attesi × rating
+  offensivo/difensivo, avvicinati alla media a inizio stagione, con distribuzione normale: deviazioni standard tipiche
+  NBA 13 punti sullo scarto e 19 sul totale, LBA 12 e 16).
+"Storico" = quante volte è successo nelle ultime partite di ciascuna squadra in questa stagione.
+
 ## Champions League
 
 L'app `docs/ucl/` usa lo stesso aggiornatore della Serie A con la competizione ESPN `uefa.champions`

@@ -93,13 +93,14 @@
     const tg = new Map();   // "gid|tri" -> totali della squadra nella partita
     for (const r of rows) {
       const k = r.gid + "|" + r.tri;
-      if (!tg.has(k)) tg.set(k, { gid: r.gid, tri: r.tri, opp: r.opp, ...zero() });
+      if (!tg.has(k)) tg.set(k, { gid: r.gid, tri: r.tri, opp: r.opp, date: r.date, ...zero() });
       add(tg.get(k), r);
     }
-    const teams = {};
+    const teams = {}, games = {};
     for (const g of tg.values()) {
       const o = tg.get(g.gid + "|" + g.opp);
       if (!o) continue;
+      (games[g.tri] ||= []).push({ date: g.date, pf: g.pts, pa: o.pts });
       const t = teams[g.tri] ||= { gp: 0, w: 0, T: zero(), O: zero(), P: 0, M: 0 };
       t.gp++; if (g.pts > o.pts) t.w++;
       add(t.T, g); add(t.O, o);
@@ -125,7 +126,8 @@
     for (const t of tg.values()) { const o = tg.get(t.gid + "|" + t.opp); if (o) { add(L.p, t); add(L.T, t); add(L.O, o); L.TM += t.min; } }
     const plg = Object.fromEntries(PM.map(m => [m.key, fin(m.val(L))]));
     const hasMade = rows.length > 0 && rows.every(r => r.fgm != null);
-    return (ctx._advB = { TM, PM, teams, teamVals, ranks, lg, byPlayer, plg, hasMade, nGames: tg.size / 2 });
+    for (const l of Object.values(games)) l.sort((a, b) => (a.date < b.date ? 1 : -1));
+    return (ctx._advB = { TM, PM, teams, games, teamVals, ranks, lg, byPlayer, plg, hasMade, nGames: tg.size / 2 });
   }
 
   const NOTE_OLD = "Alcune voci (eFG%, % al tiro, assist %) compariranno dopo il prossimo aggiornamento automatico dei dati.";
@@ -152,5 +154,31 @@
       + (A.hasMade ? "" : `<div class="advnote" style="margin-top:10px">${NOTE_OLD}</div>`);
   }
 
-  window.BasketAdv = { build, teamSection, playerSection, compare };
+  /* ---------------------------------------------------------- modello di partita (per le occasioni di squadra)
+     Punti attesi = possessi attesi × rating offensivo della squadra × rating difensivo dell'avversario / media,
+     con i rating avvicinati alla media del campionato a inizio stagione (peso = partite / (partite + 8)).
+     Lo scarto di una partita varia molto: deviazioni standard tipiche (NBA ~13 punti, LBA ~12). */
+  function gameModel(ctx, M, gameMin, h, a) {
+    const A = build(ctx, M, gameMin);
+    let P = 0, pts = 0, mins = 0;
+    for (const t of Object.values(A.teams)) { P += t.P; pts += t.T.pts; mins += t.M; }
+    if (!P) return null;
+    const lgR = 100 * pts / P, lgPace = P / mins * gameMin, K = 8;
+    const r = tri => {
+      const t = A.teams[tri];
+      if (!t) return { o: lgR, d: lgR, pace: lgPace };
+      const w = t.gp / (t.gp + K);
+      return { o: w * 100 * t.T.pts / t.P + (1 - w) * lgR, d: w * 100 * t.O.pts / t.P + (1 - w) * lgR,
+               pace: w * (t.P / t.M * gameMin) + (1 - w) * lgPace };
+    };
+    const H = r(h), V = r(a), poss = H.pace * V.pace / lgPace;
+    const homeAdv = gameMin === 48 ? 2.5 : 3;
+    return { ph: poss * (H.o * V.d / lgR) / 100 + homeAdv / 2, pa: poss * (V.o * H.d / lgR) / 100 - homeAdv / 2,
+             sd: gameMin === 48 ? { team: 11.5, diff: 13, tot: 19 } : { team: 10, diff: 12, tot: 16 } };
+  }
+
+  /* ultime 10 partite della squadra in questa stagione: [{pf, pa}] dalla più recente */
+  const teamGames = (ctx, M, gameMin, tri) => (build(ctx, M, gameMin).games[tri] || []).slice(0, 10);
+
+  window.BasketAdv = { build, teamSection, playerSection, compare, gameModel, teamGames };
 })();

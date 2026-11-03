@@ -308,7 +308,7 @@
   $("#go").onclick = run;
   $("#team").onchange = run;
   $("#cmpA").onchange = $("#cmpB").onchange = run;
-  $("#pkGame").onchange = $("#pkStat").onchange = $("#pkMin").onchange = run;
+  $("#pkKind").onchange = $("#pkGame").onchange = $("#pkStat").onchange = $("#pkMin").onchange = run;
   $("#opp").onchange = () => { if (selected || $("#team").value) run(); };
 
   function run() {
@@ -317,7 +317,7 @@
       if (mode === "watch") return renderWatch();
       if (mode === "table") { $("#out").innerHTML = renderTable(); return bindRows(); }
       if (mode === "compare") { $("#out").innerHTML = renderCompare(); return; }
-      if (mode === "picks") { $("#out").innerHTML = renderPicks(); Picks.bindMore(run); return bindRows(); }
+      if (mode === "picks") { $("#out").innerHTML = renderPicks(); Picks.bindMore(run, (h, a) => { $("#cmpA").dataset.set = 1; $("#cmpA").value = h; $("#cmpB").value = a; setMode("compare"); window.scrollTo({ top: 0, behavior: "smooth" }); run(); }); return bindRows(); }
       if (mode === "player") {
         if (!selected) { if (suggList.length) return pick(0); return; }
         $("#out").innerHTML = renderPlayer(playerResult(selected.id));
@@ -575,7 +575,13 @@
       logo: (id, size) => L(id, size), photo: (pid, nm) => P(pid, nm),
       stats: M.ALL_STATS.map(s => [s, M.LABELS[s]]),
       minLine: { SH: 2, FC: 2, FS: 2, SV: 2 },
-      el: { game: $("#pkGame"), stat: $("#pkStat"), min: $("#pkMin") },
+      sport: "soccer",
+      teamModel: (h, a) => { const m = ctx.matchup(h, a, true); return { lh: m.xg, la: m.xg_opp }; },
+      teamHist: tid => ctx.games.filter(g => (g.home === tid || g.away === tid) && g.hg != null)
+        .sort((a, b) => (a.date < b.date ? 1 : -1)).slice(0, 10)
+        .map(g => (g.home === tid ? { pf: g.hg, pa: g.ag } : { pf: g.ag, pa: g.hg })),
+      teamNote: "Gol attesi dallo stesso modello del riquadro 1-X-2 della scheda Squadra.",
+      el: { kind: $("#pkKind"), game: $("#pkGame"), stat: $("#pkStat"), min: $("#pkMin") },
     });
   }
 
