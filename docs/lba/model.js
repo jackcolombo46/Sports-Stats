@@ -35,6 +35,13 @@
     BLK: [1, 2, 3, 4], TOV: [1, 2, 3, 4, 5, 6], PRA: [10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60],
   };
   const SHRINK_GAMES = 12, PREV_SEASON_REGRESS = 0.5, RATE_HALF_LIFE = 20, MIN_HALF_LIFE = 4;
+  /* Taratura LBA (vedi tools/backtest): i giocatori hanno poche partite, quindi le stime individuali sono incerte.
+     PRIOR_MIN: minuti "medi" aggiunti al rendimento del giocatore (lo avvicinano alla media del campionato)
+     PARAM_K:   peso dell'incertezza sulla stima del rendimento nella varianza
+     SD_MIN:    deviazione standard dei minuti giocati rispetto a quelli previsti
+     I valori si possono cambiare solo per le prove (MODEL_PARAMS), l'app usa questi. */
+  // valori scelti con la verifica: tarati sulla stagione 2025-26 e controllati sulla 2026-27 (mai usata per tararli)
+  const TUNE = Object.assign({ PRIOR_MIN: 100, PARAM_K: 1, SD_MIN: 4 }, root.MODEL_PARAMS || {});
   const H2H_MAX_WEIGHT = 0.30, LIKELY_PROB = 0.60;
   const KEY = { PTS: "pts", REB: "reb", AST: "ast", FG3M: "fg3m", STL: "stl", BLK: "blk", TOV: "tov" };
 
@@ -143,6 +150,10 @@
       this.teamDates = {};
       for (const g of bundle.logs[this.season] || []) (this.teamDates[g.tri] ||= new Set()).add(g.date);
 
+      this.leagueRate = {};
+      { const rows = [this.season, this.prevSeason].flatMap(s => bundle.logs[s] || []);
+        const mins = rows.reduce((a, r) => a + (r.min || 0), 0);
+        for (const s of ALL_STATS) this.leagueRate[s] = mins ? rows.reduce((a, r) => a + statVal(r, s), 0) / mins : 0; }
       this.teamCur = teamAggregates(bundle.logs[this.season] || []);
       this.teamPrev = this.prevSeason ? teamAggregates(bundle.logs[this.prevSeason] || []) : {};
       this.teamCtx = Object.fromEntries(TEAMS.map(t => [t.tri, this._blendTeam(t.tri)]));
@@ -251,7 +262,8 @@
         for (const s of ALL_STATS) num[s] += w * statVal(g, s);
         den += w * g.min;
       });
-      const rate = Object.fromEntries(ALL_STATS.map(s => [s, num[s] / den]));
+      const rate = Object.fromEntries(ALL_STATS.map(s => [s, (num[s] + TUNE.PRIOR_MIN * this.leagueRate[s]) / (den + TUNE.PRIOR_MIN)]));
+      const expo = den + TUNE.PRIOR_MIN;   // minuti (pesati) su cui si basa la stima
 
       const wmean = (games, hl) => {
         let sw = 0, sm = 0;
@@ -307,7 +319,8 @@
         const mean = vals.reduce((a, b) => a + b, 0) / vals.length;
         const varRaw = vals.reduce((a, v) => a + (v - mean) ** 2, 0) / Math.max(1, vals.length - 1);
         const phi = mean > 0 ? clamp(varRaw / mean, 1, 5) : 1;
-        const v = phi * mu;
+        // varianza = partita per partita + incertezza sulla stima del rendimento + incertezza sui minuti
+        const v = phi * mu * (1 + TUNE.PARAM_K * minutes / expo) + (minutes > 0 ? (mu / minutes) ** 2 * TUNE.SD_MIN ** 2 : 0);
 
         const lines = [];
         for (const L of LINES[s]) {
@@ -320,7 +333,7 @@
         }
         const ll = likelyLine(mu, v);
         stats.push({
-          stat: s, label: LABELS[s], proj: r1(mu),
+          stat: s, label: LABELS[s], proj: r1(mu), mu, v,
           season_avg: cur.length ? r1(avg(cur, s)) : null,
           prev_avg: prev.length ? r1(avg(prev, s)) : null,
           l10_avg: r1(avg(last10, s)),

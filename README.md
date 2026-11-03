@@ -87,6 +87,17 @@ le previsioni di squadra (stessi calcoli di `docs/picks.js`). Scrive `docs/<spor
 aggiornamento automatico (passo "Verifica del modello", da pochi secondi a ~30 s) e l'app lo mostra in fondo alla
 pagina Occasioni, sezione **Quanto ci azzecca il modello**. Contano solo i giocatori scesi in campo.
 
+### Taratura del modello LBA
+
+La verifica mostrava che sui giocatori LBA il modello era troppo sicuro di sé (occasioni previste al 79%, riuscite al
+69%): le medie erano giuste, ma con poche partite per giocatore le stime individuali sono incerte e la pagina Occasioni
+finiva per scegliere i giocatori sovrastimati per caso. In `docs/lba/model.js` (oggetto `TUNE`):
+- `PRIOR_MIN = 100`: al rendimento di ogni giocatore si aggiungono 100 minuti "medi" del campionato;
+- `PARAM_K = 1`: la varianza include l'incertezza sulla stima del rendimento;
+- `SD_MIN = 4`: la varianza include l'incertezza sui minuti (±4 a partita).
+Valori scelti sulla stagione 2025-26 e controllati sulla 2026-27, mai usata per tararli (occasioni: prima 79,8% previste
+e 64,4% riuscite, dopo 78,2% e 76,6%). Per riprovare altri valori: `MODEL_PARAMS` nel contesto in cui gira il modello.
+
 ## Effetto assenze
 
 `docs/absence.js`: per ogni coppia di compagni confronta le partite di un giocatore giocate con e senza il compagno
