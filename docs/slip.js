@@ -351,5 +351,13 @@
   st.textContent = css;
   document.head.appendChild(st);
 
-  window.Slip = { init, button, bind, render, bindPage, has, count, setResults, evalTeam };
+  /* aggiunge più previsioni insieme (quelle già presenti restano); restituisce quante sono state aggiunte */
+  function addAll(list) {
+    let n = 0;
+    for (const it of list) if (!has(it.key)) { items.push({ ...it, odds: "", added: new Date().toISOString() }); n++; }
+    if (n) save();
+    return n;
+  }
+
+  window.Slip = { init, button, bind, render, bindPage, has, count, setResults, evalTeam, addAll };
 })();

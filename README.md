@@ -173,6 +173,17 @@ In cima: schedine vinte/perse/aperte, previsioni indovinate rispetto a quanto di
 (solo schedine chiuse con importo). Gli esiti si aggiornano quando arrivano i risultati e restano salvati; ogni schedina
 si può rimettere nella schedina o eliminare.
 
+## Generatore di schedine
+
+`docs/gen.js`, in **Schedina → Generatore**: per ogni categoria la schedina più probabile della prossima giornata
+(stessa giornata e stesse previsioni di Occasioni, `Picks.pool`). Categorie: giocatori tutte insieme e per statistica,
+squadre tutte insieme e per tipo (risultato, gol totali, punti di squadra…). Due modi:
+- **per numero** (2–6): le N previsioni più probabili;
+- **per quota** (1,50–20): le più probabili finché la quota giusta raggiunge l'obiettivo.
+Al massimo una previsione per giocatore; per le squadre una per partita (due della stessa partita sarebbero legate o in
+contrasto). "Ogni previsione almeno X%" è la stessa probabilità minima di Occasioni (per giocatore e statistica la soglia
+più alta che la supera). "Aggiungi alla schedina" le mette tutte nella Schedina (`Slip.addAll`).
+
 ## Quanto ci azzecca il modello
 
 `tools/backtest/backtest.js` (Node, senza dipendenze) rifà le proiezioni di ogni partita già giocata (stagione in corso e

@@ -314,6 +314,7 @@
       if (mode === "today") { $("#out").innerHTML = renderToday(); Today.bind(run, openMatch, () => go("picks")); Slip.bind($("#out")); return bindRows(); }
       if (mode === "table") { $("#out").innerHTML = renderStandings(); return bindRows(); }
       if (mode === "leaders") { $("#out").innerHTML = renderLeaders(); Leaders.bind(run); return bindRows(); }
+      if (mode === "gen") { $("#out").innerHTML = Gen.render(picksCfg()); Gen.bind(run); return bindRows(); }
       if (mode === "watch") return renderWatch();
       if (mode === "slip") return showSlip();
       if (mode === "compare") { $("#out").innerHTML = renderCompare(); mountTrend(); Adv.bind($("#out")); Slip.bind($("#out")); return bindRows(); }
@@ -631,8 +632,8 @@
   // ------------------------------------------------------------ occasioni (previsioni più probabili della prossima giornata)
   const PICK_MIN = { PTS: 10, REB: 4, AST: 4, FG3M: 2, STL: 1, BLK: 1, TOV: 2, PRA: 20 };   // soglie minime (sotto sono previsioni banali)
   let BT = null;   // verifica del modello (data/backtest.json), caricata senza far aspettare l'app
-  function renderPicks() {
-    return Picks.render({
+  function picksCfg() {
+    return {
       backtest: BT, sportName: "NBA",
       ctx, schedule: ctx.schedule, windowH: 20, defMin: 70,
       project: (tri, opp, home) => ctx.projectTeam(tri, opp, home),
@@ -645,8 +646,9 @@
       teamHist: tri => BasketAdv.teamGames(ctx, M, GM, tri),
       teamNote: "Punti attesi da ritmo e rating offensivo/difensivo delle due squadre in questa stagione (vantaggio del campo incluso).",
       el: { kind: $("#pkKind"), game: $("#pkGame"), stat: $("#pkStat"), min: $("#pkMin") },
-    });
+    };
   }
+  function renderPicks() { return Picks.render(picksCfg()); }
 
   // ------------------------------------------------------------ effetto assenze dei compagni
   const ABS = {

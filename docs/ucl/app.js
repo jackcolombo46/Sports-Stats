@@ -343,6 +343,7 @@
     try {
       if (mode === "today") { $("#out").innerHTML = renderToday(); Today.bind(run, openMatch, () => go("picks")); Slip.bind($("#out")); return bindRows(); }
       if (mode === "leaders") { $("#out").innerHTML = renderLeaders(); Leaders.bind(run); return bindRows(); }
+      if (mode === "gen") { $("#out").innerHTML = Gen.render(picksCfg()); Gen.bind(run); return bindRows(); }
       if (mode === "watch") return renderWatch();
       if (mode === "table") { $("#out").innerHTML = renderTable(); return bindRows(); }
       if (mode === "slip") return showSlip();
@@ -663,8 +664,8 @@
   // ------------------------------------------------------------ occasioni (previsioni più probabili della prossima giornata)
   const PICK_MIN = { SH: 2, FC: 2, FS: 2, SV: 2 };   // soglie minime (sotto sono previsioni banali)
   let BT = null;   // verifica del modello (data/backtest.json), caricata senza far aspettare l'app
-  function renderPicks() {
-    return Picks.render({
+  function picksCfg() {
+    return {
       backtest: BT, sportName: "Champions League",
       ctx, schedule: ctx.schedule, windowH: 96, defMin: 65,
       project: (tid, opp, home) => ctx.projectTeam(tid, opp, home),
@@ -679,8 +680,9 @@
         .map(g => (g.home === tid ? { pf: g.hg, pa: g.ag } : { pf: g.ag, pa: g.hg })),
       teamNote: "Gol attesi dallo stesso modello del riquadro 1-X-2 della scheda Squadra.",
       el: { kind: $("#pkKind"), game: $("#pkGame"), stat: $("#pkStat"), min: $("#pkMin") },
-    });
+    };
   }
+  function renderPicks() { return Picks.render(picksCfg()); }
 
   // ------------------------------------------------------------ effetto assenze dei compagni
   const ABS = {
