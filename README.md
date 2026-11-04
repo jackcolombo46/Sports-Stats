@@ -161,6 +161,18 @@ giusta (1 / probabilità) e, con le quote del bookmaker (per previsione o totale
 (collegate fra loro); due soglie della stessa statistica dello stesso giocatore contano una volta sola (la più alta).
 Salvata nel browser, una per sport; le probabilità sono quelle del momento dell'aggiunta.
 
+**Risultati**: quando la partita è finita (dati dell'app: NBA, Serie A e Champions all'apertura, LBA con l'aggiornamento
+automatico) ogni previsione mostra l'esito e il dato reale: ✓ indovinata / ✗ sbagliata con il valore fatto dal giocatore
+o il risultato finale, "nulla" se il giocatore non ha giocato (non conta, come per i bookmaker), "in corso", "da giocare".
+In cima lo stato della schedina: vinta (tutte indovinate), persa (almeno una sbagliata) o aperta, con la vincita o
+l'importo perso. Le previsioni di squadra si controllano dal testo (`Slip.evalTeam`), quelle dei giocatori dal tabellino;
+ogni app passa i risultati con `Slip.setResults({ game, player })`.
+
+**Storico** ("Salva nello storico"): sposta la schedina in un elenco salvato nel browser (`<sport>.slipHist`) e la svuota.
+In cima: schedine vinte/perse/aperte, previsioni indovinate rispetto a quanto diceva il modello, giocato, vinto e saldo
+(solo schedine chiuse con importo). Gli esiti si aggiornano quando arrivano i risultati e restano salvati; ogni schedina
+si può rimettere nella schedina o eliminare.
+
 ## Quanto ci azzecca il modello
 
 `tools/backtest/backtest.js` (Node, senza dipendenze) rifà le proiezioni di ogni partita già giocata (stagione in corso e

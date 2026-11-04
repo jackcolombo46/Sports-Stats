@@ -210,6 +210,7 @@
       ? `Stagione ${esc(ctx.season)} · statistiche aggiornate${esc(liveNote)} <button id="refresh">Ricarica</button>`
       : `Stagione ${esc(ctx.season)} · statistiche al ${esc(upd)} <button id="refresh">Ricarica</button>`;
     $("#refresh").onclick = async () => { await loadData(); run(); };
+    Slip.setResults(slipResults());
     run();
   }
 
@@ -698,6 +699,21 @@
   const slipBadge = () => Nav.badge(Slip.count());
   Slip.init("seriea", slipBadge);
   function showSlip() { $("#out").innerHTML = Slip.render(); Slip.bindPage(showSlip); }
+  /* risultati per la schedina: punteggi e tabellini delle partite finite */
+  function slipResults() {
+    const G = new Map(), PL = new Map();
+    for (const g of ctx.games) if (g.hg != null && g.ag != null) G.set(String(g.gid), g);
+    for (const logs of ctx.playerLogs.values()) for (const r of logs) PL.set(String(r.gid) + "|" + r.pid, r);
+    return {
+      game: gid => {
+        const g = G.get(gid);
+        if (g) return { done: true, h: T(g.home).short, a: T(g.away).short, hs: g.hg, as: g.ag };
+        const s = ctx.schedule.find(x => String(x.id) === gid);
+        return { done: false, live: (!!s && s.state === "in") || liveNow.some(e => String(e.id) === gid) };
+      },
+      player: (gid, pid, stat) => { const r = PL.get(gid + "|" + pid); return r && r.min > 0 ? STATV(stat)(r) : null; },
+    };
+  }
 
   // ------------------------------------------------------------ confronto fra squadre
   function cmpOptions() {
