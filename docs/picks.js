@@ -301,5 +301,33 @@
   st.textContent = css;
   document.head.appendChild(st);
 
-  window.Picks = { render, bindMore, nextGames, soccerMarkets, basketMarkets, backtest };
+  /* tutte le occasioni della prossima giornata sopra la probabilità min (stessa scelta della soglia della pagina Occasioni):
+     giocatori = per giocatore e statistica la soglia più alta; squadre = per partita e tipo la previsione più ambiziosa */
+  function pool(cfg, min) {
+    const games = nextGames(cfg.schedule, cfg.windowH);
+    if (!games.length) return { games, players: [], teams: [] };
+    cfg.games = games;
+    const players = [], teams = [];
+    for (const it of collect(cfg)) {
+      const ok = it.lines.filter(l => l.prob >= min);
+      if (!ok.length) continue;
+      const b = ok.reduce((a, x) => (x.line > a.line ? x : a));
+      players.push({ ...it, line: b.line, prob: b.prob, l10: b.l10 });
+    }
+    for (const it of teamItems(cfg)) {
+      const ok = it.lines.filter(l => l.prob >= min && l.prob < 0.995);
+      if (!ok.length) continue;
+      teams.push({ ...it, ...ok.reduce((a, x) => (x.prob < a.prob ? x : a)) });
+    }
+    return { games, players, teams };
+  }
+  /* la previsione nel formato della schedina (stesse chiavi dei pulsanti "+") */
+  function slipItem(cfg, p) {
+    return p.pid != null
+      ? { key: `p|${p.gid}|${p.pid}|${p.stat}|${p.line}`, kind: "p", gid: p.gid, utc: p.utc, pid: p.pid, prob: p.prob,
+          text: `${p.name}: ${p.label.toLowerCase()} almeno ${p.line}`, sub: `${cfg.short(p.tid)} ${p.home ? "vs" : "@"} ${cfg.short(p.opp)}` }
+      : { key: `t|${p.gid}|${p.text}`, kind: "t", gid: p.gid, utc: p.utc, prob: p.prob, text: p.text, sub: `${cfg.short(p.home)} – ${cfg.short(p.away)}` };
+  }
+
+  window.Picks = { render, bindMore, nextGames, soccerMarkets, basketMarkets, backtest, pool, slipItem };
 })();

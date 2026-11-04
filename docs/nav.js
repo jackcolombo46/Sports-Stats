@@ -22,7 +22,7 @@
     { id: "search", label: "Cerca", modes: ["player", "team"] },
     { id: "compare", label: "Confronta", modes: ["compare"] },
     { id: "ranks", label: "Classifiche", modes: ["table", "leaders"], subs: [["table", "Squadre"], ["leaders", "Giocatori"]] },
-    { id: "slip", label: "Schedina", modes: ["slip", "watch"], subs: [["slip", "Schedina"], ["watch", "Osservati"]] },
+    { id: "slip", label: "Schedina", modes: ["slip", "watch", "gen"], subs: [["slip", "Schedina"], ["watch", "Osservati"], ["gen", "Generatore"]] },
   ];
   const secOf = m => SECTIONS.find(s => s.modes.includes(m)) || SECTIONS[0];
   const ALL = SECTIONS.flatMap(s => s.modes);
