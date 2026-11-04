@@ -143,9 +143,11 @@ Per riprovare: `MODEL_PARAMS = { ABS: { ON, K, MISSED, ROLE } }`.
 
 ## Andamento e confronto fra giocatori
 
-- `docs/trend.js`: grafici SVG senza librerie. Nella scheda giocatore, **Andamento**: ultime 20 partite della
-  statistica scelta, barre verdi se raggiunge la soglia (scelta fra quelle della proiezione), media, separazione fra
-  stagioni.
+- Scheda giocatore, `docs/thresh.js`: in ogni statistica le soglie si scelgono una alla volta (di partenza la soglia
+  "molto probabile"). Per la soglia scelta: probabilità del modello, quante volte l'ha raggiunta nelle ultime 10
+  partite, il grafico di quelle partite con la linea della soglia (verde = raggiunta, separazione fra stagioni) e una
+  frase che lo riassume; accanto il "+" per la schedina. Sostituisce l'elenco delle soglie e il grafico "Andamento".
+- `docs/trend.js`: grafici SVG senza librerie, usati in Confronta giocatori.
 - **Confronta → Confronta giocatori** (anche dalla scheda giocatore con "⇄ Confronta"): due giocatori qualsiasi,
   anche della stessa squadra, affiancati verde/grigio/rosso: proiezione della prossima partita, stagione, ultime 10,
   statistiche avanzate; sotto, l'andamento dei due sovrapposto. Se sono di squadre diverse ognuno è proiettato contro

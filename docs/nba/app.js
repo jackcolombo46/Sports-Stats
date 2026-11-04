@@ -324,7 +324,6 @@
         $("#out").innerHTML = renderPlayer(playerResult(selected.id));
         $("#addw").onclick = () => { addWatch({ id: selected.id, name: selected.name }); $("#addw").textContent = "✓ tra gli osservati"; };
         $("#toPcmp").onclick = () => openPlayerCompare(selected.id);
-        mountTrend();
       } else {
         const t = $("#team").value;
         if (!t) { $("#out").innerHTML = searchHome(); return bindRows(); }
@@ -332,6 +331,7 @@
         const tc = $("#toCmp"); if (tc) tc.onclick = () => openCompare(t);
       }
       Adv.bind($("#out"));
+      Thresh.bind($("#out"));
       Slip.bind($("#out"));
       bindRows();
     } catch (e) {
@@ -502,20 +502,13 @@
       s.h2h_avg != null ? `vs avv. <b>${s.h2h_avg}</b>` : "",
     ].filter(Boolean).map(x => `<span>${x}</span>`).join("");
     const sl = d && d.game && d.game.id && !d.game.manual;   // pulsante schedina solo con una partita vera in calendario
-    const lines = s.lines.map(l => `
-      <div class="ln${sl ? " slp" : ""}"><span>${l.line}+</span>
-        <div class="bar"><i style="width:${pct(l.prob)};background:${color(l.prob)}"></i></div>
-        <span style="text-align:right">${pct(l.prob)}</span>
-        <span class="hr">${l.l10[0]}/${l.l10[1]}</span>${sl ? Slip.button({ key: `p|${d.game.id}|${d.player.id}|${s.stat}|${l.line}`, kind: "p",
-          gid: d.game.id, utc: d.game.utc, pid: d.player.id, prob: l.prob, text: `${d.player.name}: ${s.label.toLowerCase()} almeno ${l.line}`,
-          sub: `${slipTeam(d.player.team)} ${d.game.home === false ? "@" : "vs"} ${slipTeam(d.opponent)}` }) : ""}</div>`).join("");
-    return `<div class="card">
-      <div class="top"><span class="name">${esc(s.label)}</span><span class="proj">${s.proj}</span></div>
-      <div class="likely">${lk}</div>
-      <div class="avgs">${av}</div>
-      <div class="ln lnh${sl ? " slp" : ""}"><span>soglia</span><span>probabilità</span><span></span><span class="hr">L10</span>${sl ? "<span></span>" : ""}</div>
-      ${lines}</div>`;
+    return Thresh.card({ label: s.label, proj: s.proj, likely: lk, avgs: av, lines: s.lines, def: defLine(s),
+      points: trendPoints(d.player.id, s.stat, 10), unit: s.label.toLowerCase(),
+      slip: sl ? (line, prob) => Slip.button({ key: `p|${d.game.id}|${d.player.id}|${s.stat}|${line}`, kind: "p",
+        gid: d.game.id, utc: d.game.utc, pid: d.player.id, prob, text: `${d.player.name}: ${s.label.toLowerCase()} almeno ${line}`,
+        sub: `${slipTeam(d.player.team)} ${d.game.home === false ? "@" : "vs"} ${slipTeam(d.opponent)}` }) : null });
   }
+
 
   function renderPlayer(d) {
     const w = d.warnings.map(x => `<div class="warn">⚠ ${esc(x)}</div>`).join("");
@@ -536,7 +529,6 @@
     </div>${w}
     <h3>Proiezioni contro ${esc(d.opponent.name)}</h3>
     <div class="grid">${d.stats.map(s => statCard(s, d)).join("")}</div>
-    ${playerTrend(d)}
     ${oppChips(d.opp_profile)}
     <div class="two">
       <div><h3>Ultime 10 partite</h3><table><tr><th>Data</th><th>Avv.</th><th>Min</th><th>Pt</th><th>Rb</th><th>As</th><th>3P</th></tr>${recent}</table></div>
