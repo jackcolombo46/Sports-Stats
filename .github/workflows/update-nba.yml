@@ -43,8 +43,14 @@ jobs:
           git add docs/nba/data
           git diff --cached --quiet && exit 0
           git commit -m "Dati aggiornati nba $(date -u +'%Y-%m-%d %H:%M UTC')"
-          git pull --rebase -q -X ours origin main || (git rebase --abort; git pull -q --no-rebase -X ours origin main)
-          git push
+          # più aggiornamenti possono salvare insieme: se un altro ha appena salvato, riprende le sue modifiche e riprova
+          ok=0
+          for n in 1 2 3 4 5; do
+            git pull --rebase -q -X ours origin main || (git rebase --abort; git pull -q --no-rebase -X ours origin main)
+            if git push; then ok=1; break; fi
+            sleep $((n * 7))
+          done
+          [ "$ok" = 1 ]
       - name: Stagioni passate (solo la prima volta)
         run: |
           set -o pipefail
@@ -57,5 +63,11 @@ jobs:
           git add docs/nba/data
           git diff --cached --quiet && exit 0
           git commit -m "Dati aggiornati nba $(date -u +'%Y-%m-%d %H:%M UTC')"
-          git pull --rebase -q -X ours origin main || (git rebase --abort; git pull -q --no-rebase -X ours origin main)
-          git push
+          # più aggiornamenti possono salvare insieme: se un altro ha appena salvato, riprende le sue modifiche e riprova
+          ok=0
+          for n in 1 2 3 4 5; do
+            git pull --rebase -q -X ours origin main || (git rebase --abort; git pull -q --no-rebase -X ours origin main)
+            if git push; then ok=1; break; fi
+            sleep $((n * 7))
+          done
+          [ "$ok" = 1 ]
