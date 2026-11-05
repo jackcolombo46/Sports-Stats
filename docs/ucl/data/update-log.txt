@@ -2,10 +2,5 @@ Competizione uefa.champions -> docs/ucl/data
 Stagione 2026-27: controllo le partite dal 2026-11-01 al 2026-11-05
 Stagione 2026-27: 0 partite nuove
 Understat: competizione non coperta, si usa solo l'xG di ESPN
-Fatto: 2026-11-05T02:42:42Z 5 file, 36 partite in calendario, 1176 giocatori in rosa
+Fatto: 2026-11-05T17:25:19Z 5 file, 36 partite in calendario, 1176 giocatori in rosa
 ucl: 42 giornate, 261 partite in 1s; occasioni giocatori 699 (previste 0.729, riuscite 0.742); squadre 1314 (previste 0.75, riuscite 0.72)
-Competizione uefa.champions -> docs/ucl/data
-Stagione 2026-27: controllo le partite dal 2026-11-01 al 2026-11-05
-Stagione 2026-27: 0 partite nuove
-Understat: competizione non coperta, si usa solo l'xG di ESPN
-Fatto: 2026-11-05T02:42:55Z 5 file, 36 partite in calendario, 1176 giocatori in rosa
