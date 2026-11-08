@@ -1,14 +1,7 @@
 Competizione ita.1 -> docs/seriea/data
-Stagione 2026-27: controllo le partite dal 2026-11-04 al 2026-11-07
-Stagione 2026-27: 2 partite nuove
-  statistiche di squadra ESPN: accurateCrosses, accurateLongBalls, accuratePasses, blockedShots, crossPct, effectiveClearance, effectiveTackles, foulsCommitted, interceptions, longballPct, offsides, passPct, penaltyKickGoals, penaltyKickShots, possessionPct, redCards, saves, shotPct, shotsOnTarget, tacklePct, totalClearance, totalCrosses, totalLongBalls, totalPasses, totalShots, totalTackles, wonCorners, yellowCards
-  Understat (dati): Expecting value: line 1 column 1 (char 0)
-ATTENZIONE Understat: dati delle squadre non trovati nella pagina
-Fatto: 2026-11-07T22:48:27Z 6 file, 19 partite in calendario, 654 giocatori in rosa
-seriea: 168 giornate, 485 partite in 7s; occasioni giocatori 1089 (previste 0.726, riuscite 0.754); squadre 1958 (previste 0.742, riuscite 0.731)
-Competizione ita.1 -> docs/seriea/data
-Stagione 2026-27: controllo le partite dal 2026-11-04 al 2026-11-07
+Stagione 2026-27: controllo le partite dal 2026-11-04 al 2026-11-08
 Stagione 2026-27: 0 partite nuove
   Understat (dati): Expecting value: line 1 column 1 (char 0)
 ATTENZIONE Understat: dati delle squadre non trovati nella pagina
-Fatto: 2026-11-07T22:48:39Z 6 file, 19 partite in calendario, 654 giocatori in rosa
+Fatto: 2026-11-08T06:18:42Z 6 file, 23 partite in calendario, 654 giocatori in rosa
+seriea: 168 giornate, 485 partite in 7s; occasioni giocatori 1089 (previste 0.726, riuscite 0.754); squadre 1958 (previste 0.742, riuscite 0.731)
