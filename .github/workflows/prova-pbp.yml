@@ -1,0 +1,29 @@
+name: Prova cronaca nelle app (temporaneo)
+
+on:
+  push:
+    branches: [statistiche-per-quarto-e-minuto]
+    paths: ["tools/pbp/**", ".github/workflows/prova-pbp.yml"]
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          for s in nba seriea ucl lba; do
+            python tools/pbp/update_pbp.py --sport $s --max 12 --report tools/pbp/report/$s.json || echo "errore $s"
+          done
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add tools/pbp/report docs/*/data/pbp
+          git commit -m "Prova cronaca" || exit 0
+          git push
