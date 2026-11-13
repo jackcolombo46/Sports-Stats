@@ -9,3 +9,9 @@ seriea 2026-27: 98 partite nuove, 0 da fare
 seriea 2025-26: 102 partite nuove, 278 da fare
 fatto in 23s · partite 200 · errori 0
 confronto con i tabellini: {'gol ok': 6333, 'ast ok': 6333, 'sh ok': 6272, 'sot ok': 6227, 'fc ok': 6026, 'fs ok': 6286, 'yc ok': 6322, 'min ok': 6310, 'fs diverso': 47, 'fc diverso': 307, 'sot diverso': 106, 'yc diverso': 11, 'min diverso': 23, 'sh diverso': 61, 'evento senza giocatore': 4}
+Competizione ita.1 -> docs/seriea/data
+Stagione 2026-27: controllo le partite dal 2026-11-05 al 2026-11-13
+Stagione 2026-27: 0 partite nuove
+  Understat (dati): Expecting value: line 1 column 1 (char 0)
+ATTENZIONE Understat: dati delle squadre non trovati nella pagina
+Fatto: 2026-11-13T15:33:09Z 6 file, 21 partite in calendario, 655 giocatori in rosa
