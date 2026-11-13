@@ -8,3 +8,8 @@ ucl 2026-27: 60 partite nuove, 0 da fare
 ucl 2025-26: 90 partite nuove, 99 da fare
 fatto in 18s · partite 150 · errori 0
 confronto con i tabellini: {'gol ok': 4643, 'ast ok': 4651, 'sh ok': 4564, 'sot ok': 4553, 'fc ok': 4441, 'fs ok': 4620, 'yc ok': 4641, 'min ok': 4546, 'sot diverso': 99, 'fc diverso': 211, 'min diverso': 106, 'fs diverso': 32, 'yc diverso': 11, 'sh diverso': 88, 'gol diverso': 9, 'evento senza giocatore': 4, 'ast diverso': 1}
+Competizione uefa.champions -> docs/ucl/data
+Stagione 2026-27: controllo le partite dal 2026-11-01 al 2026-11-13
+Stagione 2026-27: 0 partite nuove
+Understat: competizione non coperta, si usa solo l'xG di ESPN
+Fatto: 2026-11-13T15:32:54Z 5 file, 36 partite in calendario, 1187 giocatori in rosa
