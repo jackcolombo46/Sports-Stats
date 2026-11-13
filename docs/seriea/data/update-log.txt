@@ -3,15 +3,8 @@ Stagione 2026-27: controllo le partite dal 2026-11-05 al 2026-11-13
 Stagione 2026-27: 0 partite nuove
   Understat (dati): Expecting value: line 1 column 1 (char 0)
 ATTENZIONE Understat: dati delle squadre non trovati nella pagina
-Fatto: 2026-11-13T15:32:25Z 6 file, 21 partite in calendario, 655 giocatori in rosa
-seriea: 169 giornate, 490 partite in 7s; occasioni giocatori 1101 (previste 0.726, riuscite 0.754); squadre 1982 (previste 0.742, riuscite 0.733)
-seriea 2026-27: 98 partite nuove, 0 da fare
-seriea 2025-26: 102 partite nuove, 278 da fare
-fatto in 23s · partite 200 · errori 0
-confronto con i tabellini: {'gol ok': 6333, 'ast ok': 6333, 'sh ok': 6272, 'sot ok': 6227, 'fc ok': 6026, 'fs ok': 6286, 'yc ok': 6322, 'min ok': 6310, 'fs diverso': 47, 'fc diverso': 307, 'sot diverso': 106, 'yc diverso': 11, 'min diverso': 23, 'sh diverso': 61, 'evento senza giocatore': 4}
-Competizione ita.1 -> docs/seriea/data
-Stagione 2026-27: controllo le partite dal 2026-11-05 al 2026-11-13
-Stagione 2026-27: 0 partite nuove
-  Understat (dati): Expecting value: line 1 column 1 (char 0)
-ATTENZIONE Understat: dati delle squadre non trovati nella pagina
-Fatto: 2026-11-13T15:33:09Z 6 file, 21 partite in calendario, 655 giocatori in rosa
+Fatto: 2026-11-13T18:44:13Z 6 file, 21 partite in calendario, 655 giocatori in rosa
+seriea: 169 giornate, 490 partite in 6s; occasioni giocatori 1101 (previste 0.726, riuscite 0.754); squadre 1982 (previste 0.742, riuscite 0.733)
+seriea 2025-26: 200 partite nuove, 78 da fare
+fatto in 32s · partite 200 · errori 0
+confronto con i tabellini: {'gol ok': 6257, 'ast ok': 6256, 'sh diverso': 208, 'sot diverso': 166, 'fc ok': 5915, 'fs ok': 6221, 'yc ok': 6244, 'min ok': 6216, 'sh ok': 6049, 'sot ok': 6091, 'fc diverso': 342, 'min diverso': 41, 'fs diverso': 36, 'yc diverso': 13, 'ast diverso': 1, 'evento senza giocatore': 2}
