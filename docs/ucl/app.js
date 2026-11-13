@@ -361,6 +361,7 @@
         const tc = $("#toCmp"); if (tc) tc.onclick = () => openCompare(t);
       }
       Adv.bind($("#out"));
+      Splits.mount();
       Thresh.bind($("#out"));
       Slip.bind($("#out"));
       bindRows();
@@ -526,6 +527,15 @@
   }
 
 
+  /* stagioni (in corso e precedente) e squadre del giocatore, per le statistiche dalla cronaca (../splits.js) */
+  function splitsCfg(pid) {
+    const logs = (ctx.playerLogs.get(pid) || []).filter(g => g.min > 0);
+    return { sport: "soccer", pid, seasons: ctx.seasons.slice(0, 2).map(season => {
+      const l = logs.filter(g => g.season === season);
+      return { season, games: l.length, teams: [...new Set(l.map(g => g.tid))] };
+    }) };
+  }
+
   function renderPlayer(d) {
     const w = d.warnings.map(x => `<div class="warn">⚠ ${esc(x)}</div>`).join("");
     const k = d.player.keeper;
@@ -558,7 +568,8 @@
       <div><h3>Precedenti contro ${esc(d.opponent.short)}</h3><div class="scroll"><table><tr><th>Data</th><th>Min</th>${head2}<th></th></tr>${h2h}</table></div></div>
     </div>
     ${SoccerAdv.playerSection(ctx, TSTATS, XG, d.player.id)}
-    ${Absence.playerSection(ctx, ABS, d.player.id)}`;
+    ${Absence.playerSection(ctx, ABS, d.player.id)}
+    ${Splits.section(splitsCfg(d.player.id))}`;
   }
 
   function teamBlock(t) {

@@ -216,6 +216,7 @@
         const tc = $("#toCmp"); if (tc) tc.onclick = () => openCompare(t);
       }
       Adv.bind($("#out"));
+      Splits.mount();
       Thresh.bind($("#out"));
       Slip.bind($("#out"));
       bindRows();
@@ -346,6 +347,15 @@
   }
 
 
+  /* stagioni (in corso e precedente) e squadre del giocatore, per le statistiche dalla cronaca (../splits.js) */
+  function splitsCfg(pid) {
+    const logs = (ctx.playerLogs.get(pid) || []).filter(g => g.min > 0);
+    return { sport: "basket", pid, seasons: ctx.seasons.slice(0, 2).map(season => {
+      const l = logs.filter(g => g.season === season);
+      return { season, games: l.length, teams: [...new Set(l.map(g => g.tri))] };
+    }) };
+  }
+
   function renderPlayer(d) {
     const w = d.warnings.map(x => `<div class="warn">⚠ ${esc(x)}</div>`).join("");
     const recent = d.recent.map(g => `<tr><td>${esc(g.date.slice(5))}</td><td>${g.home ? "vs" : "@"} ${esc(g.opp)}</td><td>${g.min}</td><td>${g.pts}</td><td>${g.reb}</td><td>${g.ast}</td><td>${g.fg3m}</td></tr>`).join("");
@@ -371,7 +381,8 @@
       <div><h3>Precedenti contro ${esc(d.opponent.tri)}</h3><table><tr><th>Data</th><th>Min</th><th>Pt</th><th>Rb</th><th>As</th><th>3P</th></tr>${h2h}</table></div>
     </div>
     ${BasketAdv.playerSection(ctx, M, GM, d.player.id)}
-    ${Absence.playerSection(ctx, ABS, d.player.id)}`;
+    ${Absence.playerSection(ctx, ABS, d.player.id)}
+    ${Splits.section(splitsCfg(d.player.id))}`;
   }
 
   const COLS = ["PTS", "REB", "AST", "FG3M", "STL", "BLK", "PRA"];

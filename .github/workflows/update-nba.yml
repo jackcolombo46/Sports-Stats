@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ["tools/nba/**", ".github/workflows/update-nba.yml", "tools/backtest/**", "docs/nba/model.js", "docs/picks.js", "docs/adv-basket.js"]
+    paths: ["tools/pbp/**", "tools/nba/**", ".github/workflows/update-nba.yml", "tools/backtest/**", "docs/nba/model.js", "docs/picks.js", "docs/adv-basket.js"]
 
 permissions:
   contents: write
@@ -35,6 +35,10 @@ jobs:
       - name: Verifica del modello (quanto ci azzecca)
         continue-on-error: true
         run: node tools/backtest/backtest.js nba 2>&1 | tee -a docs/nba/data/update-log.txt
+      - name: Cronaca (statistiche per quarto / per minuto)
+        continue-on-error: true
+        timeout-minutes: 25
+        run: python tools/pbp/update_pbp.py --sport nba --max 300 2>&1 | tee -a docs/nba/data/update-log.txt
       - name: Salva (stagione in corso)
         if: always()
         run: |

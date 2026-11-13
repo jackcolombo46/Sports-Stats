@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ["tools/lba/**", ".github/workflows/update-lba.yml", "tools/backtest/**", "docs/lba/model.js", "docs/picks.js", "docs/adv-basket.js"]
+    paths: ["tools/pbp/**", "tools/lba/**", ".github/workflows/update-lba.yml", "tools/backtest/**", "docs/lba/model.js", "docs/picks.js", "docs/adv-basket.js"]
 
 permissions:
   contents: write
@@ -33,6 +33,10 @@ jobs:
       - name: Verifica del modello (quanto ci azzecca)
         continue-on-error: true
         run: node tools/backtest/backtest.js lba 2>&1 | tee -a docs/lba/data/update-log.txt
+      - name: Cronaca (statistiche per quarto / per minuto)
+        continue-on-error: true
+        timeout-minutes: 25
+        run: python tools/pbp/update_pbp.py --sport lba --max 100 2>&1 | tee -a docs/lba/data/update-log.txt
       - name: Salva (stagione in corso)
         if: always()
         run: |
