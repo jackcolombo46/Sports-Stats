@@ -6,3 +6,6 @@ nba 2026-27: 162 partite nuove, 0 da fare
 nba 2025-26: 138 partite nuove, 1093 da fare
 fatto in 33s · partite 300 · errori 0
 confronto con i tabellini: {'pts ok': 6619, 'reb ok': 6578, 'ast ok': 6601, 'stl ok': 6585, 'blk ok': 6613, 'tov ok': 6282, 'fg3m ok': 6625, 'min ok': 6606, 'tov diverso': 343, 'min diverso': 19, 'reb diverso': 47, 'stl diverso': 40, 'ast diverso': 24, 'pts diverso': 6, 'blk diverso': 12}
+Stagione 2026-27: controllo le partite dal 2026-11-09 al 2026-11-13
+Stagione 2026-27: 0 partite nuove
+Fatto: 2026-11-13T15:33:26Z 4 file, 107 partite in calendario
