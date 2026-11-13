@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ["tools/ucl/**", "tools/seriea/update_data.py", ".github/workflows/update-ucl.yml", "tools/backtest/**", "docs/ucl/model.js", "docs/picks.js"]
+    paths: ["tools/pbp/**", "tools/ucl/**", "tools/seriea/update_data.py", ".github/workflows/update-ucl.yml", "tools/backtest/**", "docs/ucl/model.js", "docs/picks.js"]
 
 permissions:
   contents: write
@@ -35,6 +35,10 @@ jobs:
       - name: Verifica del modello (quanto ci azzecca)
         continue-on-error: true
         run: node tools/backtest/backtest.js ucl 2>&1 | tee -a docs/ucl/data/update-log.txt
+      - name: Cronaca (statistiche per quarto / per minuto)
+        continue-on-error: true
+        timeout-minutes: 25
+        run: python tools/pbp/update_pbp.py --sport ucl --max 150 2>&1 | tee -a docs/ucl/data/update-log.txt
       - name: Salva (stagione in corso)
         if: always()
         run: |

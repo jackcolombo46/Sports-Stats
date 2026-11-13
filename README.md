@@ -175,6 +175,23 @@ In cima: schedine vinte/perse/aperte, previsioni indovinate rispetto a quanto di
 (solo schedine chiuse con importo). Gli esiti si aggiornano quando arrivano i risultati e restano salvati; ogni schedina
 si può rimettere nella schedina o eliminare.
 
+## Statistiche dalla cronaca (per quarto / per minuto)
+
+`tools/pbp/update_pbp.py`, passo "Cronaca" di ogni aggiornamento automatico: scarica la cronaca azione per azione delle
+partite già salvate (stagione in corso e precedente), al massimo 300 (NBA) / 200 (Serie A) / 150 (Champions) / 100 (LBA)
+partite per giro, così le partite passate si recuperano un po' alla volta. Fonti: ESPN summary (`plays` per l'NBA,
+`commentary` e `rosters` per il calcio), legabasket.it `get-championships-matches-play-by-play` per l'LBA.
+Salva `docs/<sport>/data/pbp/<stagione>/<squadra>.json` e `done.json` (formato descritto in testa allo script).
+Confronto con i tabellini su 12 partite per sport: punti, rimbalzi, assist, gol, tiri, ammonizioni uguali in oltre il
+97% dei casi; falli ~94%; minuti per quarto ricostruiti dai cambi.
+
+Nella scheda giocatore (`docs/splits.js`, sezione a scomparsa, i file si scaricano solo quando la si apre):
+- **basket, "Statistiche per quarto"**: media a partita di punti, rimbalzi, assist, triple, rubate, stoppate, palle perse
+  e minuti in ogni quarto (e supplementari), grafico della statistica scelta con quanto produce ogni 10 minuti in campo;
+- **calcio, "Minuti della partita"**: gol, tiri, tiri in porta, assist, falli commessi e subiti, ammonizioni per fasce di
+  15 minuti, con quante ne fa ogni 90 minuti in campo in quella fascia e i minuti in campo per fascia (chi entra dalla
+  panchina gioca solo i finali). Parate escluse: la telecronaca non dice quale portiere ha parato.
+
 ## Generatore di schedine
 
 `docs/gen.js`, in **Schedina → Generatore**: per ogni categoria la schedina più probabile della prossima giornata
