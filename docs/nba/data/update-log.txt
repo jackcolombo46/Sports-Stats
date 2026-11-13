@@ -2,3 +2,6 @@ Stagione 2026-27: controllo le partite dal 2026-11-08 al 2026-11-13
 Stagione 2026-27: 0 partite nuove
 Fatto: 2026-11-13T00:32:20Z 4 file, 111 partite in calendario
 nba: 187 giornate, 1401 partite in 21s; occasioni giocatori 37155 (previste 0.789, riuscite 0.77); squadre 8854 (previste 0.76, riuscite 0.751)
+Stagione 2026-27: controllo le partite dal 2026-11-08 al 2026-11-13
+Stagione 2026-27: 0 partite nuove
+Fatto: 2026-11-13T00:32:50Z 4 file, 111 partite in calendario
