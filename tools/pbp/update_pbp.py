@@ -237,9 +237,9 @@ def lba_game(cfg, gid):
         pid = str(pid)
         per = min(5, int(a.get("period") or 1))
         t = int(a.get("minute") or 0) * 60 + int(a.get("seconds") or 0)
-        if "entra" in desc:
+        if desc == "ingresso" or "entra" in desc:
             events.append((per, t, "in", pid)); continue
-        if "esce" in desc:
+        if desc == "uscita" or "esce" in desc:
             events.append((per, t, "out", pid)); continue
         events.append((per, t, "act", pid))
         st = stats[(pid, per)]
@@ -250,6 +250,8 @@ def lba_game(cfg, gid):
             st["pts"] += 2
         elif made and ("libero" in desc or "liberi" in desc):
             st["pts"] += 1
+        elif "di squadra" in desc:
+            pass
         elif "rimbalzo" in desc:
             st["reb"] += 1
         elif "assist" in desc:
@@ -334,6 +336,7 @@ def soccer_game(cfg, gid, valid):
         cand = {v for k, v in names.items() if k.split(" ")[-1] == last} if last else set()
         return cand.pop() if len(cand) == 1 else None
 
+    seen_fouls = set()
     for c in s.get("commentary") or []:
         p = c.get("play") or {}
         typ = str((p.get("type") or {}).get("text") or "").lower()
@@ -356,6 +359,11 @@ def soccer_game(cfg, gid, valid):
         elif typ == "shot blocked":
             codes = [(0, "B")]
         elif typ == "foul":
+            # ogni fallo compare due volte ("Foul by X" e "Y wins a free kick"), con gli stessi giocatori: lo conto una volta
+            k = (m, tuple(ids))
+            if k in seen_fouls:
+                continue
+            seen_fouls.add(k)
             codes = [(0, "F"), (1, "W")]
         elif typ == "yellow card":
             codes = [(0, "Y")]
