@@ -1,15 +1,10 @@
 Campionati di regular season: {2024: 567, 2025: 596, 2026: 602}
-Stagione 2026-27: 240 partite in calendario, 0 nuove da scaricare
-Calendario: aggiorno 16 partite
+Stagione 2026-27: 240 partite in calendario, 2 nuove da scaricare
+Calendario: aggiorno 15 partite
 Immagini: 16 loghi, 211 foto; campi trovati: ['giocatore:player_p_key', 'squadra:home_logo_key', 'squadra:v_logo_key']
 Immagini: archivio https://lba-media.s3.eu-south-1.amazonaws.com
-Fatto: 2026-11-14T16:55:47Z 5 file, 16 partite in calendario, 205 giocatori, 16 squadre
-lba: 88 giornate, 266 partite in 1s; occasioni giocatori 2609 (previste 0.781, riuscite 0.775); squadre 1605 (previste 0.768, riuscite 0.769)
-fatto in 0s · partite 0 · errori 0
-confronto con i tabellini: {}
-Campionati di regular season: {2024: 567, 2025: 596, 2026: 602}
-Stagione 2026-27: 240 partite in calendario, 0 nuove da scaricare
-Calendario: aggiorno 16 partite
-Immagini: 16 loghi, 211 foto; campi trovati: ['giocatore:player_p_key', 'squadra:home_logo_key', 'squadra:v_logo_key']
-Immagini: archivio https://lba-media.s3.eu-south-1.amazonaws.com
-Fatto: 2026-11-14T16:56:26Z 5 file, 16 partite in calendario, 205 giocatori, 16 squadre
+Fatto: 2026-11-14T21:16:34Z 5 file, 15 partite in calendario, 206 giocatori, 16 squadre
+lba: 89 giornate, 267 partite in 1s; occasioni giocatori 2620 (previste 0.781, riuscite 0.776); squadre 1611 (previste 0.768, riuscite 0.768)
+lba 2026-27: 1 partite nuove, 0 da fare
+fatto in 1s · partite 1 · errori 0
+confronto con i tabellini: {'pts ok': 21, 'reb ok': 21, 'ast ok': 21, 'stl ok': 21, 'blk ok': 21, 'tov ok': 21, 'fg3m ok': 21, 'min ok': 21}
