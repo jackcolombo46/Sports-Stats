@@ -8,3 +8,9 @@ lba: 89 giornate, 267 partite in 1s; occasioni giocatori 2620 (previste 0.781, r
 lba 2026-27: 1 partite nuove, 0 da fare
 fatto in 1s · partite 1 · errori 0
 confronto con i tabellini: {'pts ok': 21, 'reb ok': 21, 'ast ok': 21, 'stl ok': 21, 'blk ok': 21, 'tov ok': 21, 'fg3m ok': 21, 'min ok': 21}
+Campionati di regular season: {2024: 567, 2025: 596, 2026: 602}
+Stagione 2026-27: 240 partite in calendario, 1 nuove da scaricare
+Calendario: aggiorno 15 partite
+Immagini: 16 loghi, 211 foto; campi trovati: ['giocatore:player_p_key', 'squadra:home_logo_key', 'squadra:v_logo_key']
+Immagini: archivio https://lba-media.s3.eu-south-1.amazonaws.com
+Fatto: 2026-11-14T21:17:14Z 5 file, 15 partite in calendario, 206 giocatori, 16 squadre
