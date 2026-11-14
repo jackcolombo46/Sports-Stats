@@ -6,3 +6,8 @@ Fatto: 2026-11-14T02:38:43Z 5 file, 36 partite in calendario, 1187 giocatori in 
 ucl: 42 giornate, 261 partite in 2s; occasioni giocatori 699 (previste 0.729, riuscite 0.742); squadre 1314 (previste 0.75, riuscite 0.72)
 fatto in 0s · partite 0 · errori 0
 confronto con i tabellini: {}
+Competizione uefa.champions -> docs/ucl/data
+Stagione 2026-27: controllo le partite dal 2026-11-01 al 2026-11-14
+Stagione 2026-27: 0 partite nuove
+Understat: competizione non coperta, si usa solo l'xG di ESPN
+Fatto: 2026-11-14T02:38:59Z 5 file, 36 partite in calendario, 1187 giocatori in rosa
