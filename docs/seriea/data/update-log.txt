@@ -7,3 +7,9 @@ Fatto: 2026-11-14T06:42:43Z 6 file, 24 partite in calendario, 655 giocatori in r
 seriea: 169 giornate, 490 partite in 6s; occasioni giocatori 1101 (previste 0.726, riuscite 0.754); squadre 1982 (previste 0.742, riuscite 0.733)
 fatto in 0s · partite 0 · errori 0
 confronto con i tabellini: {}
+Competizione ita.1 -> docs/seriea/data
+Stagione 2026-27: controllo le partite dal 2026-11-05 al 2026-11-14
+Stagione 2026-27: 0 partite nuove
+  Understat (dati): Expecting value: line 1 column 1 (char 0)
+ATTENZIONE Understat: dati delle squadre non trovati nella pagina
+Fatto: 2026-11-14T06:42:56Z 6 file, 24 partite in calendario, 655 giocatori in rosa
