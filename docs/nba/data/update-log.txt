@@ -1,10 +1,8 @@
 Stagione 2026-27: controllo le partite dal 2026-11-09 al 2026-11-14
-Stagione 2026-27: 0 partite nuove
-Fatto: 2026-11-14T00:21:56Z 4 file, 112 partite in calendario
-nba: 188 giornate, 1405 partite in 22s; occasioni giocatori 37268 (previste 0.789, riuscite 0.77); squadre 8878 (previste 0.76, riuscite 0.75)
-nba 2025-26: 300 partite nuove, 493 da fare
-fatto in 61s · partite 300 · errori 0
-confronto con i tabellini: {'pts ok': 6409, 'reb ok': 6378, 'ast ok': 6391, 'stl ok': 6381, 'blk ok': 6401, 'tov ok': 6110, 'fg3m ok': 6412, 'min ok': 6391, 'tov diverso': 305, 'blk diverso': 14, 'reb diverso': 37, 'stl diverso': 34, 'ast diverso': 24, 'min diverso': 24, 'pts diverso': 6, 'fg3m diverso': 3}
-Stagione 2026-27: controllo le partite dal 2026-11-09 al 2026-11-14
-Stagione 2026-27: 0 partite nuove
-Fatto: 2026-11-14T00:23:31Z 4 file, 112 partite in calendario
+Stagione 2026-27: 9 partite nuove
+Fatto: 2026-11-14T14:14:32Z 4 file, 103 partite in calendario
+nba: 189 giornate, 1414 partite in 18s; occasioni giocatori 37506 (previste 0.789, riuscite 0.77); squadre 8936 (previste 0.76, riuscite 0.75)
+nba 2026-27: 9 partite nuove, 0 da fare
+nba 2025-26: 291 partite nuove, 202 da fare
+fatto in 49s · partite 300 · errori 0
+confronto con i tabellini: {'pts ok': 6427, 'reb ok': 6378, 'ast ok': 6410, 'stl ok': 6384, 'blk ok': 6404, 'tov ok': 6092, 'fg3m ok': 6431, 'min ok': 6416, 'ast diverso': 21, 'tov diverso': 339, 'min diverso': 15, 'stl diverso': 47, 'blk diverso': 27, 'reb diverso': 53, 'pts diverso': 4}
