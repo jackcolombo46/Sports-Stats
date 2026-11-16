@@ -1,0 +1,28 @@
+name: Prova EuroLeague dati (temporaneo)
+on:
+  push:
+    branches: [eurolega]
+    paths: ["tools/eurolega/**", ".github/workflows/prova-eurolega-dati.yml"]
+permissions:
+  contents: write
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: |
+          set -o pipefail
+          mkdir -p docs/eurolega/data
+          python tools/eurolega/update_data.py 2>&1 | tee docs/eurolega/data/update-log.txt
+          node tools/backtest/backtest.js eurolega 2>&1 | tee -a docs/eurolega/data/update-log.txt || true
+          python tools/pbp/update_pbp.py --sport eurolega --max 20 --report /tmp/el_report.json 2>&1 | tee -a docs/eurolega/data/update-log.txt || true
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add docs/eurolega/data
+          git commit -m "Dati EuroLeague (prova)" || exit 0
+          git push

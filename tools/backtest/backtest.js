@@ -1,6 +1,6 @@
 /* Verifica del modello ("quanto ci azzecca"): per ogni giornata già giocata si ricostruiscono le proiezioni
    con lo stesso modello dell'app usando SOLO i dati precedenti a quella giornata, e si confrontano con i risultati.
-   Uso: node tools/backtest/backtest.js <nba|lba|seriea|ucl>   →   docs/<sport>/data/backtest.json
+   Uso: node tools/backtest/backtest.js <nba|lba|eurolega|seriea|ucl>   →   docs/<sport>/data/backtest.json
    Nessuna dipendenza esterna; gira su GitHub Actions dopo l'aggiornamento dei dati. */
 "use strict";
 const fs = require("fs"), path = require("path"), vm = require("vm");
@@ -9,7 +9,7 @@ const SPORT = process.argv[2];
 const ROOT = path.resolve(__dirname, "..", "..");
 const DOCS = path.join(ROOT, "docs");
 const DATA = path.join(DOCS, SPORT, "data");
-const BASKET = SPORT === "nba" || SPORT === "lba";
+const BASKET = SPORT === "nba" || SPORT === "lba" || SPORT === "eurolega";
 const GM = SPORT === "nba" ? 48 : 40;
 const t0 = Date.now();
 
@@ -52,6 +52,7 @@ const binOf = (calib, p) => calib[Math.min(9, Math.floor(p * 10))];
 const MIN_LINE = {
   nba: { PTS: 10, REB: 4, AST: 4, FG3M: 2, STL: 1, BLK: 1, TOV: 2, PRA: 20 },
   lba: { PTS: 10, REB: 4, AST: 3, FG3M: 2, STL: 1, BLK: 1, TOV: 2, PRA: 15 },
+  eurolega: { PTS: 10, REB: 4, AST: 3, FG3M: 2, STL: 1, BLK: 1, TOV: 2, PRA: 15 },
   seriea: { SH: 2, FC: 2, FS: 2, SV: 2 }, ucl: { SH: 2, FC: 2, FS: 2, SV: 2 },
 }[SPORT];
 const PICK_MIN = BASKET ? 0.70 : 0.65;
@@ -75,7 +76,7 @@ for (const season of target) {
       bundle.games = { [season]: (games[season] || []).filter(g => g.date < date), ...(prev ? { [prev]: games[prev] || [] } : {}) };
       bundle.teams = Object.fromEntries(Object.entries(meta.teams || {}).map(([k, v]) => [k, v]));
       bundle.current_teams = teamsBySeason[season];
-    } else if (SPORT === "lba") { bundle.teams = meta.teams; bundle.current_teams = teamsBySeason[season]; }
+    } else if (SPORT === "lba" || SPORT === "eurolega") { bundle.teams = meta.teams; bundle.current_teams = teamsBySeason[season]; }
     let ctx;
     try { ctx = new M.Context(bundle); } catch (e) { continue; }
     out.n_dates++;
