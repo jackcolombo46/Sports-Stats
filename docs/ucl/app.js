@@ -361,6 +361,7 @@
         const tc = $("#toCmp"); if (tc) tc.onclick = () => openCompare(t);
       }
       Adv.bind($("#out"));
+      Results.bind();
       Splits.mount();
       Thresh.bind($("#out"));
       Slip.bind($("#out"));
@@ -626,6 +627,9 @@
       <div class="sub">${g ? `Prossima partita: ${g.home ? "vs" : "@"} ${esc(T(g.opp).short)} · ${esc(fmtDate(g.utc))}` : "Nessuna partita in calendario"}</div>
       <button class="link" id="toCmp">Confronta con un'altra squadra →</button></div></div></div>
     ${SoccerAdv.teamTiles(ctx, TSTATS, XG, tid)}
+    ${Results.block(ctx.games.filter(g => g.home === tid || g.away === tid).map(g => ({ date: g.date, home: g.home === tid,
+        opp: g.home === tid ? g.away : g.home, pf: g.home === tid ? g.hg : g.ag, pa: g.home === tid ? g.ag : g.hg })),
+      { logo: (id, sz) => L(id, sz), name: id => T(id).name })}
     ${rosterBlock(tid)}${out}
     ${SoccerAdv.teamSection(ctx, TSTATS, XG, tid)}
     ${Absence.teamSection(ctx, ABS, tid, absent, playing)}`;

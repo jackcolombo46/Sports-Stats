@@ -93,14 +93,14 @@
     const tg = new Map();   // "gid|tri" -> totali della squadra nella partita
     for (const r of rows) {
       const k = r.gid + "|" + r.tri;
-      if (!tg.has(k)) tg.set(k, { gid: r.gid, tri: r.tri, opp: r.opp, date: r.date, ...zero() });
+      if (!tg.has(k)) tg.set(k, { gid: r.gid, tri: r.tri, opp: r.opp, date: r.date, home: !!r.home, ...zero() });
       add(tg.get(k), r);
     }
     const teams = {}, games = {};
     for (const g of tg.values()) {
       const o = tg.get(g.gid + "|" + g.opp);
       if (!o) continue;
-      (games[g.tri] ||= []).push({ date: g.date, pf: g.pts, pa: o.pts });
+      (games[g.tri] ||= []).push({ date: g.date, pf: g.pts, pa: o.pts, opp: g.opp, home: g.home, gid: g.gid });
       const t = teams[g.tri] ||= { gp: 0, w: 0, T: zero(), O: zero(), P: 0, M: 0 };
       t.gp++; if (g.pts > o.pts) t.w++;
       add(t.T, g); add(t.O, o);
@@ -206,5 +206,8 @@
     }).sort((a, b) => b.w / (b.gp || 1) - a.w / (a.gp || 1) || b.w - a.w || (b.pf - b.pa) - (a.pf - a.pa));
   }
 
-  window.BasketAdv = { build, teamSection, playerSection, compare, gameModel, teamGames, teamTiles, playerVals, standings };
+  /* tutte le partite della stagione di una squadra (per gli ultimi risultati) */
+  const allGames = (ctx, M, gameMin, tri) => build(ctx, M, gameMin).games[tri] || [];
+
+  window.BasketAdv = { allGames, build, teamSection, playerSection, compare, gameModel, teamGames, teamTiles, playerVals, standings };
 })();
