@@ -134,6 +134,11 @@ tipo la più ambiziosa che supera il minimo:
 
 ## Squadra e Confronta
 
+**Scontri diretti** (`docs/h2h.js`, in Confronta squadre dopo il duello): le ultime 10 partite fra le due squadre nelle
+stagioni salvate (in corso e precedenti; Champions: solo partite di Champions), con vittorie/pareggi, punteggio medio e,
+per ogni partita, data, campo, risultato ed esito; sotto il risultato i marcatori (calcio) o i due migliori marcatori per
+squadra (basket). Calcio: `ctx.allGames` nel modello; basket: punteggi ricavati dai tabellini.
+
 - **Squadra** (da Cerca): **Ultimi risultati** (`docs/results.js`: le ultime 10 partite della stagione con data, casa/trasferta, avversario, punteggio ed esito, la striscia della forma; 5 in vista, le altre con "Mostra"; toccando una partita si apre la scheda dell'avversario); poi solo la squadra, senza riferimenti all'avversario: statistiche generali con posizione nel campionato,
   rosa con le medie (basket) o i numeri (calcio) della stagione, statistiche avanzate, effetto assenze.
   "Analizza" (o "Confronta con un'altra squadra") porta a Confronta con la squadra scelta.

@@ -853,6 +853,20 @@
       + `<div id="trendCmp"></div>`;
   }
 
+  /* scontri diretti fra a e b in tutte le stagioni salvate, con i marcatori dai tabellini (../h2h.js) */
+  function h2hGames(a, b) {
+    const games = ctx.allGames.filter(g => g.hg != null && ((g.home === a && g.away === b) || (g.home === b && g.away === a)));
+    if (!games.length) return [];
+    const ids = new Set(games.map(g => String(g.gid))), sc = new Map();
+    for (const logs of ctx.playerLogs.values()) for (const r of logs) {
+      if (r.gol > 0 && ids.has(String(r.gid))) (sc.get(String(r.gid) + "|" + r.tid) || sc.set(String(r.gid) + "|" + r.tid, []).get(String(r.gid) + "|" + r.tid)).push(r);
+    }
+    const short = pid => (ctx.names.get(pid) || "?").replace(/^(\S)\S*\s+/, "$1. ");
+    const notes = (gid, tid) => (sc.get(gid + "|" + tid) || []).map(r => short(r.pid) + (r.gol > 1 ? ` ×${r.gol}` : "")).join(", ");
+    return games.map(g => ({ date: g.date, season: g.season, home: g.home === a, pa: g.home === a ? g.hg : g.ag, pb: g.home === a ? g.ag : g.hg,
+      notesA: notes(String(g.gid), a), notesB: notes(String(g.gid), b) }));
+  }
+
   function renderCompare() {
     if ($("#cmpKind").value === "players") return renderPlayerCompare();
     if (!$("#cmpA").dataset.set) {
@@ -875,6 +889,7 @@
     return `<h3 style="margin-top:0">Confronta squadre · stagione ${esc(ctx.season)}</h3>${next}${where}`
       + matchBox(a, b, tA.match, home)
       + duel(tA, tB)
+      + H2H.block(h2hGames(a, b), { a, b, sport: "soccer", name: id => T(id).name, logo: (id, sz) => L(id, sz) })
       + `<h3>Squadre a confronto</h3>` + SoccerAdv.compare(ctx, TSTATS, XG, a, b, head)
       + Adv.section("cmpA:" + a, `Proiezioni · ${T(a).name} contro ${T(b).name}`, teamBlock(tA) + oppChips(ctx.opponentProfile(b)))
       + Adv.section("cmpB:" + b, `Proiezioni · ${T(b).name} contro ${T(a).name}`, teamBlock(tB) + oppChips(ctx.opponentProfile(a)));

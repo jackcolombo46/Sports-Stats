@@ -183,6 +183,8 @@
 
       const curGames = (bundle.games || {})[this.season] || [];
       this.games = curGames;
+      // tutte le partite delle stagioni salvate (scontri diretti)
+      this.allGames = Object.entries(bundle.games || {}).flatMap(([s, l]) => (l || []).map(g => ({ ...g, season: s })));
       this.teamDates = {};
       for (const g of curGames) { (this.teamDates[g.home] ||= new Set()).add(g.date); (this.teamDates[g.away] ||= new Set()).add(g.date); }
 
