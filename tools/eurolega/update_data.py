@@ -153,6 +153,33 @@ def player_images(y):
     log(f"Foto: {n} giocatori")
 
 
+def _img(im):
+    im = im or {}
+    return im.get("headshot") or im.get("action") or next((v for v in im.values() if isinstance(v, str) and v.startswith("http")), None)
+
+
+def images_from_games(y, games, want, limit=40):
+    """foto dalle statistiche delle partite (il campo person.images dei giocatori), dalla più recente,
+    finché mancano foto per i giocatori della stagione (al massimo `limit` partite per giro)"""
+    n = 0
+    for g in sorted((g for g in games if g["played"]), key=lambda g: g["code"], reverse=True):
+        if not (want - set(IMAGES["players"])) or n >= limit:
+            break
+        n += 1
+        try:
+            d = get(f"{API}E{y}/games/{g['code']}/stats") or {}
+        except RuntimeError:
+            continue
+        for side in ("local", "road"):
+            for p in ((d.get(side) or {}).get("players")) or []:
+                per = (p.get("player") or {}).get("person") or {}
+                code = str(per.get("code") or "").strip().lstrip("P")
+                url = _img(per.get("images"))
+                if code.isdigit() and url:
+                    IMAGES["players"][str(int(code))] = url
+    log(f"Foto: lette {n} partite, {len(IMAGES['players'])} giocatori con foto")
+
+
 # ------------------------------------------------------------ tabellino
 
 def minutes(s):
@@ -256,7 +283,7 @@ def update_current(y):
                          "state": "in" if t < now else "pre", "stype": 2, "round": g["round"]})
     schedule.sort(key=lambda g: g["utc"])
     current = sorted({g["home"] for g in games} | {g["away"] for g in games})
-    return [f"logs/{s}_{m}.json" for m in sorted(by_month)], schedule, current
+    return [f"logs/{s}_{m}.json" for m in sorted(by_month)], schedule, current, games
 
 
 def rosters_from_logs(y):
@@ -285,11 +312,12 @@ def main():
     IMAGES["teams"].update(old.get("teams") or {})
     IMAGES["players"].update(old.get("players") or {})
     past_files = backfill_past(y, args.past, download=not args.skip_past)
-    cur_files, schedule, current = update_current(y)
+    cur_files, schedule, current, games = update_current(y)
     try:
         player_images(y)
     except RuntimeError as e:
         log("ATTENZIONE foto:", e)
+    images_from_games(y, games, set(rosters_from_logs(y)))
     meta.update({"league": "EuroLeague", "season": season_str(y), "seasons": [season_str(y - k) for k in range(args.past + 1)],
                  "files": past_files + cur_files, "schedule": schedule, "rosters": rosters_from_logs(y),
                  "injuries": [], "teams": TEAMS, "current_teams": current,
