@@ -1,0 +1,939 @@
+{
+ "games_E2026": {
+  "url": "https://api-live.euroleague.net/v2/competitions/E/seasons/E2026/games",
+  "struttura": {
+   "data": [
+    "lista di 380",
+    {
+     "id": "b4377faa-0f7f-445d-a2c6-d66d20f60f54",
+     "identifier": "E2026_379",
+     "gameCode": 379,
+     "season": {
+      "name": "EuroLeague 2026-27",
+      "code": "E2026",
+      "alias": "2026-27",
+      "competitionCode": "E",
+      "year": 2026,
+      "startDate": "2026-07-01T00:00:00"
+     },
+     "group": {
+      "id": "c3243224-039c-4e93-9e16-12a7f4b2d383",
+      "order": 1,
+      "name": "Group Regular Season",
+      "rawName": "Regular Season"
+     },
+     "phaseType": {
+      "code": "RS",
+      "alias": "REGULAR SEASON",
+      "name": "Regular Season",
+      "isGroupPhase": true
+     },
+     "round": 38,
+     "roundAlias": "Round 38",
+     "roundName": "Round 38",
+     "played": false,
+     "date": "2027-04-16T20:30:00",
+     "confirmedDate": true,
+     "confirmedHour": true,
+     "localTimeZone": 2,
+     "localDate": "2027-04-16T20:30:00",
+     "utcDate": "2027-04-16T18:30:00Z",
+     "local": {
+      "club": {
+       "code": "BAR",
+       "name": "FC Barcelona",
+       "abbreviatedName": "FC Barcelona",
+       "editorialName": "Barca",
+       "tvCode": "BAR",
+       "isVirtual": false,
+       "images": {
+        "crest": "str"
+       }
+      },
+      "score": 0,
+      "standingsScore": 0,
+      "partials": {
+       "partials1": 0,
+       "partials2": 0,
+       "partials3": 0,
+       "partials4": 0,
+       "extraPeriods": {}
+      }
+     },
+     "road": {
+      "club": {
+       "code": "PAR",
+       "name": "Partizan Mozzart Bet Belgrade",
+       "abbreviatedName": "Partizan",
+       "editorialName": "Partizan",
+       "tvCode": "PAR",
+       "isVirtual": false,
+       "images": {
+        "crest": "str"
+       }
+      },
+      "score": 0,
+      "standingsScore": 0,
+      "partials": {
+       "partials1": 0,
+       "partials2": 0,
+       "partials3": 0,
+       "partials4": 0,
+       "extraPeriods": {}
+      }
+     },
+     "audience": 0,
+     "audienceConfirmed": false,
+     "socialFeed": "",
+     "operationsCode": null,
+     "referee1": null,
+     "referee2": null,
+     "referee3": null,
+     "referee4": null,
+     "venue": {
+      "name": "PALAU BLAUGRANA",
+      "code": "AMH",
+      "capacity": 7585,
+      "address": "Aristides Maillol Av S/N, 08028 Barcelona",
+      "images": {
+       "medium": null
+      },
+      "active": true,
+      "notes": ""
+     },
+     "isNeutralVenue": false,
+     "gameStatus": "Confirmed",
+     "winner": null
+    }
+   ],
+   "total": 380
+  },
+  "campione": "{\"data\": [{\"id\": \"b4377faa-0f7f-445d-a2c6-d66d20f60f54\", \"identifier\": \"E2026_379\", \"gameCode\": 379, \"season\": {\"name\": \"EuroLeague 2026-27\", \"code\": \"E2026\", \"alias\": \"2026-27\", \"competitionCode\": \"E\", \"year\": 2026, \"startDate\": \"2026-07-01T00:00:00\"}, \"group\": {\"id\": \"c3243224-039c-4e93-9e16-12a7f4b2d383\", \"order\": 1, \"name\": \"Group Regular Season\", \"rawName\": \"Regular Season\"}, \"phaseType\": {\"code\": \"RS\", \"alias\": \"REGULAR SEASON\", \"name\": \"Regular Season\", \"isGroupPhase\": true}, \"round\": 38, \"roundAlias\": \"Round 38\", \"roundName\": \"Round 38\", \"played\": false, \"date\": \"2027-04-16T20:30:00\", \"confirmedDate\": true, \"confirmedHour\": true, \"localTimeZone\": 2, \"localDate\": \"2027-04-16T20:30:00\", \"utcDate\": \"2027-04-16T18:30:00Z\", \"local\": {\"club\": {\"code\": \"BAR\", \"name\": \"FC Barcelona\", \"abbreviatedName\": \"FC Barcelona\", \"editorialName\": \"Barca\", \"tvCode\": \"BAR\", \"isVirtual\": false, \"images\": {\"crest\": \"https://media-cdn.incrowdsports.com/35dfa503-e417-481f-963a-bdf6f013763e.png\"}}, \"score\": 0, \"standingsScore\": 0, \"partials\": {\"partials1\": 0, \"partials2\": 0, \"partials3\": 0, \"partials4\": 0, \"extraPeriods\": {}}}, \"road\": {\"club\": {\"code\": \"PAR\", \"name\": \"Partizan Mozzart Bet Belgrade\", \"abbreviatedName\": \"Partizan\", \"editorialName\": \"Partizan\", \"tvCode\": \"PAR\", \"isVirtual\": false, \"images\": {\"crest\": \"https://media-cdn.incrowdsports.com/2681304e-77dd-4331-88b1-683078c0fb49.png\"}}, \"score\": 0, \"standingsScore\": 0, \"partials\": {\"partials1\": 0, \"partials2\": 0, \"partials3\": 0, \"partials4\": 0, \"extraPeriods\": {}}}, \"audience\": 0, \"audienceConfirmed\": false, \"socialFeed\": \"\", \"operationsCode\": null, \"referee1\": null, \"referee2\": null, \"referee3\": null, \"referee4\": null, \"venue\": {\"name\": \"PALAU BLAUGRANA\", \"code\": \"AMH\", \"capacity\": 7585, \"address\": \"Aristides Maillol Av S/N, 08028 Barcelona\", \"images\": {\"medium\": null}, \"active\": true, \"notes\": \"\"}, \"isNeutralVenue\": false, \"gameStatus\": \"Confirmed\", \"winner\": null}, {\"id\": \"ab50b545-0eb9-44f4-a3e4-b5efaab3ab63\", \"identifier\": \"E2026_380\", \"gameCode\": 380, \"season\": {\"name\": \"EuroLeague 2026-27\", \"code\": \"E2026\", \"alias\": \"2026-27\", \"competitionCode\": \"E\", \"year\": 2026, \"startDate\": \"2026-07-01T00:00:00\"}, \"group\": {\"id\": \"c3243224-039c-4e93-9e16-12a7f4b2d383\", \"order\": 1, \"name\": \"Group Regular Season\", \"rawName\": \"Regular Season\"}, \"phaseType\": {\"code\": \"RS\", \"alias\": \"REGULAR SEASON\", \"name\": \"Regular Season\", \"isGroupPhase\": true}, \"round\": 38, \"roundAlias\": \"Round 38\", \"roundName\": \"Round 38\", \"played\": false, \"date\": \"2027-04-16T20:15:00\", \"confirmedDate\": true, \"confirmedHour\": true, \"localTimeZone\": 3, \"localDate\": \"2027-04-16T21:15:00\", \"utcDate\": \"2027-04-16T18:15:00Z\", \"local\": {\"club\": {\"code\": \"OLY\", \"name\": \"Olympiacos Piraeus\", \"abbreviatedName\": \"Olympiacos\", \"editorialName\": \"Olympiacos\", \"tvCode\": \"OLY\", \"isVirtual\": false, \"images\": {\"crest\": \"https://media-cdn.incrowdsports.com/789423ac-3cdf-4b89-b11c-b458aa5f59a6.png\"}}, \"score\": 0, \"standingsScore\": 0, \"partials\": {\"partials1\": 0, \"partials2\": 0, \"partials3\": 0, \"partials4\": 0, \"extraPeriods\": {}}}, \"road\": {\"club\": {\"code\": \"PAM\", \"name\": \"Valencia Basket\", \"abbreviatedName\": \"Valencia\", \"editorialName\": \"Valencia\", \"tvCode\": \"VBC\", \"isVirtual\": false, \"images\": {\"crest\": \"https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjChWbHL/bc3e00b2-fea4-40be-a7ec-1e633129bde3.png\"}}, \"score\": 0, \"standingsScore\": 0, \"partials\": {\"partials1\": 0, \"partials2\": 0, \"partials3\": 0, \"partials4\": 0, \"extraPeriods\": {}}}, \"audience\": 0, \"audienceConfirmed\": false, \"socialFeed\": \"\", \"operationsCode\": null, \"referee1\": null, \"referee2\": null, \"referee3\": null, \"referee4\": null, \"venue\": {\"name\": \"PEACE AND FRIENDSHIP STADIUM\", \"code\": \"ASF6\", \"capacity\": 12700, \"address\": \"Ethnarchou Makariou Av., Piraeus\", \"images\": {\"medium\": null}, \"active\": true, \"notes\": \"\"}, \"isNeutralVenue\": false, \"gameStatus\": \"Confirmed\", \"winner\": null}, {\"id\": \"148608ec-4577-4080-80ef-1edbb4548aea\", \"identifier\": \"E2026_377\", \"gameCode\": 377, \"season\": {\"name\": \"EuroLeague 2026-27\", \"code\": \"E2026\", \"alias\": \"2026-27\", \"competitionCode\": \"E\", \"year\": 2026, \"startDate\": \"2026-07-01T00:00:00\"}, \"group\": {\"id\": \"c3243224-039c-4e93-9e16-12a7f4b2d383\", \"order\": 1, \"name\": \"Group Regular Season\", \"rawName\": \"Regular Season\"}, \"phaseType\": {\"code\": \"RS\", \"alias\": \"REGULAR SEASON\", \"name\": \"Regular Season\", \"isGroupPhase\": true}, \"round\": 38, \"roundAlias\": \"Round 38\", \"roundName\": \"Round 38\", \"played\": false, \"date\": \"2027-04-16T19:00:00\", \"confirmedDate\": true, \"confirmedHour\": true, \"localTimeZone\": 3, \"localDate\": \"2027-04-16T20:00:00\", \"utcDate\": \"2027-04-16T17:00:00Z\", \"local\": {\"club\": {\"code\": \"BES\", \"name\": \"Besiktas Istanbul\", \"abbreviatedName\": \"Besiktas\", \"editorialName\": \"Besiktas\", \"tvCode\": \"BJK\", \"isVirtual\": false, \"images\": {\"crest\": \"https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjChWbHH/b05e3c54-e672-4b31-9f86-c91e9de7715c.png\"}}, \"score\": 0, \"standingsScore\": 0, \"partials\": {\"partials1\": 0, \"partials2\": 0, \"parti"
+ },
+ "games_E2025": {
+  "url": "https://api-live.euroleague.net/v2/competitions/E/seasons/E2025/games",
+  "struttura": {
+   "data": [
+    "lista di 402",
+    {
+     "id": "13302d2b-97e6-4b96-ab6a-d422324fb6f0",
+     "identifier": "E2025_406",
+     "gameCode": 406,
+     "season": {
+      "name": "EuroLeague 2025-26",
+      "code": "E2025",
+      "alias": "2025-26",
+      "competitionCode": "E",
+      "year": 2025,
+      "startDate": "2025-07-01T00:00:00"
+     },
+     "group": {
+      "id": "1c3f93b7-fd11-438e-9d5d-77a998c1a1e9",
+      "order": 3,
+      "name": "Group CHAMPIONSHIP GAME ",
+      "rawName": "CHAMPIONSHIP GAME "
+     },
+     "phaseType": {
+      "code": "FF",
+      "alias": "FINAL FOUR",
+      "name": "Final Four",
+      "isGroupPhase": false
+     },
+     "round": 47,
+     "roundAlias": "Round 47",
+     "roundName": "Round 47",
+     "played": true,
+     "date": "2026-05-24T20:00:00",
+     "confirmedDate": true,
+     "confirmedHour": true,
+     "localTimeZone": 3,
+     "localDate": "2026-05-24T21:00:00",
+     "utcDate": "2026-05-24T18:00:00Z",
+     "local": {
+      "club": {
+       "code": "OLY",
+       "name": "Olympiacos Piraeus",
+       "abbreviatedName": "Olympiacos",
+       "editorialName": "Olympiacos",
+       "tvCode": "OLY",
+       "isVirtual": false,
+       "images": {
+        "crest": "str"
+       }
+      },
+      "score": 92,
+      "standingsScore": 92,
+      "partials": {
+       "partials1": 19,
+       "partials2": 27,
+       "partials3": 15,
+       "partials4": 31,
+       "extraPeriods": {}
+      }
+     },
+     "road": {
+      "club": {
+       "code": "MAD",
+       "name": "Real Madrid",
+       "abbreviatedName": "Real",
+       "editorialName": "Real",
+       "tvCode": "RMB",
+       "isVirtual": false,
+       "images": {
+        "crest": "str"
+       }
+      },
+      "score": 85,
+      "standingsScore": 85,
+      "partials": {
+       "partials1": 26,
+       "partials2": 18,
+       "partials3": 21,
+       "partials4": 20,
+       "extraPeriods": {}
+      }
+     },
+     "audience": 0,
+     "audienceConfirmed": true,
+     "socialFeed": "",
+     "operationsCode": null,
+     "referee1": {
+      "code": "OJCZ",
+      "name": "RADOVIC, SRETEN",
+      "alias": "RADOVIC, S.",
+      "country": {
+       "code": "CRO",
+       "name": "Croatia"
+      },
+      "images": {
+       "verticalSmall": "8864r3sdiwfigeb9"
+      },
+      "active": true
+     },
+     "referee2": {
+      "code": "OJCL",
+      "name": "LOTTERMOSER, ROBERT",
+      "alias": "LOTTERMOSER, R.",
+      "country": {
+       "code": "GER",
+       "name": "Germany"
+      },
+      "images": {
+       "verticalSmall": "8845rp7o4ifpg9kf"
+      },
+      "active": true
+     },
+     "referee3": {
+      "code": "OJDF",
+      "name": "LATISEVS, OLEGS",
+      "alias": "LATISEVS, O.",
+      "country": {
+       "code": "LAT",
+       "name": "Latvia"
+      },
+      "images": {
+       "verticalSmall": "8845j7vs5indngbw"
+      },
+      "active": true
+     },
+     "referee4": null,
+     "venue": {
+      "name": "TELEKOM CENTER ATHENS",
+      "code": "AUM6",
+      "capacity": 18500,
+      "address": "37 Kifisias Avenue, 15123 Marousi",
+      "images": {
+       "medium": null
+      },
+      "active": true,
+      "notes": ""
+     },
+     "isNeutralVenue": false,
+     "gameStatus": "Confirmed",
+     "winner": {
+      "code": "OLY",
+      "name": "Olympiacos Piraeus",
+      "abbreviatedName": "Olympiacos",
+      "editorialName": "Olympiacos",
+      "tvCode": "OLY",
+      "isVirtual": false,
+      "images": {
+       "crest": "https://media-cdn.incrowdsports.com/789423ac-3cdf-4b89-b11c-b458aa5f59a6.png"
+      }
+     }
+    }
+   ],
+   "total": 402
+  },
+  "campione": "{\"data\": [{\"id\": \"13302d2b-97e6-4b96-ab6a-d422324fb6f0\", \"identifier\": \"E2025_406\", \"gameCode\": 406, \"season\": {\"name\": \"EuroLeague 2025-26\", \"code\": \"E2025\", \"alias\": \"2025-26\", \"competitionCode\": \"E\", \"year\": 2025, \"startDate\": \"2025-07-01T00:00:00\"}, \"group\": {\"id\": \"1c3f93b7-fd11-438e-9d5d-77a998c1a1e9\", \"order\": 3, \"name\": \"Group CHAMPIONSHIP GAME \", \"rawName\": \"CHAMPIONSHIP GAME \"}, \"phaseType\": {\"code\": \"FF\", \"alias\": \"FINAL FOUR\", \"name\": \"Final Four\", \"isGroupPhase\": false}, \"round\": 47, \"roundAlias\": \"Round 47\", \"roundName\": \"Round 47\", \"played\": true, \"date\": \"2026-05-24T20:00:00\", \"confirmedDate\": true, \"confirmedHour\": true, \"localTimeZone\": 3, \"localDate\": \"2026-05-24T21:00:00\", \"utcDate\": \"2026-05-24T18:00:00Z\", \"local\": {\"club\": {\"code\": \"OLY\", \"name\": \"Olympiacos Piraeus\", \"abbreviatedName\": \"Olympiacos\", \"editorialName\": \"Olympiacos\", \"tvCode\": \"OLY\", \"isVirtual\": false, \"images\": {\"crest\": \"https://media-cdn.incrowdsports.com/789423ac-3cdf-4b89-b11c-b458aa5f59a6.png\"}}, \"score\": 92, \"standingsScore\": 92, \"partials\": {\"partials1\": 19, \"partials2\": 27, \"partials3\": 15, \"partials4\": 31, \"extraPeriods\": {}}}, \"road\": {\"club\": {\"code\": \"MAD\", \"name\": \"Real Madrid\", \"abbreviatedName\": \"Real\", \"editorialName\": \"Real\", \"tvCode\": \"RMB\", \"isVirtual\": false, \"images\": {\"crest\": \"https://media-cdn.incrowdsports.com/371b0d9b-9250-4c09-bda7-0686cf024657.png\"}}, \"score\": 85, \"standingsScore\": 85, \"partials\": {\"partials1\": 26, \"partials2\": 18, \"partials3\": 21, \"partials4\": 20, \"extraPeriods\": {}}}, \"audience\": 0, \"audienceConfirmed\": true, \"socialFeed\": \"\", \"operationsCode\": null, \"referee1\": {\"code\": \"OJCZ\", \"name\": \"RADOVIC, SRETEN\", \"alias\": \"RADOVIC, S.\", \"country\": {\"code\": \"CRO\", \"name\": \"Croatia\"}, \"images\": {\"verticalSmall\": \"8864r3sdiwfigeb9\"}, \"active\": true}, \"referee2\": {\"code\": \"OJCL\", \"name\": \"LOTTERMOSER, ROBERT\", \"alias\": \"LOTTERMOSER, R.\", \"country\": {\"code\": \"GER\", \"name\": \"Germany\"}, \"images\": {\"verticalSmall\": \"8845rp7o4ifpg9kf\"}, \"active\": true}, \"referee3\": {\"code\": \"OJDF\", \"name\": \"LATISEVS, OLEGS\", \"alias\": \"LATISEVS, O.\", \"country\": {\"code\": \"LAT\", \"name\": \"Latvia\"}, \"images\": {\"verticalSmall\": \"8845j7vs5indngbw\"}, \"active\": true}, \"referee4\": null, \"venue\": {\"name\": \"TELEKOM CENTER ATHENS\", \"code\": \"AUM6\", \"capacity\": 18500, \"address\": \"37 Kifisias Avenue, 15123 Marousi\", \"images\": {\"medium\": null}, \"active\": true, \"notes\": \"\"}, \"isNeutralVenue\": false, \"gameStatus\": \"Confirmed\", \"winner\": {\"code\": \"OLY\", \"name\": \"Olympiacos Piraeus\", \"abbreviatedName\": \"Olympiacos\", \"editorialName\": \"Olympiacos\", \"tvCode\": \"OLY\", \"isVirtual\": false, \"images\": {\"crest\": \"https://media-cdn.incrowdsports.com/789423ac-3cdf-4b89-b11c-b458aa5f59a6.png\"}}}, {\"id\": \"1f32f9dc-91bf-40b2-88a0-a4c93cb0539c\", \"identifier\": \"E2025_405\", \"gameCode\": 405, \"season\": {\"name\": \"EuroLeague 2025-26\", \"code\": \"E2025\", \"alias\": \"2025-26\", \"competitionCode\": \"E\", \"year\": 2025, \"startDate\": \"2025-07-01T00:00:00\"}, \"group\": {\"id\": \"5b4b6677-d942-4c63-9b1c-b92190bade4e\", \"order\": 2, \"name\": \"Group SEMIFINAL B\", \"rawName\": \"SEMIFINAL B\"}, \"phaseType\": {\"code\": \"FF\", \"alias\": \"FINAL FOUR\", \"name\": \"Final Four\", \"isGroupPhase\": false}, \"round\": 46, \"roundAlias\": \"Round 46\", \"roundName\": \"Round 46\", \"played\": true, \"date\": \"2026-05-22T20:00:00\", \"confirmedDate\": true, \"confirmedHour\": true, \"localTimeZone\": 3, \"localDate\": \"2026-05-22T21:00:00\", \"utcDate\": \"2026-05-22T18:00:00Z\", \"local\": {\"club\": {\"code\": \"PAM\", \"name\": \"Valencia Basket\", \"abbreviatedName\": \"Valencia\", \"editorialName\": \"Valencia\", \"tvCode\": \"VBC\", \"isVirtual\": false, \"images\": {\"crest\": \"https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjChWbHL/bc3e00b2-fea4-40be-a7ec-1e633129bde3.png\"}}, \"score\": 90, \"standingsScore\": 90, \"partials\": {\"partials1\": 28, \"partials2\": 28, \"partials3\": 17, \"partials4\": 17, \"extraPeriods\": {}}}, \"road\": {\"club\": {\"code\": \"MAD\", \"name\": \"Real Madrid\", \"abbreviatedName\": \"Real\", \"editorialName\": \"Real\", \"tvCode\": \"RMB\", \"isVirtual\": false, \"images\": {\"crest\": \"https://media-cdn.incrowdsports.com/371b0d9b-9250-4c09-bda7-0686cf024657.png\"}}, \"score\": 105, \"standingsScore\": 105, \"partials\": {\"partials1\": 26, \"partials2\": 36, \"partials3\": 24, \"partials4\": 19, \"extraPeriods\": {}}}, \"audience\": 0, \"audienceConfirmed\": true, \"socialFeed\": \"\", \"operationsCode\": null, \"referee1\": {\"code\": \"OJCL\", \"name\": \"LOTTERMOSER, ROBERT\", \"alias\": \"LOTTERMOSER, R.\", \"country\": {\"code\": \"GER\", \"name\": \"Germany\"}, \"images\": {\"verticalSmall\": \"8845rp7o4ifpg9kf\"}, \"active\": true}, \"referee2\": {\"code\": \"OJLL\", \"name\": \"DIFALLAH, MEHDI\", \"alias\": \"DIFALLAH, M.\", \"country\": {\"code\": \"FRA\", \"name\": \"France\"}, \"images\": {\"verticalSmall\": \"87ytu4ivn6qtsqni\"}, \"active\": true}, \"referee3\": {\"code\": \"OJDF\", \"name\": \"LATISEVS, OLEGS\", \"alias\": \"LATISEVS, O.\", \"country\": {\"code\": \"LAT\", \"name\": \"Latvia\"}, \"images\": {\"verticalSmall\": \"8845j7vs5indngbw\"}, \"active\": true}, \"referee4\": null, \"venue\": {\"name\": \"TELEKOM CENTER ATHENS\", \"code\": \"AUM6\", \"capacity\": 1850"
+ },
+ "box_E2026_1": {
+  "url": "https://live.euroleague.net/api/Boxscore?gamecode=1&seasoncode=E2026",
+  "struttura": {
+   "Live": false,
+   "Referees": "PERUGA, CARLOS, BAENA, ALBERTO, GIOVANNETTI, GUIDO",
+   "Attendance": "16420",
+   "ByQuarter": [
+    "lista di 2",
+    {
+     "Team": "CRVENA ZVEZDA MERIDIANBET BELGRADE",
+     "Quarter1": 21,
+     "Quarter2": 24,
+     "Quarter3": 12,
+     "Quarter4": 20
+    }
+   ],
+   "EndOfQuarter": [
+    "lista di 2",
+    {
+     "Team": "CRVENA ZVEZDA MERIDIANBET BELGRADE",
+     "Quarter1": 21,
+     "Quarter2": 45,
+     "Quarter3": 57,
+     "Quarter4": 77
+    }
+   ],
+   "Stats": [
+    "lista di 2",
+    {
+     "Team": "CRVENA ZVEZDA MERIDIANBET BELGRADE",
+     "Coach": "NAVARRO, IBON",
+     "PlayersStats": [
+      "lista di 12",
+      {
+       "Player_ID": "P011157   ",
+       "IsStarter": 1,
+       "IsPlaying": 0,
+       "Team": "RED",
+       "Dorsal": "0",
+       "Player": "MOTLEY, JOHNATHAN",
+       "Minutes": "14:08",
+       "Points": 2,
+       "FieldGoalsMade2": 1,
+       "FieldGoalsAttempted2": 5,
+       "FieldGoalsMade3": 0,
+       "FieldGoalsAttempted3": 2,
+       "FreeThrowsMade": 0,
+       "FreeThrowsAttempted": 0,
+       "OffensiveRebounds": 0,
+       "DefensiveRebounds": 0,
+       "TotalRebounds": 0,
+       "Assistances": 2,
+       "Steals": 0,
+       "Turnovers": 6,
+       "BlocksFavour": 0,
+       "BlocksAgainst": 0,
+       "FoulsCommited": 5,
+       "FoulsReceived": 0,
+       "Valuation": -13,
+       "Plusminus": -19
+      }
+     ],
+     "tmr": {
+      "Player_ID": "          ",
+      "IsStarter": 0,
+      "IsPlaying": 0,
+      "Team": "RED",
+      "Dorsal": "",
+      "Player": "",
+      "Minutes": null,
+      "Points": 0,
+      "FieldGoalsMade2": 0,
+      "FieldGoalsAttempted2": 0,
+      "FieldGoalsMade3": 0,
+      "FieldGoalsAttempted3": 0,
+      "FreeThrowsMade": 0,
+      "FreeThrowsAttempted": 0,
+      "OffensiveRebounds": 1,
+      "DefensiveRebounds": 4,
+      "TotalRebounds": 5,
+      "Assistances": 0,
+      "Steals": 0,
+      "Turnovers": 0,
+      "BlocksFavour": 0,
+      "BlocksAgainst": 0,
+      "FoulsCommited": 0,
+      "FoulsReceived": 0,
+      "Valuation": 5,
+      "Plusminus": null
+     },
+     "totr": {
+      "Minutes": "200:00",
+      "Points": 77,
+      "FieldGoalsMade2": 17,
+      "FieldGoalsAttempted2": 44,
+      "FieldGoalsMade3": 10,
+      "FieldGoalsAttempted3": 29,
+      "FreeThrowsMade": 13,
+      "FreeThrowsAttempted": 19,
+      "OffensiveRebounds": 15,
+      "DefensiveRebounds": 24,
+      "TotalRebounds": 39,
+      "Assistances": 21,
+      "Steals": 7,
+      "Turnovers": 14,
+      "BlocksFavour": 3,
+      "BlocksAgainst": 6,
+      "FoulsCommited": 27,
+      "FoulsReceived": 22,
+      "Valuation": 70
+     }
+    }
+   ]
+  },
+  "campione": "{\"Live\": false, \"Referees\": \"PERUGA, CARLOS, BAENA, ALBERTO, GIOVANNETTI, GUIDO\", \"Attendance\": \"16420\", \"ByQuarter\": [{\"Team\": \"CRVENA ZVEZDA MERIDIANBET BELGRADE\", \"Quarter1\": 21, \"Quarter2\": 24, \"Quarter3\": 12, \"Quarter4\": 20}, {\"Team\": \"ZALGIRIS KAUNAS\", \"Quarter1\": 28, \"Quarter2\": 15, \"Quarter3\": 16, \"Quarter4\": 24}], \"EndOfQuarter\": [{\"Team\": \"CRVENA ZVEZDA MERIDIANBET BELGRADE\", \"Quarter1\": 21, \"Quarter2\": 45, \"Quarter3\": 57, \"Quarter4\": 77}, {\"Team\": \"ZALGIRIS KAUNAS\", \"Quarter1\": 28, \"Quarter2\": 43, \"Quarter3\": 59, \"Quarter4\": 83}], \"Stats\": [{\"Team\": \"CRVENA ZVEZDA MERIDIANBET BELGRADE\", \"Coach\": \"NAVARRO, IBON\", \"PlayersStats\": [{\"Player_ID\": \"P011157   \", \"IsStarter\": 1, \"IsPlaying\": 0, \"Team\": \"RED\", \"Dorsal\": \"0\", \"Player\": \"MOTLEY, JOHNATHAN\", \"Minutes\": \"14:08\", \"Points\": 2, \"FieldGoalsMade2\": 1, \"FieldGoalsAttempted2\": 5, \"FieldGoalsMade3\": 0, \"FieldGoalsAttempted3\": 2, \"FreeThrowsMade\": 0, \"FreeThrowsAttempted\": 0, \"OffensiveRebounds\": 0, \"DefensiveRebounds\": 0, \"TotalRebounds\": 0, \"Assistances\": 2, \"Steals\": 0, \"Turnovers\": 6, \"BlocksFavour\": 0, \"BlocksAgainst\": 0, \"FoulsCommited\": 5, \"FoulsReceived\": 0, \"Valuation\": -13, \"Plusminus\": -19}, {\"Player_ID\": \"P010568   \", \"IsStarter\": 1, \"IsPlaying\": 1, \"Team\": \"RED\", \"Dorsal\": \"1\", \"Player\": \"JONES, CHRIS\", \"Minutes\": \"18:44\", \"Points\": 15, \"FieldGoalsMade2\": 5, \"FieldGoalsAttempted2\": 6, \"FieldGoalsMade3\": 1, \"FieldGoalsAttempted3\": 2, \"FreeThrowsMade\": 2, \"FreeThrowsAttempted\": 2, \"OffensiveRebounds\": 1, \"DefensiveRebounds\": 1, \"TotalRebounds\": 2, \"Assistances\": 8, \"Steals\": 2, \"Turnovers\": 0, \"BlocksFavour\": 0, \"BlocksAgainst\": 0, \"FoulsCommited\": 1, \"FoulsReceived\": 1, \"Valuation\": 25, \"Plusminus\": 3}, {\"Player_ID\": \"P014094   \", \"IsStarter\": 0, \"IsPlaying\": 0, \"Team\": \"RED\", \"Dorsal\": \"2\", \"Player\": \"MILJENOVIC, STEFAN\", \"Minutes\": \"00:20\", \"Points\": 0, \"FieldGoalsMade2\": 0, \"FieldGoalsAttempted2\": 0, \"FieldGoalsMade3\": 0, \"FieldGoalsAttempted3\": 0, \"FreeThrowsMade\": 0, \"FreeThrowsAttempted\": 0, \"OffensiveRebounds\": 0, \"DefensiveRebounds\": 0, \"TotalRebounds\": 0, \"Assistances\": 0, \"Steals\": 0, \"Turnovers\": 0, \"BlocksFavour\": 0, \"BlocksAgainst\": 0, \"FoulsCommited\": 1, \"FoulsReceived\": 0, \"Valuation\": -1, \"Plusminus\": 0}, {\"Player_ID\": \"P010391   \", \"IsStarter\": 0, \"IsPlaying\": 0, \"Team\": \"RED\", \"Dorsal\": \"3\", \"Player\": \"WEILER-BABB, NICK\", \"Minutes\": \"21:16\", \"Points\": 0, \"FieldGoalsMade2\": 0, \"FieldGoalsAttempted2\": 3, \"FieldGoalsMade3\": 0, \"FieldGoalsAttempted3\": 1, \"FreeThrowsMade\": 0, \"FreeThrowsAttempted\": 0, \"OffensiveRebounds\": 1, \"DefensiveRebounds\": 2, \"TotalRebounds\": 3, \"Assistances\": 3, \"Steals\": 1, \"Turnovers\": 4, \"BlocksFavour\": 0, \"BlocksAgainst\": 2, \"FoulsCommited\": 2, \"FoulsReceived\": 1, \"Valuation\": -4, \"Plusminus\": -9}, {\"Player_ID\": \"P014163   \", \"IsStarter\": 0, \"IsPlaying\": 0, \"Team\": \"RED\", \"Dorsal\": \"6\", \"Player\": \"BUTLER, JARED\", \"Minutes\": \"17:13\", \"Points\": 11, \"FieldGoalsMade2\": 1, \"FieldGoalsAttempted2\": 4, \"FieldGoalsMade3\": 3, \"FieldGoalsAttempted3\": 7, \"FreeThrowsMade\": 0, \"FreeThrowsAttempted\": 0, \"OffensiveRebounds\": 1, \"DefensiveRebounds\": 1, \"TotalRebounds\": 2, \"Assistances\": 4, \"Steals\": 0, \"Turnovers\": 1, \"BlocksFavour\": 1, \"BlocksAgainst\": 0, \"FoulsCommited\": 1, \"FoulsReceived\": 2, \"Valuation\": 11, \"Plusminus\": 2}, {\"Player_ID\": \"P011305   \", \"IsStarter\": 1, \"IsPlaying\": 0, \"Team\": \"RED\", \"Dorsal\": \"11\", \"Player\": \"CARTER, TYSON\", \"Minutes\": \"16:09\", \"Points\": 3, \"FieldGoalsMade2\": 0, \"FieldGoalsAttempted2\": 1, \"FieldGoalsMade3\": 1, \"FieldGoalsAttempted3\": 3, \"FreeThrowsMade\": 0, \"FreeThrowsAttempted\": 0, \"OffensiveRebounds\": 0, \"DefensiveRebounds\": 3, \"TotalRebounds\": 3, \"Assistances\": 0, \"Steals\": 1, \"Turnovers\": 1, \"BlocksFavour\": 0, \"BlocksAgainst\": 1, \"FoulsCommited\": 1, \"FoulsReceived\": 2, \"Valuation\": 3, \"Plusminus\": -13}, {\"Player_ID\": \"P004007   \", \"IsStarter\": 0, \"IsPlaying\": 0, \"Team\": \"RED\", \"Dorsal\": \"13\", \"Player\": \"DOBRIC, OGNJEN\", \"Minutes\": \"04:45\", \"Points\": 0, \"FieldGoalsMade2\": 0, \"FieldGoalsAttempted2\": 0, \"FieldGoalsMade3\": 0, \"FieldGoalsAttempted3\": 1, \"FreeThrowsMade\": 0, \"FreeThrowsAttempted\": 0, \"OffensiveRebounds\": 1, \"DefensiveRebounds\": 0, \"TotalRebounds\": 1, \"Assistances\": 0, \"Steals\": 0, \"Turnovers\": 0, \"BlocksFavour\": 0, \"BlocksAgainst\": 0, \"FoulsCommited\": 1, \"FoulsReceived\": 0, \"Valuation\": -1, \"Plusminus\": 7}, {\"Player_ID\": \"P014029   \", \"IsStarter\": 0, \"IsPlaying\": 0, \"Team\": \"RED\", \"Dorsal\": \"15\", \"Player\": \"IZUNDU, EBUKA\", \"Minutes\": \"15:22\", \"Points\": 7, \"FieldGoalsMade2\": 2, \"FieldGoalsAttempted2\": 6, \"FieldGoalsMade3\": 0, \"FieldGoalsAttempted3\": 0, \"FreeThrowsMade\": 3, \"FreeThrowsAttempted\": 4, \"OffensiveRebounds\": 4, \"DefensiveRebounds\": 0, \"TotalRebounds\": 4, \"Assistances\": 0, \"Steals\": 2, \"Turnovers\": 0, \"BlocksFavour\": 1, \"BlocksAgainst\": 0, \"FoulsCommited\": 3, \"FoulsReceived\": 3, \"Valuation\": 9, \"Plusminus\": 3}, {\"Player_ID\": \"P013363   \", \"IsStarter\": 1, \"IsPlaying\": 1, \"Team\": \"RED\", \"Dorsal\": \"33\", \"Player\": \"NWORA, JORDAN\", \"Minutes\": \"22:02\", \"Points\""
+ },
+ "pbp_E2026_1": {
+  "url": "https://live.euroleague.net/api/PlaybyPlay?gamecode=1&seasoncode=E2026",
+  "struttura": {
+   "Live": false,
+   "TeamA": "Crvena Zvezda Meridianbet Belgrade",
+   "TeamB": "Zalgiris Kaunas",
+   "CodeTeamA": "RED       ",
+   "CodeTeamB": "ZAL       ",
+   "ActualQuarter": 4,
+   "FirstQuarter": [
+    "lista di 148",
+    {
+     "TYPE": 0,
+     "NUMBEROFPLAY": 5,
+     "CODETEAM": "          ",
+     "PLAYER_ID": "          ",
+     "PLAYTYPE": "BP",
+     "PLAYER": null,
+     "TEAM": null,
+     "DORSAL": null,
+     "MINUTE": 1,
+     "MARKERTIME": "",
+     "POINTS_A": null,
+     "POINTS_B": null,
+     "COMMENT": "",
+     "PLAYINFO": "Begin Period"
+    }
+   ],
+   "SecondQuarter": [
+    "lista di 199",
+    {
+     "TYPE": 0,
+     "NUMBEROFPLAY": 169,
+     "CODETEAM": "          ",
+     "PLAYER_ID": "          ",
+     "PLAYTYPE": "BP",
+     "PLAYER": null,
+     "TEAM": null,
+     "DORSAL": null,
+     "MINUTE": 11,
+     "MARKERTIME": "",
+     "POINTS_A": null,
+     "POINTS_B": null,
+     "COMMENT": "",
+     "PLAYINFO": "Begin Period"
+    }
+   ],
+   "ThirdQuarter": [
+    "lista di 157",
+    {
+     "TYPE": 0,
+     "NUMBEROFPLAY": 388,
+     "CODETEAM": "          ",
+     "PLAYER_ID": "          ",
+     "PLAYTYPE": "BP",
+     "PLAYER": null,
+     "TEAM": null,
+     "DORSAL": null,
+     "MINUTE": 21,
+     "MARKERTIME": "",
+     "POINTS_A": null,
+     "POINTS_B": null,
+     "COMMENT": "",
+     "PLAYINFO": "Begin Period"
+    }
+   ],
+   "ForthQuarter": [
+    "lista di 186",
+    {
+     "TYPE": 0,
+     "NUMBEROFPLAY": 549,
+     "CODETEAM": "          ",
+     "PLAYER_ID": "          ",
+     "PLAYTYPE": "BP",
+     "PLAYER": null,
+     "TEAM": null,
+     "DORSAL": null,
+     "MINUTE": 31,
+     "MARKERTIME": "",
+     "POINTS_A": null,
+     "POINTS_B": null,
+     "COMMENT": "",
+     "PLAYINFO": "Begin Period"
+    }
+   ],
+   "ExtraTime": "lista vuota"
+  },
+  "campione": "{\"Live\": false, \"TeamA\": \"Crvena Zvezda Meridianbet Belgrade\", \"TeamB\": \"Zalgiris Kaunas\", \"CodeTeamA\": \"RED       \", \"CodeTeamB\": \"ZAL       \", \"ActualQuarter\": 4, \"FirstQuarter\": [{\"TYPE\": 0, \"NUMBEROFPLAY\": 5, \"CODETEAM\": \"          \", \"PLAYER_ID\": \"          \", \"PLAYTYPE\": \"BP\", \"PLAYER\": null, \"TEAM\": null, \"DORSAL\": null, \"MINUTE\": 1, \"MARKERTIME\": \"\", \"POINTS_A\": null, \"POINTS_B\": null, \"COMMENT\": \"\", \"PLAYINFO\": \"Begin Period\"}, {\"TYPE\": 0, \"NUMBEROFPLAY\": 6, \"CODETEAM\": \"ZAL       \", \"PLAYER_ID\": \"          \", \"PLAYTYPE\": \"JB\", \"PLAYER\": null, \"TEAM\": \"Zalgiris Kaunas\", \"DORSAL\": \"\", \"MINUTE\": 1, \"MARKERTIME\": \"09:59\", \"POINTS_A\": null, \"POINTS_B\": null, \"COMMENT\": \"\", \"PLAYINFO\": \"\"}, {\"TYPE\": 0, \"NUMBEROFPLAY\": 7, \"CODETEAM\": \"ZAL       \", \"PLAYER_ID\": \"P000898   \", \"PLAYTYPE\": \"2FGA\", \"PLAYER\": \"VALANCIUNAS, JONAS\", \"TEAM\": \"Zalgiris Kaunas\", \"DORSAL\": \"17\", \"MINUTE\": 1, \"MARKERTIME\": \"09:43\", \"POINTS_A\": null, \"POINTS_B\": null, \"COMMENT\": \"\", \"PLAYINFO\": \"Missed Two Pointer (0/1 -  0 pt)\"}, {\"TYPE\": 0, \"NUMBEROFPLAY\": 8, \"CODETEAM\": \"RED       \", \"PLAYER_ID\": \"P011982   \", \"PLAYTYPE\": \"D\", \"PLAYER\": \"OJELEYE, SEMI\", \"TEAM\": \"Crvena Zvezda Meridianbet Belgrade\", \"DORSAL\": \"37\", \"MINUTE\": 1, \"MARKERTIME\": \"09:42\", \"POINTS_A\": null, \"POINTS_B\": null, \"COMMENT\": \"\", \"PLAYINFO\": \"Def Rebound (1)\"}, {\"TYPE\": 0, \"NUMBEROFPLAY\": 9, \"CODETEAM\": \"RED       \", \"PLAYER_ID\": \"P010568   \", \"PLAYTYPE\": \"2FGM\", \"PLAYER\": \"JONES, CHRIS\", \"TEAM\": \"Crvena Zvezda Meridianbet Belgrade\", \"DORSAL\": \"1\", \"MINUTE\": 1, \"MARKERTIME\": \"09:27\", \"POINTS_A\": 2, \"POINTS_B\": null, \"COMMENT\": \"\", \"PLAYINFO\": \"Two Pointer (1/1 -  2 pt)\"}, {\"TYPE\": 0, \"NUMBEROFPLAY\": 10, \"CODETEAM\": \"RED       \", \"PLAYER_ID\": \"P011157   \", \"PLAYTYPE\": \"AS\", \"PLAYER\": \"MOTLEY, JOHNATHAN\", \"TEAM\": \"Crvena Zvezda Meridianbet Belgrade\", \"DORSAL\": \"0\", \"MINUTE\": 1, \"MARKERTIME\": \"09:27\", \"POINTS_A\": null, \"POINTS_B\": null, \"COMMENT\": \"\", \"PLAYINFO\": \"Assist (1)\"}, {\"TYPE\": 0, \"NUMBEROFPLAY\": 11, \"CODETEAM\": \"ZAL       \", \"PLAYER_ID\": \"P011987   \", \"PLAYTYPE\": \"3FGM\", \"PLAYER\": \"EDWARDS, CARSEN\", \"TEAM\": \"Zalgiris Kaunas\", \"DORSAL\": \"3\", \"MINUTE\": 1, \"MARKERTIME\": \"09:05\", \"POINTS_A\": 2, \"POINTS_B\": 3, \"COMMENT\": \"\", \"PLAYINFO\": \"Three Pointer (1/1 -  3 pt)\"}, {\"TYPE\": 0, \"NUMBEROFPLAY\": 12, \"CODETEAM\": \"ZAL       \", \"PLAYER_ID\": \"P000898   \", \"PLAYTYPE\": \"AS\", \"PLAYER\": \"VALANCIUNAS, JONAS\", \"TEAM\": \"Zalgiris Kaunas\", \"DORSAL\": \"17\", \"MINUTE\": 1, \"MARKERTIME\": \"09:05\", \"POINTS_A\": null, \"POINTS_B\": null, \"COMMENT\": \"\", \"PLAYINFO\": \"Assist (1)\"}, {\"TYPE\": 0, \"NUMBEROFPLAY\": 14, \"CODETEAM\": \"RED       \", \"PLAYER_ID\": \"P010568   \", \"PLAYTYPE\": \"2FGM\", \"PLAYER\": \"JONES, CHRIS\", \"TEAM\": \"Crvena Zvezda Meridianbet Belgrade\", \"DORSAL\": \"1\", \"MINUTE\": 2, \"MARKERTIME\": \"08:53\", \"POINTS_A\": 4, \"POINTS_B\": 3, \"COMMENT\": \"\", \"PLAYINFO\": \"Two Pointer (2/2 -  4 pt)\"}, {\"TYPE\": 0, \"NUMBEROFPLAY\": 15, \"CODETEAM\": \"ZAL       \", \"PLAYER_ID\": \"P011987   \", \"PLAYTYPE\": \"2FGA\", \"PLAYER\": \"EDWARDS, CARSEN\", \"TEAM\": \"Zalgiris Kaunas\", \"DORSAL\": \"3\", \"MINUTE\": 2, \"MARKERTIME\": \"08:38\", \"POINTS_A\": null, \"POINTS_B\": null, \"COMMENT\": \"\", \"PLAYINFO\": \"Missed Two Pointer (0/1 -  3 pt)\"}, {\"TYPE\": 0, \"NUMBEROFPLAY\": 16, \"CODETEAM\": \"RED       \", \"PLAYER_ID\": \"P011982   \", \"PLAYTYPE\": \"D\", \"PLAYER\": \"OJELEYE, SEMI\", \"TEAM\": \"Crvena Zvezda Meridianbet Belgrade\", \"DORSAL\": \"37\", \"MINUTE\": 2, \"MARKERTIME\": \"08:37\", \"POINTS_A\": null, \"POINTS_B\": null, \"COMMENT\": \"\", \"PLAYINFO\": \"Def Rebound (2)\"}, {\"TYPE\": 0, \"NUMBEROFPLAY\": 17, \"CODETEAM\": \"RED       \", \"PLAYER_ID\": \"P011157   \", \"PLAYTYPE\": \"TO\", \"PLAYER\": \"MOTLEY, JOHNATHAN\", \"TEAM\": \"Crvena Zvezda Meridianbet Belgrade\", \"DORSAL\": \"0\", \"MINUTE\": 2, \"MARKERTIME\": \"08:24\", \"POINTS_A\": null, \"POINTS_B\": null, \"COMMENT\": \"\", \"PLAYINFO\": \"Turnover (1)\"}, {\"TYPE\": 0, \"NUMBEROFPLAY\": 18, \"CODETEAM\": \"ZAL       \", \"PLAYER_ID\": \"P011987   \", \"PLAYTYPE\": \"ST\", \"PLAYER\": \"EDWARDS, CARSEN\", \"TEAM\": \"Zalgiris Kaunas\", \"DORSAL\": \"3\", \"MINUTE\": 2, \"MARKERTIME\": \"08:24\", \"POINTS_A\": null, \"POINTS_B\": null, \"COMMENT\": \"\", \"PLAYINFO\": \"Steal (1)\"}, {\"TYPE\": 0, \"NUMBEROFPLAY\": 19, \"CODETEAM\": \"RED       \", \"PLAYER_ID\": \"P011305   \", \"PLAYTYPE\": \"CM\", \"PLAYER\": \"CARTER, TYSON\", \"TEAM\": \"Crvena Zvezda Meridianbet Belgrade\", \"DORSAL\": \"11\", \"MINUTE\": 2, \"MARKERTIME\": \"08:21\", \"POINTS_A\": null, \"POINTS_B\": null, \"COMMENT\": \"\", \"PLAYINFO\": \"Foul (1)\"}, {\"TYPE\": 0, \"NUMBEROFPLAY\": 20, \"CODETEAM\": \"ZAL       \", \"PLAYER_ID\": \"P007982   \", \"PLAYTYPE\": \"RV\", \"PLAYER\": \"WILLIAMS-GOSS, NIGEL\", \"TEAM\": \"Zalgiris Kaunas\", \"DORSAL\": \"1\", \"MINUTE\": 2, \"MARKERTIME\": \"08:21\", \"POINTS_A\": null, \"POINTS_B\": null, \"COMMENT\": \"\", \"PLAYINFO\": \"Foul Drawn (1)\"}, {\"TYPE\": 0, \"NUMBEROFPLAY\": 21, \"CODETEAM\": \"ZAL       \", \"PLAYER_ID\": \"P000898   \", \"PLAYTYPE\": \"2FGM\", \"PLAYER\": \"VALANCIUNAS, JONAS\", \"TEAM\": \"Zalgiris Kaunas\", \"DORSAL\": \"17\", \"MINUTE\": 2, \"MARKERTIME\": \"08:14\", \"POINTS_A\": 4, \"POINTS_B\": 5, \"COMMENT\": \"\", \"PLAYINFO\": \"Two Pointer (1/2 -  2 pt)\"}, {\"TYPE\": 0, \"N"
+ },
+ "header_E2026_1": {
+  "url": "https://live.euroleague.net/api/Header?gamecode=1&seasoncode=E2026",
+  "struttura": {
+   "Live": false,
+   "Round": "1",
+   "Date": "24/09/2026",
+   "Hour": "20:00 ",
+   "Stadium": "BELGRADE ARENA",
+   "Capacity": "16420",
+   "TeamA": "CRVENA ZVEZDA MERIDIANBET BELGRADE",
+   "TeamB": "ZALGIRIS KAUNAS",
+   "CodeTeamA": "RED",
+   "TVCodeA": "CZV",
+   "CodeTeamB": "ZAL",
+   "TVCodeB": "ZAL",
+   "imA": "RED       ",
+   "imB": "ZAL       ",
+   "ScoreA": "77",
+   "ScoreB": "83",
+   "CoachA": "NAVARRO, IBON",
+   "CoachB": "MASIULIS, TOMAS",
+   "GameTime": "40:00",
+   "RemainingPartialTime": "00:00",
+   "wid": "80",
+   "Quarter": "",
+   "FoultsA": "27",
+   "FoultsB": "22",
+   "TimeoutsA": "5",
+   "TimeoutsB": "3",
+   "ScoreQuarter1A": 21,
+   "ScoreQuarter2A": 45,
+   "ScoreQuarter3A": 57,
+   "ScoreQuarter4A": 77,
+   "ScoreExtraTimeA": 0,
+   "ScoreQuarter1B": 28,
+   "ScoreQuarter2B": 43,
+   "ScoreQuarter3B": 59,
+   "ScoreQuarter4B": 83,
+   "ScoreExtraTimeB": 0,
+   "Phase": "REGULAR SEASON",
+   "PhaseReducedName": "R S ",
+   "Competition": "EUROLEAGUE 2026-27",
+   "CompetitionReducedName": "E2026     ",
+   "pcom": "E2026     ",
+   "Referee1": "PERUGA, CARLOS",
+   "Referee2": "BAENA, ALBERTO",
+   "Referee3": "GIOVANNETTI, GUIDO"
+  },
+  "campione": "{\"Live\": false, \"Round\": \"1\", \"Date\": \"24/09/2026\", \"Hour\": \"20:00 \", \"Stadium\": \"BELGRADE ARENA\", \"Capacity\": \"16420\", \"TeamA\": \"CRVENA ZVEZDA MERIDIANBET BELGRADE\", \"TeamB\": \"ZALGIRIS KAUNAS\", \"CodeTeamA\": \"RED\", \"TVCodeA\": \"CZV\", \"CodeTeamB\": \"ZAL\", \"TVCodeB\": \"ZAL\", \"imA\": \"RED       \", \"imB\": \"ZAL       \", \"ScoreA\": \"77\", \"ScoreB\": \"83\", \"CoachA\": \"NAVARRO, IBON\", \"CoachB\": \"MASIULIS, TOMAS\", \"GameTime\": \"40:00\", \"RemainingPartialTime\": \"00:00\", \"wid\": \"80\", \"Quarter\": \"\", \"FoultsA\": \"27\", \"FoultsB\": \"22\", \"TimeoutsA\": \"5\", \"TimeoutsB\": \"3\", \"ScoreQuarter1A\": 21, \"ScoreQuarter2A\": 45, \"ScoreQuarter3A\": 57, \"ScoreQuarter4A\": 77, \"ScoreExtraTimeA\": 0, \"ScoreQuarter1B\": 28, \"ScoreQuarter2B\": 43, \"ScoreQuarter3B\": 59, \"ScoreQuarter4B\": 83, \"ScoreExtraTimeB\": 0, \"Phase\": \"REGULAR SEASON\", \"PhaseReducedName\": \"R S \", \"Competition\": \"EUROLEAGUE 2026-27\", \"CompetitionReducedName\": \"E2026     \", \"pcom\": \"E2026     \", \"Referee1\": \"PERUGA, CARLOS\", \"Referee2\": \"BAENA, ALBERTO\", \"Referee3\": \"GIOVANNETTI, GUIDO\"}"
+ },
+ "v3_game_E2026_1": {
+  "url": "https://api-live.euroleague.net/v3/competitions/E/seasons/E2026/games/1",
+  "errore": "HTTP Error 405: Method Not Allowed"
+ },
+ "clubs_E2026": {
+  "url": "https://api-live.euroleague.net/v2/competitions/E/seasons/E2026/clubs",
+  "struttura": {
+   "data": [
+    "lista di 20",
+    {
+     "code": "IST",
+     "name": "Anadolu Efes Istanbul",
+     "abbreviatedName": "Anadolu Efes",
+     "editorialName": "Efes",
+     "tvCode": "EFS",
+     "isVirtual": false,
+     "images": {
+      "crest": "https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjCgOCxM/a844756c-a58d-4666-93b8-48f7"
+     },
+     "sponsor": "Anadolu Efes Istanbul",
+     "clubPermanentName": "Anadolu Efes Istanbul",
+     "clubPermanentAlias": "Efes",
+     "country": {
+      "code": "TUR",
+      "name": "Turkiye"
+     },
+     "address": "Kazliçesme Mahallesi 10. Yil Caddesi No : 9/1 Basketbol Gelisim Merkezi 34020, Istanbul, T",
+     "website": "https://www.anadoluefessk.org/",
+     "ticketsUrl": "https://www.anadoluefessk.org/en/tickets",
+     "twitterAccount": "AnadoluEfesSK",
+     "venueCode": "AVG",
+     "city": "ISTANBUL",
+     "president": "Tuncay Ozilhan",
+     "phone": "+90 212 449 38 84"
+    }
+   ],
+   "total": 20
+  },
+  "campione": "{\"data\": [{\"code\": \"IST\", \"name\": \"Anadolu Efes Istanbul\", \"abbreviatedName\": \"Anadolu Efes\", \"editorialName\": \"Efes\", \"tvCode\": \"EFS\", \"isVirtual\": false, \"images\": {\"crest\": \"https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjCgOCxM/a844756c-a58d-4666-93b8-48f7337bc79d.png\"}, \"sponsor\": \"Anadolu Efes Istanbul\", \"clubPermanentName\": \"Anadolu Efes Istanbul\", \"clubPermanentAlias\": \"Efes\", \"country\": {\"code\": \"TUR\", \"name\": \"Turkiye\"}, \"address\": \"Kazliçesme Mahallesi 10. Yil Caddesi No : 9/1 Basketbol Gelisim Merkezi 34020, Istanbul, Turkiye\", \"website\": \"https://www.anadoluefessk.org/\", \"ticketsUrl\": \"https://www.anadoluefessk.org/en/tickets\", \"twitterAccount\": \"AnadoluEfesSK\", \"venueCode\": \"AVG\", \"city\": \"ISTANBUL\", \"president\": \"Tuncay Ozilhan\", \"phone\": \"+90 212 449 38 84\"}, {\"code\": \"MIL\", \"name\": \"Armani Olimpia Milan\", \"abbreviatedName\": \"Milan\", \"editorialName\": \"Milan\", \"tvCode\": \"MIL\", \"isVirtual\": false, \"images\": {\"crest\": \"https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjChWbHH/5c2f0ab6-f86a-4df0-b2f3-f9ab92f7267b.png\"}, \"sponsor\": \"Armani Olimpia Milan\", \"clubPermanentName\": \"EA7 Emporio Armani Milan\", \"clubPermanentAlias\": \"Olimpia Milano\", \"country\": {\"code\": \"ITA\", \"name\": \"Italy\"}, \"address\": \"Via Borgonuovo 11, 20121 Milan, Italy\", \"website\": \"http://www.olimpiamilano.com\", \"ticketsUrl\": \"http://www.olimpiamilano.com/ticketing/\", \"twitterAccount\": \"OlimpiaMI1936\", \"venueCode\": \"ASX\", \"city\": \"Milan\", \"president\": \"Pantaleo Dell’Orco\", \"phone\": \"+39 0270001615 \"}, {\"code\": \"BES\", \"name\": \"Besiktas Istanbul\", \"abbreviatedName\": \"Besiktas\", \"editorialName\": \"Besiktas\", \"tvCode\": \"BJK\", \"isVirtual\": false, \"images\": {\"crest\": \"https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjChWbHH/b05e3c54-e672-4b31-9f86-c91e9de7715c.png\"}, \"sponsor\": \"Besiktas Istanbul\", \"clubPermanentName\": \"Besiktas Istanbul\", \"clubPermanentAlias\": \"Besiktas Istanbul\", \"country\": {\"code\": \"TUR\", \"name\": \"Turkiye\"}, \"address\": \"Akat Mahallesi, Gelincik Sokak No.2 Besiktas/Istambul, Turkiye\", \"website\": \"http://www.bjk.com.tr\", \"ticketsUrl\": \"https://www.passo.com.tr/en/serie/besiktas-emlakjet-basketbol-2324-basketbol-kombine/465746\", \"twitterAccount\": \"BJK_Basketbol\", \"venueCode\": \"APX\", \"city\": \"ISTANBUL\", \"president\": \"Serdal Adali\", \"phone\": \"+90 2122 836 600\"}, {\"code\": \"RED\", \"name\": \"Crvena Zvezda Meridianbet Belgrade\", \"abbreviatedName\": \"Crvena Zvezda\", \"editorialName\": \"Crvena\", \"tvCode\": \"CZV\", \"isVirtual\": false, \"images\": {\"crest\": \"https://media-cdn.incrowdsports.com/d2eef4a8-62df-4fdd-9076-276004268515.png\"}, \"sponsor\": \"Crvena Zvezda Meridianbet Belgrade\", \"clubPermanentName\": \"Crvena Zvezda Meridianbet Belgrade\", \"clubPermanentAlias\": \"Crvena Zvezda\", \"country\": {\"code\": \"SRB\", \"name\": \"Serbia\"}, \"address\": \"Mali Kalemegdan 2, 11000 Belgrade, Serbia\", \"website\": \"http://www.kkcrvenazvezda.rs/\", \"ticketsUrl\": \"https://www.tickets.kkcrvenazvezda.rs/ \", \"twitterAccount\": \"kkcrvenazvezda\", \"venueCode\": \"ATM\", \"city\": \"BELGRADE\", \"president\": \"Zeljko Drcelic\", \"phone\": \"+381 116550549\"}, {\"code\": \"DUB\", \"name\": \"Dubai Basketball\", \"abbreviatedName\": \"Dubai\", \"editorialName\": \"Dubai\", \"tvCode\": \"DUB\", \"isVirtual\": false, \"images\": {\"crest\": \"https://media-cdn.incrowdsports.com/1efae090-16e2-4963-ae47-4b94f249c244.png\"}, \"sponsor\": \"Dubai Basketball\", \"clubPermanentName\": \"Dubai Basketball\", \"clubPermanentAlias\": \"Dubai Basketball\", \"country\": {\"code\": \"UAE\", \"name\": \"United Arab Emirates\"}, \"address\": \"Al Shoala Building 129, P.O Box-99903, Dubai, United Arab Emirates\", \"website\": \"https://dubaibasketball.com/\", \"ticketsUrl\": \"https://dubaibasketball.com/tickets/\", \"twitterAccount\": \"dubaibasket\", \"venueCode\": \"ACA\", \"city\": \"Dubai\", \"president\": \"Dejan Kamenjasevic\", \"phone\": \"+971 42019501\"}, {\"code\": \"BAR\", \"name\": \"FC Barcelona\", \"abbreviatedName\": \"FC Barcelona\", \"editorialName\": \"Barca\", \"tvCode\": \"BAR\", \"isVirtual\": false, \"images\": {\"crest\": \"https://media-cdn.incrowdsports.com/35dfa503-e417-481f-963a-bdf6f013763e.png\"}, \"sponsor\": \"FC Barcelona\", \"clubPermanentName\": \"FC Barcelona\", \"clubPermanentAlias\": \"Barcelona\", \"country\": {\"code\": \"ESP\", \"name\": \"Spain\"}, \"address\": \"Aristides Maillol s/n, 08028 Barcelona, Spain\", \"website\": \"https://www.fcbarcelona.com/sections/basketball\", \"ticketsUrl\": \"https://www.fcbarcelona.com/tickets/basketball/basketball-tickets\", \"twitterAccount\": \"FCBbasket\", \"venueCode\": \"AMH\", \"city\": \"BARCELONA\", \"president\": \"Joan Laporta\", \"phone\": \"+34 934963600\"}, {\"code\": \"MUN\", \"name\": \"FC Bayern Munich\", \"abbreviatedName\": \"Bayern Munich\", \"editorialName\": \"Bayern\", \"tvCode\": \"BAY\", \"isVirtual\": false, \"images\": {\"crest\": \"https://media-cdn.incrowdsports.com/817b0e58-d595-4b09-ab0b-1e7cc26249ff.png\"}, \"sponsor\": \"FC Bayern Munich\", \"clubPermanentName\": \"FC Bayern Munich\", \"clubPermanentAlias\": \"Bayern Munich\", \"country\": {\"code\": \"GER\", \"name\": \"Germany\"}, \"address\": \"Siegenburger Strasse 45, 81373, Munich, Germany\", \"website\": \"http://www.fcbayernbasketball.com/"
+ },
+ "people_E2026": {
+  "url": "https://api-live.euroleague.net/v2/competitions/E/seasons/E2026/people",
+  "struttura": {
+   "data": [
+    "lista di 500",
+    {
+     "person": {
+      "code": "CTB",
+      "name": "COLLET, VINCENT",
+      "alias": "COLLET, VINCENT",
+      "aliasRaw": "COLLET, VINCENT",
+      "passportName": "VINCENT FLORENT ANTOINE",
+      "passportSurname": "COLLET",
+      "jerseyName": "",
+      "abbreviatedName": "",
+      "country": {
+       "code": "FRA",
+       "name": "France"
+      },
+      "height": 0,
+      "weight": 0,
+      "birthDate": "1963-06-06T00:00:00",
+      "birthCountry": {
+       "code": "FRA",
+       "name": "France"
+      },
+      "twitterAccount": "",
+      "instagramAccount": "",
+      "facebookAccount": "",
+      "isReferee": false,
+      "images": {}
+     },
+     "type": "A",
+     "typeName": "Assitant coach",
+     "active": true,
+     "startDate": "2026-09-17T09:59:14.88",
+     "endDate": "2027-06-30T00:00:00",
+     "order": 6,
+     "dorsal": "",
+     "dorsalRaw": "",
+     "position": 0,
+     "positionName": null,
+     "lastTeam": "",
+     "externalId": 56769,
+     "images": {},
+     "club": {
+      "code": "ASV",
+      "name": "LDLC ASVEL Villeurbanne",
+      "abbreviatedName": "LDLC ASVEL",
+      "editorialName": "ASVEL",
+      "tvCode": "ASV",
+      "isVirtual": false,
+      "images": {
+       "crest": "https://media-cdn.incrowdsports.com/e33c6d1a-95ca-4dbc-b8cb-0201812104cc.png"
+      }
+     },
+     "season": {
+      "name": "EuroLeague 2026-27",
+      "code": "E2026",
+      "alias": "2026-27",
+      "competitionCode": "E",
+      "year": 2026,
+      "startDate": "2026-07-01T00:00:00"
+     }
+    }
+   ],
+   "total": 971
+  },
+  "campione": "{\"data\": [{\"person\": {\"code\": \"CTB\", \"name\": \"COLLET, VINCENT\", \"alias\": \"COLLET, VINCENT\", \"aliasRaw\": \"COLLET, VINCENT\", \"passportName\": \"VINCENT FLORENT ANTOINE\", \"passportSurname\": \"COLLET\", \"jerseyName\": \"\", \"abbreviatedName\": \"\", \"country\": {\"code\": \"FRA\", \"name\": \"France\"}, \"height\": 0, \"weight\": 0, \"birthDate\": \"1963-06-06T00:00:00\", \"birthCountry\": {\"code\": \"FRA\", \"name\": \"France\"}, \"twitterAccount\": \"\", \"instagramAccount\": \"\", \"facebookAccount\": \"\", \"isReferee\": false, \"images\": {}}, \"type\": \"A\", \"typeName\": \"Assitant coach\", \"active\": true, \"startDate\": \"2026-09-17T09:59:14.88\", \"endDate\": \"2027-06-30T00:00:00\", \"order\": 6, \"dorsal\": \"\", \"dorsalRaw\": \"\", \"position\": 0, \"positionName\": null, \"lastTeam\": \"\", \"externalId\": 56769, \"images\": {}, \"club\": {\"code\": \"ASV\", \"name\": \"LDLC ASVEL Villeurbanne\", \"abbreviatedName\": \"LDLC ASVEL\", \"editorialName\": \"ASVEL\", \"tvCode\": \"ASV\", \"isVirtual\": false, \"images\": {\"crest\": \"https://media-cdn.incrowdsports.com/e33c6d1a-95ca-4dbc-b8cb-0201812104cc.png\"}}, \"season\": {\"name\": \"EuroLeague 2026-27\", \"code\": \"E2026\", \"alias\": \"2026-27\", \"competitionCode\": \"E\", \"year\": 2026, \"startDate\": \"2026-07-01T00:00:00\"}}, {\"person\": {\"code\": \"LKX\", \"name\": \"PNINI, GUY\", \"alias\": \"Pnini\", \"aliasRaw\": \"Pnini\", \"passportName\": \"GUY\", \"passportSurname\": \"PNINI\", \"jerseyName\": \"PNINI\", \"abbreviatedName\": \"Pnini, G.\", \"country\": {\"code\": \"ISR\", \"name\": \"Israel\"}, \"height\": 0, \"weight\": 0, \"birthDate\": \"1983-09-04T00:00:00\", \"birthCountry\": {\"code\": \"ISR\", \"name\": \"Israel\"}, \"twitterAccount\": \"\", \"instagramAccount\": \"\", \"facebookAccount\": \"\", \"isReferee\": false, \"images\": {}}, \"type\": \"A\", \"typeName\": \"Assitant coach\", \"active\": true, \"startDate\": \"2026-09-17T07:10:50.065\", \"endDate\": \"2027-06-30T00:00:00\", \"order\": 6, \"dorsal\": \"\", \"dorsalRaw\": \"\", \"position\": 0, \"positionName\": null, \"lastTeam\": \"\", \"externalId\": 56742, \"images\": {}, \"club\": {\"code\": \"TEL\", \"name\": \"Maccabi Rapyd Tel Aviv\", \"abbreviatedName\": \"Maccabi\", \"editorialName\": \"Maccabi\", \"tvCode\": \"MTA\", \"isVirtual\": false, \"images\": {\"crest\": \"https://media-cdn.cortextech.io/1b533342-78f5-4932-b714-a7d80b5826b5.png\"}}, \"season\": {\"name\": \"EuroLeague 2026-27\", \"code\": \"E2026\", \"alias\": \"2026-27\", \"competitionCode\": \"E\", \"year\": 2026, \"startDate\": \"2026-07-01T00:00:00\"}}, {\"person\": {\"code\": \"007143\", \"name\": \"PAPPAS, CHRISTOS\", \"alias\": \"PAPPAS, CHRISTOS\", \"aliasRaw\": \"PAPPAS, CHRISTOS\", \"passportName\": \"CHRISTOS\", \"passportSurname\": \"PAPPAS\", \"jerseyName\": null, \"abbreviatedName\": null, \"country\": {\"code\": \"GRE\", \"name\": \"Greece\"}, \"height\": 0, \"weight\": 0, \"birthDate\": \"1963-06-29T00:00:00\", \"birthCountry\": {\"code\": \"GRE\", \"name\": \"Greece\"}, \"twitterAccount\": null, \"instagramAccount\": null, \"facebookAccount\": null, \"isReferee\": false, \"images\": {}}, \"type\": \"A\", \"typeName\": \"Assitant coach\", \"active\": true, \"startDate\": \"2026-09-15T07:41:55.381\", \"endDate\": \"2027-06-30T00:00:00\", \"order\": 6, \"dorsal\": \"\", \"dorsalRaw\": \"\", \"position\": 0, \"positionName\": null, \"lastTeam\": \"\", \"externalId\": 56680, \"images\": {}, \"club\": {\"code\": \"OLY\", \"name\": \"Olympiacos Piraeus\", \"abbreviatedName\": \"Olympiacos\", \"editorialName\": \"Olympiacos\", \"tvCode\": \"OLY\", \"isVirtual\": false, \"images\": {\"crest\": \"https://media-cdn.incrowdsports.com/789423ac-3cdf-4b89-b11c-b458aa5f59a6.png\"}}, \"season\": {\"name\": \"EuroLeague 2026-27\", \"code\": \"E2026\", \"alias\": \"2026-27\", \"competitionCode\": \"E\", \"year\": 2026, \"startDate\": \"2026-07-01T00:00:00\"}}, {\"person\": {\"code\": \"013870\", \"name\": \"PIN , PABLO\", \"alias\": \"PIN , PABLO\", \"aliasRaw\": \"PIN , PABLO\", \"passportName\": \"PABLO\", \"passportSurname\": \"PIN\", \"jerseyName\": null, \"abbreviatedName\": null, \"country\": {\"code\": \"ESP\", \"name\": \"Spain\"}, \"height\": 0, \"weight\": 0, \"birthDate\": \"1982-11-30T00:00:00\", \"birthCountry\": {\"code\": \"ESP\", \"name\": \"Spain\"}, \"twitterAccount\": null, \"instagramAccount\": null, \"facebookAccount\": null, \"isReferee\": false, \"images\": {}}, \"type\": \"A\", \"typeName\": \"Assitant coach\", \"active\": true, \"startDate\": \"2026-09-07T10:43:47.605\", \"endDate\": \"2027-06-30T00:00:00\", \"order\": 6, \"dorsal\": \"\", \"dorsalRaw\": \"\", \"position\": 0, \"positionName\": null, \"lastTeam\": \"\", \"externalId\": 55815, \"images\": {}, \"club\": {\"code\": \"BAS\", \"name\": \"Kosner Baskonia Vitoria-Gasteiz\", \"abbreviatedName\": \"Baskonia\", \"editorialName\": \"Baskonia\", \"tvCode\": \"KBA\", \"isVirtual\": false, \"images\": {\"crest\": \"https://media-cdn.cortextech.io/cbc49cb0-99ce-4462-bdb7-56983ee03cf4.png\"}}, \"season\": {\"name\": \"EuroLeague 2026-27\", \"code\": \"E2026\", \"alias\": \"2026-27\", \"competitionCode\": \"E\", \"year\": 2026, \"startDate\": \"2026-07-01T00:00:00\"}}, {\"person\": {\"code\": \"007374\", \"name\": \"IZQUIERDO, JOSE\", \"alias\": \"IZQUIERDO, JOSE MARIA\", \"aliasRaw\": \"IZQUIERDO, JOSE MARIA\", \"passportName\": \"JOSE MARIA\", \"passportSurname\": \"IZQUIERDO IBANEZ\", \"jerseyName\": \"\", \"abbreviatedName\": \"Izquierdo, JM.\", \"country\": {\"code\": \"ESP\", \"name\": \"Spain\"}, \"height\": 0, \"weight\": 0, \"birthDate\": \"1967-05-15T00:00:00\", \"birthCountry\": {\"code\": \"ESP\""
+ },
+ "v3_players_stats": {
+  "url": "https://api-live.euroleague.net/v3/competitions/E/seasons/E2026/statistics/players/traditional?SeasonMode=Single&statisticMode=perGame&limit=3",
+  "errore": "HTTP Error 404: Not Found"
+ },
+ "v2_game_stats_1": {
+  "url": "https://api-live.euroleague.net/v2/competitions/E/seasons/E2026/games/1/stats",
+  "struttura": {
+   "local": {
+    "coach": {
+     "code": "000019",
+     "name": "NAVARRO, IBON"
+    },
+    "players": [
+     "lista di 12",
+     {
+      "player": {
+       "person": {
+        "code": "str",
+        "name": "str",
+        "alias": "str",
+        "aliasRaw": "str",
+        "passportName": "str",
+        "passportSurname": "str",
+        "jerseyName": "str",
+        "abbreviatedName": "NoneType",
+        "country": "dict",
+        "height": "int",
+        "weight": "int",
+        "birthDate": "str",
+        "birthCountry": "dict",
+        "twitterAccount": "str",
+        "instagramAccount": "str",
+        "facebookAccount": "str",
+        "isReferee": "bool",
+        "images": "dict"
+       },
+       "type": "J",
+       "typeName": "Player",
+       "active": true,
+       "startDate": "2026-08-12T07:37:54.036",
+       "endDate": "2027-06-30T00:00:00",
+       "order": 0,
+       "dorsal": "6",
+       "dorsalRaw": "6",
+       "position": 1,
+       "positionName": "Guard",
+       "lastTeam": "CRVENA ZVEZDA",
+       "externalId": 54765,
+       "images": {
+        "action": "str",
+        "headshot": "str"
+       },
+       "club": {
+        "code": "str",
+        "name": "str",
+        "abbreviatedName": "str",
+        "editorialName": "str",
+        "tvCode": "str",
+        "isVirtual": "bool",
+        "images": "dict"
+       },
+       "season": {
+        "name": "str",
+        "code": "str",
+        "alias": "str",
+        "competitionCode": "str",
+        "year": "int",
+        "startDate": "str"
+       }
+      },
+      "stats": {
+       "timePlayed": 1033.0,
+       "valuation": 11.0,
+       "points": 11.0,
+       "fieldGoalsMade2": 1.0,
+       "fieldGoalsAttempted2": 4.0,
+       "fieldGoalsMade3": 3.0,
+       "fieldGoalsAttempted3": 7.0,
+       "freeThrowsMade": 0.0,
+       "freeThrowsAttempted": 0.0,
+       "fieldGoalsMadeTotal": 4.0,
+       "fieldGoalsAttemptedTotal": 11.0,
+       "accuracyMade": 11.0,
+       "accuracyAttempted": 29.0,
+       "totalRebounds": 2.0,
+       "defensiveRebounds": 1.0,
+       "offensiveRebounds": 1.0,
+       "assistances": 4.0,
+       "steals": 0.0,
+       "turnovers": 1.0,
+       "blocksFavour": 1.0,
+       "blocksAgainst": 0.0,
+       "foulsCommited": 1.0,
+       "foulsReceived": 2.0,
+       "plusMinus": 2.0,
+       "dorsal": 6,
+       "startFive": false,
+       "startFive2": false
+      }
+     }
+    ],
+    "team": {
+     "timePlayed": 0.0,
+     "valuation": 5.0,
+     "points": 0.0,
+     "fieldGoalsMade2": 0.0,
+     "fieldGoalsAttempted2": 0.0,
+     "fieldGoalsMade3": 0.0,
+     "fieldGoalsAttempted3": 0.0,
+     "freeThrowsMade": 0.0,
+     "freeThrowsAttempted": 0.0,
+     "fieldGoalsMadeTotal": 0.0,
+     "fieldGoalsAttemptedTotal": 0.0,
+     "accuracyMade": 0.0,
+     "accuracyAttempted": 0.0,
+     "totalRebounds": 5.0,
+     "defensiveRebounds": 4.0,
+     "offensiveRebounds": 1.0,
+     "assistances": 0.0,
+     "steals": 0.0,
+     "turnovers": 0.0,
+     "blocksFavour": 0.0,
+     "blocksAgainst": 0.0,
+     "foulsCommited": 0.0,
+     "foulsReceived": 0.0,
+     "plusMinus": 0.0
+    },
+    "total": {
+     "timePlayed": 2400.0,
+     "valuation": 71.0,
+     "points": 77.0,
+     "fieldGoalsMade2": 17.0,
+     "fieldGoalsAttempted2": 44.0,
+     "fieldGoalsMade3": 10.0,
+     "fieldGoalsAttempted3": 29.0,
+     "freeThrowsMade": 13.0,
+     "freeThrowsAttempted": 19.0,
+     "fieldGoalsMadeTotal": 27.0,
+     "fieldGoalsAttemptedTotal": 73.0,
+     "accuracyMade": 77.0,
+     "accuracyAttempted": 194.0,
+     "totalRebounds": 39.0,
+     "defensiveRebounds": 24.0,
+     "offensiveRebounds": 15.0,
+     "assistances": 21.0,
+     "steals": 7.0,
+     "turnovers": 14.0,
+     "blocksFavour": 3.0,
+     "blocksAgainst": 6.0,
+     "foulsCommited": 26.0,
+     "foulsReceived": 22.0,
+     "plusMinus": -30.0
+    }
+   },
+   "road": {
+    "coach": {
+     "code": "ACX",
+     "name": "MASIULIS, TOMAS"
+    },
+    "players": [
+     "lista di 12",
+     {
+      "player": {
+       "person": {
+        "code": "str",
+        "name": "str",
+        "alias": "str",
+        "aliasRaw": "str",
+        "passportName": "str",
+        "passportSurname": "str",
+        "jerseyName": "str",
+        "abbreviatedName": "str",
+        "country": "dict",
+        "height": "int",
+        "weight": "int",
+        "birthDate": "str",
+        "birthCountry": "dict",
+        "twitterAccount": "str",
+        "instagramAccount": "str",
+        "facebookAccount": "str",
+        "isReferee": "bool",
+        "images": "dict"
+       },
+       "type": "J",
+       "typeName": "Player",
+       "active": true,
+       "startDate": "2026-09-17T10:14:12.487",
+       "endDate": "2027-06-30T00:00:00",
+       "order": 0,
+       "dorsal": "22",
+       "dorsalRaw": "22",
+       "position": 3,
+       "positionName": "Center",
+       "lastTeam": "TOFAS BURSA",
+       "externalId": 56779,
+       "images": {
+        "headshot": "str",
+        "action": "str"
+       },
+       "club": {
+        "code": "str",
+        "name": "str",
+        "abbreviatedName": "str",
+        "editorialName": "str",
+        "tvCode": "str",
+        "isVirtual": "bool",
+        "images": "dict"
+       },
+       "season": {
+        "name": "str",
+        "code": "str",
+        "alias": "str",
+        "competitionCode": "str",
+        "year": "int",
+        "startDate": "str"
+       }
+      },
+      "stats": {
+       "timePlayed": 779.0,
+       "valuation": 0.0,
+       "points": 5.0,
+       "fieldGoalsMade2": 2.0,
+       "fieldGoalsAttempted2": 4.0,
+       "fieldGoalsMade3": 0.0,
+       "fieldGoalsAttempted3": 0.0,
+       "freeThrowsMade": 1.0,
+       "freeThrowsAttempted": 2.0,
+       "fieldGoalsMadeTotal": 2.0,
+       "fieldGoalsAttemptedTotal": 4.0,
+       "accuracyMade": 5.0,
+       "accuracyAttempted": 10.0,
+       "totalRebounds": 2.0,
+       "defensiveRebounds": 2.0,
+       "offensiveRebounds": 0.0,
+       "assistances": 0.0,
+       "steals": 0.0,
+       "turnovers": 3.0,
+       "blocksFavour": 0.0,
+       "blocksAgainst": 0.0,
+       "foulsCommited": 3.0,
+       "foulsReceived": 2.0,
+       "plusMinus": -1.0,
+       "dorsal": 22,
+       "startFive": false,
+       "startFive2": false
+      }
+     }
+    ],
+    "team": {
+     "timePlayed": 0.0,
+     "valuation": 5.0,
+     "points": 0.0,
+     "fieldGoalsMade2": 0.0,
+     "fieldGoalsAttempted2": 0.0,
+     "fieldGoalsMade3": 0.0,
+     "fieldGoalsAttempted3": 0.0,
+     "freeThrowsMade": 0.0,
+     "freeThrowsAttempted": 0.0,
+     "fieldGoalsMadeTotal": 0.0,
+     "fieldGoalsAttemptedTotal": 0.0,
+     "accuracyMade": 0.0,
+     "accuracyAttempted": 0.0,
+     "totalRebounds": 6.0,
+     "defensiveRebounds": 3.0,
+     "offensiveRebounds": 3.0,
+     "assistances": 0.0,
+     "steals": 0.0,
+     "turnovers": 1.0,
+     "blocksFavour": 0.0,
+     "blocksAgainst": 0.0,
+     "foulsCommited": 0.0,
+     "foulsReceived": 0.0,
+     "plusMinus": 0.0
+    },
+    "total": {
+     "timePlayed": 2400.0,
+     "valuation": 104.0,
+     "points": 83.0,
+     "fieldGoalsMade2": 20.0,
+     "fieldGoalsAttempted2": 43.0,
+     "fieldGoalsMade3": 8.0,
+     "fieldGoalsAttempted3": 20.0,
+     "freeThrowsMade": 19.0,
+     "freeThrowsAttempted": 27.0,
+     "fieldGoalsMadeTotal": 28.0,
+     "fieldGoalsAttemptedTotal": 63.0,
+     "accuracyMade": 83.0,
+     "accuracyAttempted": 173.0,
+     "totalRebounds": 46.0,
+     "defensiveRebounds": 33.0,
+     "offensiveRebounds": 13.0,
+     "assistances": 18.0,
+     "steals": 8.0,
+     "turnovers": 16.0,
+     "blocksFavour": 6.0,
+     "blocksAgainst": 3.0,
+     "foulsCommited": 21.0,
+     "foulsReceived": 26.0,
+     "plusMinus": 30.0
+    }
+   }
+  },
+  "campione": "{\"local\": {\"coach\": {\"code\": \"000019\", \"name\": \"NAVARRO, IBON\"}, \"players\": [{\"player\": {\"person\": {\"code\": \"014163\", \"name\": \"BUTLER, JARED\", \"alias\": \"BUTLER, JARED GLADWYN\", \"aliasRaw\": \"BUTLER, JARED GLADWYN\", \"passportName\": \"JARED GLADWYN\", \"passportSurname\": \"BUTLER\", \"jerseyName\": \"Butler\", \"abbreviatedName\": null, \"country\": {\"code\": \"USA\", \"name\": \"United States of America\"}, \"height\": 191, \"weight\": 88, \"birthDate\": \"2000-08-25T00:00:00\", \"birthCountry\": {\"code\": \"USA\", \"name\": \"United States of America\"}, \"twitterAccount\": \"\", \"instagramAccount\": \"\", \"facebookAccount\": \"\", \"isReferee\": false, \"images\": {}}, \"type\": \"J\", \"typeName\": \"Player\", \"active\": true, \"startDate\": \"2026-08-12T07:37:54.036\", \"endDate\": \"2027-06-30T00:00:00\", \"order\": 0, \"dorsal\": \"6\", \"dorsalRaw\": \"6\", \"position\": 1, \"positionName\": \"Guard\", \"lastTeam\": \"CRVENA ZVEZDA\", \"externalId\": 54765, \"images\": {\"action\": \"https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjCjnONz/df3943a2-33b5-43e8-9922-bc85f4c4c84e.png\", \"headshot\": \"https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjCjnONz/df3943a2-33b5-43e8-9922-bc85f4c4c84e.png\"}, \"club\": {\"code\": \"RED\", \"name\": \"Crvena Zvezda Meridianbet Belgrade\", \"abbreviatedName\": \"Crvena Zvezda\", \"editorialName\": \"Crvena\", \"tvCode\": \"CZV\", \"isVirtual\": false, \"images\": {\"crest\": \"https://media-cdn.incrowdsports.com/d2eef4a8-62df-4fdd-9076-276004268515.png\"}}, \"season\": {\"name\": \"EuroLeague 2026-27\", \"code\": \"E2026\", \"alias\": \"2026-27\", \"competitionCode\": \"E\", \"year\": 2026, \"startDate\": \"2026-07-01T00:00:00\"}}, \"stats\": {\"timePlayed\": 1033.0, \"valuation\": 11.0, \"points\": 11.0, \"fieldGoalsMade2\": 1.0, \"fieldGoalsAttempted2\": 4.0, \"fieldGoalsMade3\": 3.0, \"fieldGoalsAttempted3\": 7.0, \"freeThrowsMade\": 0.0, \"freeThrowsAttempted\": 0.0, \"fieldGoalsMadeTotal\": 4.0, \"fieldGoalsAttemptedTotal\": 11.0, \"accuracyMade\": 11.0, \"accuracyAttempted\": 29.0, \"totalRebounds\": 2.0, \"defensiveRebounds\": 1.0, \"offensiveRebounds\": 1.0, \"assistances\": 4.0, \"steals\": 0.0, \"turnovers\": 1.0, \"blocksFavour\": 1.0, \"blocksAgainst\": 0.0, \"foulsCommited\": 1.0, \"foulsReceived\": 2.0, \"plusMinus\": 2.0, \"dorsal\": 6, \"startFive\": false, \"startFive2\": false}}, {\"player\": {\"person\": {\"code\": \"011305\", \"name\": \"CARTER, TYSON\", \"alias\": \"CARTER, TYSON\", \"aliasRaw\": \"CARTER, TYSON\", \"passportName\": \"TYSON GREGORY\", \"passportSurname\": \"CARTER\", \"jerseyName\": \"CARTER\", \"abbreviatedName\": \"\", \"country\": {\"code\": \"USA\", \"name\": \"United States of America\"}, \"height\": 193, \"weight\": 76, \"birthDate\": \"1998-01-14T00:00:00\", \"birthCountry\": {\"code\": \"USA\", \"name\": \"United States of America\"}, \"twitterAccount\": \"\", \"instagramAccount\": \"\", \"facebookAccount\": \"\", \"isReferee\": false, \"images\": {}}, \"type\": \"J\", \"typeName\": \"Player\", \"active\": true, \"startDate\": \"2026-08-12T07:37:54.265\", \"endDate\": \"2027-06-30T00:00:00\", \"order\": 0, \"dorsal\": \"11\", \"dorsalRaw\": \"11\", \"position\": 1, \"positionName\": \"Guard\", \"lastTeam\": \"CRVENA ZVEZDA\", \"externalId\": 54766, \"images\": {\"headshot\": \"https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjCjnONz/d37da46b-3d80-49da-b17f-da29dc096626.png\", \"action\": \"https://media-cdn.cortextech.io/1dU3kpCqReRp93/1BSdBWIjCjnONz/d37da46b-3d80-49da-b17f-da29dc096626.png\"}, \"club\": {\"code\": \"RED\", \"name\": \"Crvena Zvezda Meridianbet Belgrade\", \"abbreviatedName\": \"Crvena Zvezda\", \"editorialName\": \"Crvena\", \"tvCode\": \"CZV\", \"isVirtual\": false, \"images\": {\"crest\": \"https://media-cdn.incrowdsports.com/d2eef4a8-62df-4fdd-9076-276004268515.png\"}}, \"season\": {\"name\": \"EuroLeague 2026-27\", \"code\": \"E2026\", \"alias\": \"2026-27\", \"competitionCode\": \"E\", \"year\": 2026, \"startDate\": \"2026-07-01T00:00:00\"}}, \"stats\": {\"timePlayed\": 969.0, \"valuation\": 3.0, \"points\": 3.0, \"fieldGoalsMade2\": 0.0, \"fieldGoalsAttempted2\": 1.0, \"fieldGoalsMade3\": 1.0, \"fieldGoalsAttempted3\": 3.0, \"freeThrowsMade\": 0.0, \"freeThrowsAttempted\": 0.0, \"fieldGoalsMadeTotal\": 1.0, \"fieldGoalsAttemptedTotal\": 4.0, \"accuracyMade\": 3.0, \"accuracyAttempted\": 11.0, \"totalRebounds\": 3.0, \"defensiveRebounds\": 3.0, \"offensiveRebounds\": 0.0, \"assistances\": 0.0, \"steals\": 1.0, \"turnovers\": 1.0, \"blocksFavour\": 0.0, \"blocksAgainst\": 1.0, \"foulsCommited\": 1.0, \"foulsReceived\": 2.0, \"plusMinus\": -13.0, \"dorsal\": 11, \"startFive\": true, \"startFive2\": false}}, {\"player\": {\"person\": {\"code\": \"004007\", \"name\": \"DOBRIC, OGNJEN\", \"alias\": \"Dobric\", \"aliasRaw\": \"Dobric\", \"passportName\": \"OGNJEN\", \"passportSurname\": \"DOBRIC\", \"jerseyName\": \"DOBRIC\", \"abbreviatedName\": \"Dobric, O.\", \"country\": {\"code\": \"SRB\", \"name\": \"Serbia\"}, \"height\": 200, \"weight\": 93, \"birthDate\": \"1994-10-27T00:00:00\", \"birthCountry\": {\"code\": \"CRO\", \"name\": \"Croatia\"}, \"twitterAccount\": \"OgnjenDobric\", \"instagramAccount\": \"ognjen.dobric/\", \"facebookAccount\": \"\", \"isReferee\": false, \"images\": {}}, \"type\": \"J\", \"typeName\": \"Player\", \"active\": true, \"startDate\": \"2026-08-12T07:37:54.777\", \"endDate\": \"2027-06-30T00:00:00\", \"order\": 0, \"dorsal\": \"13\", \"dorsalRaw\": \"13\", \"position\": 2, \"positionName\": \"Forward\", \"last"
+ }
+}
