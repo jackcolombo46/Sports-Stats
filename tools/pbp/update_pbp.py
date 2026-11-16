@@ -35,6 +35,7 @@ UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
 SPORTS = {
     "nba": {"kind": "basket", "src": "espn", "path": "basketball/nba", "team": "tri", "per_len": 720, "ot_len": 300},
     "lba": {"kind": "basket", "src": "lba", "team": "tri", "per_len": 600, "ot_len": 300},
+    "eurolega": {"kind": "basket", "src": "el", "team": "tri", "per_len": 600, "ot_len": 300},
     "seriea": {"kind": "soccer", "src": "espn", "path": "soccer/ita.1", "team": "tid"},
     "ucl": {"kind": "soccer", "src": "espn", "path": "soccer/uefa.champions", "team": "tid"},
 }
@@ -265,6 +266,58 @@ def lba_game(cfg, gid):
     return stats, minutes_by_period(events, cfg["per_len"], cfg["ot_len"])
 
 
+EL_QUARTERS = [("FirstQuarter", 1), ("SecondQuarter", 2), ("ThirdQuarter", 3), ("ForthQuarter", 4), ("FourthQuarter", 4), ("ExtraTime", 5)]
+
+
+def el_game(cfg, gid):
+    """EuroLeague: codice partita = anno * 1000 + numero della partita"""
+    y, code = int(gid) // 1000, int(gid) % 1000
+    d = fetch(f"https://live.euroleague.net/api/PlaybyPlay?gamecode={code}&seasoncode=E{y}", delay=0.6)
+    if not d:
+        return None
+    stats = collections.defaultdict(collections.Counter)
+    events = []
+    any_play = False
+    for key, per in EL_QUARTERS:
+        for a in d.get(key) or []:
+            any_play = True
+            typ = str(a.get("PLAYTYPE") or "").strip().upper()
+            REPORT["types"][typ] += 1
+            pid = str(a.get("PLAYER_ID") or "").strip().lstrip("P")
+            if not pid.isdigit():
+                continue
+            pid = str(int(pid))
+            t = 600 if per <= 4 else 300
+            mt = str(a.get("MARKERTIME") or "").strip()
+            m = re.match(r"^(\d+):(\d+)", mt)
+            t = t - (int(m.group(1)) * 60 + int(m.group(2))) if m else (int(a.get("MINUTE") or 1) - 1 - (per - 1) * 10) * 60
+            if typ == "IN":
+                events.append((per, t, "in", pid)); continue
+            if typ == "OUT":
+                events.append((per, t, "out", pid)); continue
+            events.append((per, t, "act", pid))
+            st = stats[(pid, per)]
+            if typ == "3FGM":
+                st["pts"] += 3; st["fg3m"] += 1
+            elif typ == "2FGM":
+                st["pts"] += 2
+            elif typ == "FTM":
+                st["pts"] += 1
+            elif typ in ("D", "O"):
+                st["reb"] += 1
+            elif typ == "AS":
+                st["ast"] += 1
+            elif typ == "ST":
+                st["stl"] += 1
+            elif typ == "TO":
+                st["tov"] += 1
+            elif typ == "FV":
+                st["blk"] += 1
+    if not any_play:
+        return None
+    return stats, minutes_by_period(events, cfg["per_len"], cfg["ot_len"])
+
+
 def check_basket(stats, mins, rows):
     """confronto con il tabellino: punti, rimbalzi, assist e minuti per giocatore"""
     tot = collections.defaultdict(collections.Counter)
@@ -430,7 +483,7 @@ def main():
             budget -= 1
             try:
                 if cfg["kind"] == "basket":
-                    r = nba_game(cfg, gid) if cfg["src"] == "espn" else lba_game(cfg, gid)
+                    r = nba_game(cfg, gid) if cfg["src"] == "espn" else el_game(cfg, gid) if cfg["src"] == "el" else lba_game(cfg, gid)
                 else:
                     r = soccer_game(cfg, gid, g["players"])
             except Exception as e:  # noqa: BLE001 — una partita che non risponde non deve fermare le altre

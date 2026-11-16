@@ -62,6 +62,18 @@ La scheda **Confronta** mette due squadre una accanto all'altra: verde = meglio,
 
 Quando i file della stagione in corso sono nel formato vecchio, l'aggiornamento automatico li riscarica da solo.
 
+## EuroLeague
+
+`docs/eurolega/`: stessa app e stesso modello dell'LBA (partite da 40 minuti; `model.js` copiato, taratura LBA).
+Dati da `tools/eurolega/update_data.py` (workflow `update-eurolega.yml`, ogni 3 ore dalle 12:37 alle 00:37) con l'API
+pubblica del sito ufficiale:
+- `api-live.euroleague.net/v2/competitions/E/seasons/E<anno>/games`: calendario, risultati, loghi;
+- `live.euroleague.net/api/Boxscore?gamecode=<n>&seasoncode=E<anno>`: tabellini;
+- `.../games/<n>/stats` e `.../people`: foto dei giocatori;
+- `live.euroleague.net/api/PlaybyPlay`: cronaca per le statistiche per quarto.
+Codice partita = anno × 1000 + numero (es. 2026001). Regular season, play-in, playoff e Final Four; niente infortuni.
+Verifica alla prima esecuzione: occasioni dei giocatori previste 77,3%, riuscite 77,4%.
+
 ## Navigazione
 
 `docs/nav.js`: barra con 5 voci, in basso sul telefono e in alto sul computer. Alcune voci hanno due viste (linguette).
