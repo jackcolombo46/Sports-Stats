@@ -158,6 +158,24 @@ def _img(im):
     return im.get("headshot") or im.get("action") or next((v for v in im.values() if isinstance(v, str) and v.startswith("http")), None)
 
 
+def images_from_clubs(y, clubs):
+    """foto dalle rose delle squadre (clubs/<sigla>/people), una richiesta per squadra"""
+    before = len(IMAGES["players"])
+    for c in clubs:
+        try:
+            d = get(f"{API}E{y}/clubs/{c}/people") or {}
+        except RuntimeError:
+            continue
+        items = d.get("data") if isinstance(d, dict) else d
+        for p in items or []:
+            per = (p or {}).get("person") or {}
+            code = str(per.get("code") or "").strip().lstrip("P")
+            url = _img(per.get("images")) or _img((p or {}).get("images"))
+            if code.isdigit() and url:
+                IMAGES["players"][str(int(code))] = url
+    log(f"Foto dalle rose: {len(IMAGES['players']) - before} nuove")
+
+
 def images_from_games(y, games, want, limit=40):
     """foto dalle statistiche delle partite (il campo person.images dei giocatori), dalla più recente,
     finché mancano foto per i giocatori della stagione (al massimo `limit` partite per giro)"""
@@ -317,6 +335,7 @@ def main():
         player_images(y)
     except RuntimeError as e:
         log("ATTENZIONE foto:", e)
+    images_from_clubs(y, current)
     images_from_games(y, games, set(rosters_from_logs(y)))
     meta.update({"league": "EuroLeague", "season": season_str(y), "seasons": [season_str(y - k) for k in range(args.past + 1)],
                  "files": past_files + cur_files, "schedule": schedule, "rosters": rosters_from_logs(y),
