@@ -121,7 +121,7 @@ def season_games(y):
             continue
         for c in (hc, ac):
             TEAMS[c["code"]] = {"name": c.get("name") or c["code"],
-                                "short": c.get("editorialName") or c.get("abbreviatedName") or c["code"]}
+                                "short": c.get("abbreviatedName") or c.get("editorialName") or c["code"]}
             crest = (c.get("images") or {}).get("crest")
             if crest:
                 IMAGES["teams"][c["code"]] = crest

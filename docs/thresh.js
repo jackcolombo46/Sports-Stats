@@ -39,7 +39,8 @@
     if (!lines.length) return `<div class="card">${head}</div>`;
     // soglia di partenza: quella indicata o la più vicina
     const want = o.def != null ? o.def : 0;
-    const def = lines.reduce((a, l) => (Math.abs(l.line - want) < Math.abs(a.line - want) ? l : a)).line;
+    const below = lines.filter(l => l.line <= want);   // meglio la soglia subito sotto (più probabile) che quella sopra
+    const def = (below.length ? below[below.length - 1] : lines.reduce((a, l) => (Math.abs(l.line - want) < Math.abs(a.line - want) ? l : a))).line;
     const N = o.points.length;
     const chips = lines.map(l => `<button class="thc${l.line === def ? " on" : ""}" data-thl="${l.line}" style="--c:${color(l.prob)}">${l.line}+</button>`).join("");
     const panels = lines.map(l => {
