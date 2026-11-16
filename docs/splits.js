@@ -169,7 +169,8 @@
   .splbars { display: flex; gap: 6px; align-items: flex-end; margin: 6px 0 4px; }
   .splb { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; min-width: 0; }
   .splcol { width: 100%; max-width: 54px; height: 96px; display: flex; align-items: flex-end; background: var(--panel2); border-radius: 6px; overflow: hidden; }
-  .splcol i { display: block; width: 100%; background: #3b6ea8; border-radius: 6px 6px 0 0; }
+  .splcol i { display: block; width: 100%; background: var(--accent); opacity: .45; border-radius: 6px 6px 0 0; }
+  .splb.best .splcol i { opacity: 1; }
   .splb.best .splcol i { background: var(--accent); }
   .splv { font-family: var(--mono); font-size: 12.5px; font-weight: 700; }
   .splb.best .splv { color: var(--accent2); }
