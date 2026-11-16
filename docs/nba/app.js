@@ -814,6 +814,21 @@
       + `<div id="trendCmp"></div>`;
   }
 
+  /* scontri diretti fra a e b dai tabellini di tutte le stagioni salvate (../h2h.js) */
+  function h2hGames(a, b) {
+    const G = new Map();
+    for (const logs of ctx.playerLogs.values()) for (const r of logs) {
+      const isA = r.tri === a && r.opp === b, isB = r.tri === b && r.opp === a;
+      if (!isA && !isB) continue;
+      const g = G.get(r.gid) || { date: r.date, season: r.season, home: null, pa: 0, pb: 0, ra: [], rb: [] };
+      if (isA) { g.pa += +r.pts || 0; g.ra.push(r); g.home = !!r.home; } else { g.pb += +r.pts || 0; g.rb.push(r); if (g.home == null) g.home = !r.home; }
+      G.set(r.gid, g);
+    }
+    const short = pid => (ctx.names.get(pid) || "?").replace(/^(\S)\S*\s+/, "$1. ");
+    const top = rows => [...rows].sort((x, y) => y.pts - x.pts).slice(0, 2).map(r => `${short(r.pid)} ${r.pts}`).join(", ");
+    return [...G.values()].filter(g => g.ra.length && g.rb.length).map(g => ({ ...g, notesA: top(g.ra), notesB: top(g.rb) }));
+  }
+
   function renderCompare() {
     if ($("#cmpKind").value === "players") return renderPlayerCompare();
     if (!$("#cmpA").options.length) cmpOptions();
@@ -837,6 +852,7 @@
     const where = home == null ? `<div class="advnote" style="margin:0 0 10px">Non si affrontano a breve: proiezioni a campo neutro.</div>` : "";
     return `<h3 style="margin-top:0">Confronta squadre · stagione ${esc(ctx.season)}</h3>${next}${where}`
       + duel(tA, tB)
+      + H2H.block(h2hGames(a, b), { a, b, sport: "basket", name: id => (M.TEAM[id] || {}).name || id, logo: (id, sz) => L(id, sz) })
       + `<h3>Squadre a confronto</h3>` + BasketAdv.compare(ctx, M, GM, a, b, head)
       + Adv.section("cmpA:" + a, `Proiezioni · ${M.TEAM[a].name} contro ${M.TEAM[b].name}`, teamBlock(tA) + oppChips(ctx.opponentProfile(b)))
       + Adv.section("cmpB:" + b, `Proiezioni · ${M.TEAM[b].name} contro ${M.TEAM[a].name}`, teamBlock(tB) + oppChips(ctx.opponentProfile(a)));
