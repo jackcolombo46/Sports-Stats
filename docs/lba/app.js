@@ -216,6 +216,7 @@
         const tc = $("#toCmp"); if (tc) tc.onclick = () => openCompare(t);
       }
       Adv.bind($("#out"));
+      Results.bind();
       Splits.mount();
       Thresh.bind($("#out"));
       Slip.bind($("#out"));
@@ -436,6 +437,7 @@
       <div class="sub">${g ? `Prossima partita: ${g.home ? "vs" : "@"} ${esc(g.opp)} · ${esc(fmtDate(g.utc))}` : "Nessuna partita in calendario"}</div>
       <button class="link" id="toCmp">Confronta con un'altra squadra →</button></div></div></div>
     ${BasketAdv.teamTiles(ctx, M, GM, tri)}
+    ${Results.block(BasketAdv.allGames(ctx, M, GM, tri), { logo: (id, sz) => L(id, sz), name: id => (M.TEAM[id] || {}).name || id })}
     ${rosterBlock(tri)}${out}
     ${BasketAdv.teamSection(ctx, M, GM, tri)}
     ${Absence.teamSection(ctx, ABS, tri, absent, playing)}`;

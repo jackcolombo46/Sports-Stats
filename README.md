@@ -122,7 +122,7 @@ tipo la più ambiziosa che supera il minimo:
 
 ## Squadra e Confronta
 
-- **Squadra** (da Cerca): solo la squadra, senza riferimenti all'avversario: statistiche generali con posizione nel campionato,
+- **Squadra** (da Cerca): **Ultimi risultati** (`docs/results.js`: le ultime 10 partite della stagione con data, casa/trasferta, avversario, punteggio ed esito, la striscia della forma; 5 in vista, le altre con "Mostra"; toccando una partita si apre la scheda dell'avversario); poi solo la squadra, senza riferimenti all'avversario: statistiche generali con posizione nel campionato,
   rosa con le medie (basket) o i numeri (calcio) della stagione, statistiche avanzate, effetto assenze.
   "Analizza" (o "Confronta con un'altra squadra") porta a Confronta con la squadra scelta.
 - **Confronta**: tutto ciò che dipende dall'avversario. 1-X-2 e gol attesi (calcio), **giocatori a confronto**
