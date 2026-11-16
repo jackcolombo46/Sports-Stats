@@ -7,3 +7,8 @@ eurolega: 127 giornate, 512 partite in 5s; occasioni giocatori 3044 (previste 0.
 eurolega 2025-26: 200 partite nuove, 32 da fare
 fatto in 155s · partite 200 · errori 0
 confronto con i tabellini: {'pts ok': 4280, 'reb ok': 4280, 'ast ok': 4280, 'stl ok': 4280, 'blk ok': 4280, 'tov ok': 4280, 'fg3m ok': 4280, 'min ok': 4242, 'min diverso': 38}
+Stagione 2026-27: 380 partite in calendario, 0 nuove da scaricare
+Foto: 3 giocatori
+Foto dalle rose: 0 nuove
+Foto: lette 0 partite, 329 giocatori con foto
+Fatto: 2026-11-16T21:15:34Z 5 file, 40 partite in calendario, 294 giocatori, 20 squadre
