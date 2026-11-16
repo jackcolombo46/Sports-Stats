@@ -1,45 +1,9 @@
-Stagione 2024-25: 330 partite, scarico i tabellini...
-  25/330 partite
-  50/330 partite
-  75/330 partite
-  100/330 partite
-  125/330 partite
-  150/330 partite
-  175/330 partite
-  200/330 partite
-  225/330 partite
-  250/330 partite
-  275/330 partite
-  300/330 partite
-  325/330 partite
-Stagione 2024-25: salvate 6948 righe
-Stagione 2025-26: 402 partite, scarico i tabellini...
-  25/402 partite
-  50/402 partite
-  75/402 partite
-  100/402 partite
-  125/402 partite
-  150/402 partite
-  175/402 partite
-  200/402 partite
-  225/402 partite
-  250/402 partite
-  275/402 partite
-  300/402 partite
-  325/402 partite
-  350/402 partite
-  375/402 partite
-  400/402 partite
-Stagione 2025-26: salvate 8643 righe
-Stagione 2026-27: 380 partite in calendario, 110 nuove da scaricare
-  25/110 partite
-  50/110 partite
-  75/110 partite
-  100/110 partite
+Stagione 2026-27: 380 partite in calendario, 0 nuove da scaricare
 Foto: 3 giocatori
-Fatto: 2026-11-16T08:46:00Z 5 file, 40 partite in calendario, 294 giocatori, 20 squadre
-eurolega: 127 giornate, 512 partite in 4s; occasioni giocatori 3044 (previste 0.773, riuscite 0.774); squadre 3106 (previste 0.768, riuscite 0.749)
-eurolega 2026-27: 20 partite nuove, 90 da fare
+Foto: lette 40 partite, 5 giocatori con foto
+Fatto: 2026-11-16T08:47:34Z 5 file, 40 partite in calendario, 294 giocatori, 20 squadre
+eurolega: 127 giornate, 512 partite in 6s; occasioni giocatori 3044 (previste 0.773, riuscite 0.774); squadre 3106 (previste 0.768, riuscite 0.749)
+eurolega 2026-27: 20 partite nuove, 70 da fare
 eurolega 2025-26: 0 partite nuove, 402 da fare
-fatto in 12s · partite 20 · errori 0
-confronto con i tabellini: {'pts ok': 441, 'reb ok': 441, 'ast ok': 441, 'stl ok': 441, 'blk ok': 441, 'tov ok': 441, 'fg3m ok': 441, 'min ok': 441}
+fatto in 14s · partite 20 · errori 0
+confronto con i tabellini: {'pts ok': 448, 'reb ok': 448, 'ast ok': 448, 'stl ok': 448, 'blk ok': 448, 'tov ok': 448, 'fg3m ok': 448, 'min ok': 448}
