@@ -5,3 +5,6 @@ nba: 195 giornate, 1457 partite in 19s; occasioni giocatori 38571 (previste 0.78
 nba 2026-27: 4 partite nuove, 0 da fare
 fatto in 1s · partite 4 · errori 0
 confronto con i tabellini: {'pts ok': 88, 'reb ok': 88, 'ast ok': 89, 'stl ok': 88, 'blk ok': 89, 'tov ok': 81, 'fg3m ok': 89, 'min ok': 89, 'tov diverso': 8, 'reb diverso': 1, 'stl diverso': 1, 'pts diverso': 1}
+Stagione 2026-27: controllo le partite dal 2026-11-16 al 2026-11-20
+Stagione 2026-27: 0 partite nuove
+Fatto: 2026-11-20T16:13:25Z 4 file, 99 partite in calendario
