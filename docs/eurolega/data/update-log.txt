@@ -1,14 +1,8 @@
-Stagione 2026-27: 380 partite in calendario, 5 nuove da scaricare
-Foto: 3 giocatori
-Foto dalle rose: 0 nuove
-Foto: lette 40 partite, 332 giocatori con foto
-Fatto: 2026-11-20T01:52:56Z 5 file, 30 partite in calendario, 298 giocatori, 20 squadre
-eurolega: 130 giornate, 528 partite in 5s; occasioni giocatori 3115 (previste 0.773, riuscite 0.775); squadre 3205 (previste 0.768, riuscite 0.749)
-eurolega 2026-27: 5 partite nuove, 0 da fare
-fatto in 3s · partite 5 · errori 0
-confronto con i tabellini: {'pts ok': 109, 'reb ok': 109, 'ast ok': 109, 'stl ok': 109, 'blk ok': 109, 'tov ok': 109, 'fg3m ok': 109, 'min ok': 109}
 Stagione 2026-27: 380 partite in calendario, 0 nuove da scaricare
 Foto: 3 giocatori
 Foto dalle rose: 0 nuove
 Foto: lette 40 partite, 332 giocatori con foto
-Fatto: 2026-11-20T01:53:42Z 5 file, 30 partite in calendario, 298 giocatori, 20 squadre
+Fatto: 2026-11-20T19:15:48Z 5 file, 32 partite in calendario, 298 giocatori, 20 squadre
+eurolega: 130 giornate, 528 partite in 4s; occasioni giocatori 3115 (previste 0.773, riuscite 0.775); squadre 3205 (previste 0.768, riuscite 0.749)
+fatto in 0s · partite 0 · errori 0
+confronto con i tabellini: {}
