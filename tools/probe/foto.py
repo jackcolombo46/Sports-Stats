@@ -1,29 +1,19 @@
-"""prova: quali foto esistono davvero (pagine squadra fantacalcio.it) e in che cartella"""
-import json, re, sys, urllib.request
-sys.path.insert(0, "tools/seriea")
-from injuries import fetch
-page = fetch("https://www.fantacalcio.it/quotazioni-fantacalcio", as_json=False)
-links = sorted(set(re.findall(r"/serie-a/squadre/([a-z0-9-]+)/([a-z0-9-]+)/(\d+)", page)))
-teams = sorted({t for t, _, _ in links})
-res, found = {}, {}
-for t in teams:
+"""prova: da cosa dipende il 403 delle foto (user agent, referer)"""
+import json, urllib.request
+UA = "Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36"
+def get(u, h):
     try:
-        h = fetch(f"https://www.fantacalcio.it/serie-a/squadre/{t}", as_json=False) or ""
-    except Exception as e:
-        res[t] = str(e); continue
-    imgs = re.findall(r"campioncini/(\d+)/(\w+)/(\d+)\.png", h)
-    for f, s, i in imgs:
-        found[i] = f
-    ids = {i for tt, _, i in links if tt == t}
-    res[t] = {"giocatori": len(ids), "con_foto_in_pagina": len(ids & {i for _, _, i in imgs}),
-              "cartelle": sorted({f for f, _, _ in imgs})}
-def head(u):
-    try:
-        with urllib.request.urlopen(urllib.request.Request(u, method="HEAD", headers={"User-Agent": "Mozilla/5.0"}), timeout=15) as r:
-            return r.status
+        with urllib.request.urlopen(urllib.request.Request(u, headers=h), timeout=15) as r:
+            return [r.status, len(r.read()), r.headers.get("Content-Type"), r.headers.get("Access-Control-Allow-Origin")]
     except Exception as e:
         return getattr(e, "code", str(e))
-prove = {}
-for t, p, i in links[:12]:
-    prove[f"{p} ({t}) {i}"] = {f: head(f"https://content.fantacalcio.it/web/campioncini/{f}/medium/{i}.png") for f in ("21", "20", "22")}
-json.dump({"squadre": res, "foto_trovate": len(found), "prove": prove}, open("tools/probe/out/foto5.json", "w"), indent=1)
+out = {}
+for i in ("4887", "2764", "6916"):
+    u = f"https://content.fantacalcio.it/web/campioncini/21/medium/{i}.png"
+    out[i] = {"ua_corto": get(u, {"User-Agent": "Mozilla/5.0"}),
+              "ua_browser": get(u, {"User-Agent": UA}),
+              "ua_browser_referer_app": get(u, {"User-Agent": UA, "Referer": "https://jackcolombo46.github.io/"}),
+              "ua_browser_referer_fc": get(u, {"User-Agent": UA, "Referer": "https://www.fantacalcio.it/"}),
+              "small_ua_browser": get(u.replace("/medium/", "/small/"), {"User-Agent": UA}),
+              "small_v": get(u.replace("/medium/", "/small/") + "?v=963", {"User-Agent": UA, "Referer": "https://jackcolombo46.github.io/"})}
+json.dump(out, open("tools/probe/out/foto6.json", "w"), indent=1)
