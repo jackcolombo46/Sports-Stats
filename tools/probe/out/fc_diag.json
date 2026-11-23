@@ -1,0 +1,302 @@
+[
+ {
+  "team": "Atalanta",
+  "tid": "105",
+  "labels": [
+   [
+    "squalificati",
+    0
+   ],
+   [
+    "diffidati",
+    0
+   ]
+  ],
+  "items": 3
+ },
+ {
+  "team": "Bologna",
+  "tid": "107",
+  "labels": [
+   [
+    "squalificati",
+    0
+   ],
+   [
+    "diffidati",
+    0
+   ]
+  ],
+  "items": 5
+ },
+ {
+  "team": "Cagliari",
+  "tid": "2925",
+  "labels": [
+   [
+    "squalificati",
+    0
+   ],
+   [
+    "diffidati",
+    1
+   ]
+  ],
+  "items": 5
+ },
+ {
+  "team": "Como",
+  "tid": "2572",
+  "labels": [
+   [
+    "squalificati",
+    0
+   ],
+   [
+    "diffidati",
+    0
+   ]
+  ],
+  "items": 4
+ },
+ {
+  "team": "Fiorentina",
+  "tid": "109",
+  "labels": [
+   [
+    "squalificati",
+    0
+   ],
+   [
+    "diffidati",
+    0
+   ]
+  ],
+  "items": 2
+ },
+ {
+  "team": "Frosinone",
+  "tid": "4057",
+  "labels": [
+   [
+    "squalificati",
+    1
+   ],
+   [
+    "diffidati",
+    0
+   ]
+  ],
+  "items": 3
+ },
+ {
+  "team": "Genoa",
+  "tid": "3263",
+  "labels": [
+   [
+    "squalificati",
+    0
+   ],
+   [
+    "diffidati",
+    1
+   ]
+  ],
+  "items": 1
+ },
+ {
+  "team": "Inter",
+  "tid": "110",
+  "labels": [
+   [
+    "squalificati",
+    0
+   ],
+   [
+    "diffidati",
+    0
+   ]
+  ],
+  "items": 1
+ },
+ {
+  "team": "Juventus",
+  "tid": "111",
+  "labels": [
+   [
+    "squalificati",
+    0
+   ],
+   [
+    "diffidati",
+    0
+   ]
+  ],
+  "items": 6
+ },
+ {
+  "team": "Lazio",
+  "tid": "112",
+  "labels": [
+   [
+    "squalificati",
+    0
+   ],
+   [
+    "diffidati",
+    0
+   ]
+  ],
+  "items": 4
+ },
+ {
+  "team": "Lecce",
+  "tid": "113",
+  "labels": [
+   [
+    "squalificati",
+    0
+   ],
+   [
+    "diffidati",
+    0
+   ]
+  ],
+  "items": 2
+ },
+ {
+  "team": "Milan",
+  "tid": "103",
+  "labels": [
+   [
+    "squalificati",
+    0
+   ],
+   [
+    "diffidati",
+    0
+   ]
+  ],
+  "items": 6
+ },
+ {
+  "team": "Monza",
+  "tid": "4007",
+  "labels": [
+   [
+    "squalificati",
+    0
+   ],
+   [
+    "diffidati",
+    0
+   ]
+  ],
+  "items": 3
+ },
+ {
+  "team": "Napoli",
+  "tid": "114",
+  "labels": [
+   [
+    "squalificati",
+    0
+   ],
+   [
+    "diffidati",
+    0
+   ]
+  ],
+  "items": 6
+ },
+ {
+  "team": "Parma",
+  "tid": "115",
+  "labels": [
+   [
+    "squalificati",
+    1
+   ],
+   [
+    "diffidati",
+    1
+   ]
+  ],
+  "items": 4
+ },
+ {
+  "team": "Roma",
+  "tid": "104",
+  "labels": [
+   [
+    "squalificati",
+    0
+   ],
+   [
+    "diffidati",
+    0
+   ]
+  ],
+  "items": 2
+ },
+ {
+  "team": "Sassuolo",
+  "tid": "3997",
+  "labels": [
+   [
+    "squalificati",
+    0
+   ],
+   [
+    "diffidati",
+    0
+   ]
+  ],
+  "items": 5
+ },
+ {
+  "team": "Torino",
+  "tid": "239",
+  "labels": [
+   [
+    "squalificati",
+    0
+   ],
+   [
+    "diffidati",
+    0
+   ]
+  ],
+  "items": 0
+ },
+ {
+  "team": "Udinese",
+  "tid": "118",
+  "labels": [
+   [
+    "squalificati",
+    0
+   ],
+   [
+    "diffidati",
+    1
+   ]
+  ],
+  "items": 4
+ },
+ {
+  "team": "Venezia",
+  "tid": "17530",
+  "labels": [
+   [
+    "squalificati",
+    0
+   ],
+   [
+    "diffidati",
+    0
+   ]
+  ],
+  "items": 5
+ }
+]
