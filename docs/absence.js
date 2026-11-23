@@ -78,7 +78,7 @@
 
   const reasonNow = (ctx, cfg, y, tid) => {
     const inj = ctx.injury(y);
-    if (inj && /^(out|suspension|injured|infortun|doubtful)/i.test(inj.status || "")) return inj.status;
+    if (inj && /^(out|suspension|injured|infortun|doubtful|squalific|indisponib|assente|in dubbio)/i.test(inj.status || "")) return inj.status;
     const t = index(ctx, cfg.team)[ctx.season + "|" + tid];
     if (!t || !t.players.has(y)) return null;
     const last = [...t.games.entries()].sort((a, b) => (a[1] < b[1] ? 1 : -1))[0];
