@@ -470,7 +470,7 @@
         const cur = (this.playerLogs.get(pid) || []).filter(g => g.season === this.season && g.min > 0);
         if (cur.length < 2 || cur.reduce((a, g) => a + g.min, 0) / cur.length < ABS.ROLE) continue;
         const inj = this.injury(pid);
-        const injOut = inj && /^(out|suspension|injured|infortun)/i.test(inj.status || "");
+        const injOut = inj && /^(out|suspension|injured|infortun|squalific|indisponib|assente)/i.test(inj.status || "");
         const missed = dates.filter(d => d > cur[0].date).length;
         if (injOut || missed >= ABS.MISSED) out.push(pid);
       }
@@ -517,7 +517,7 @@
       for (const pid of this.teamPlayers(tid)) {
         const p = this.project(pid, opp, home);
         if (!p) continue;
-        const out_ = p.injury && /^(out|suspension|injured|infortun)/i.test(p.injury.status || "");
+        const out_ = p.injury && /^(out|suspension|injured|infortun|squalific|indisponib|assente)/i.test(p.injury.status || "");
         if (out_ || p.suspended || p.missed >= 3 || (p.games.season === 0 && hasCur)) {
           absent.push({ id: pid, name: p.player.name,
                         reason: out_ ? p.injury.status : p.suspended ? "probabile squalifica" : p.games.season === 0 ? "nessuna presenza quest'anno" : `assente da ${p.missed} partite` });

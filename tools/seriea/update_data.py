@@ -578,6 +578,24 @@ def understat_xg(y, teams, cur):
     return out
 
 
+def extra_injuries(meta, teams, cur_files):
+    """indisponibili che ESPN non dà per il calcio (vedi injuries.py): fantacalcio.it per la Serie A,
+    la regola delle ultime partite per le altre competizioni"""
+    import injuries as INJ
+    ros = meta.get("rosters") or {}
+    if LEAGUE == "ita.1":
+        return INJ.fantacalcio_seriea(ros, teams)
+    played, names = set(), {}
+    for f in cur_files:
+        d = read_json(os.path.join(DATA, f), {}) or {}
+        ix = {c: i for i, c in enumerate(d.get("cols") or [])}
+        names.update(d.get("names") or {})
+        for r in d.get("rows") or []:
+            if (r[ix["min"]] or 0) > 0:
+                played.add(str(r[ix["pid"]]))
+    return INJ.recent_absences(ros, meta.get("current_teams") or [], LEAGUE, played, names)
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--past", type=int, default=2, help="stagioni passate da tenere")
@@ -606,6 +624,10 @@ def main(argv=None):
         meta["rosters"], meta["injuries"], meta["current_teams"] = rosters(teams)
     except Exception as e:  # noqa: BLE001
         log(f"ATTENZIONE rose: {e}")
+    try:
+        meta["injuries"] = (meta.get("injuries") or []) + extra_injuries(meta, teams, cur_files)
+    except Exception as e:  # noqa: BLE001  - senza indisponibili l'app funziona lo stesso
+        log(f"ATTENZIONE indisponibili: {e}")
     if UNDERSTAT_LEAGUE:
         try:
             xg = understat_xg(y, teams, meta.get("current_teams") or list(teams))

@@ -377,6 +377,9 @@
     window.scrollTo({ top: 0, behavior: "smooth" });
     run();
   }
+  /* sigla dello stato di indisponibilità nelle tabelle */
+  const injAbbr = s => (/^in dubbio/i.test(s || "") ? "Dub" : (s || "").slice(0, 3));
+
   function bindRows() {
     document.querySelectorAll("[data-pid]").forEach(el => el.onclick = e => { if (!e.target.closest("[data-slip]")) openPlayer(+el.dataset.pid, el.dataset.name); });
     document.querySelectorAll("[data-tid]").forEach(el => el.onclick = () => openTeam(el.dataset.tid));
@@ -581,7 +584,7 @@
       </ol></div>`).join("");
     const st = (p, s) => p.stats.find(x => x.stat === s);
     const rows = t.players.filter(p => !p.player.keeper).map(p => {
-      const warn = p.injury ? ` <span class="inj" title="${esc(p.injury.status)}">${esc((p.injury.status || "").slice(0, 3))}</span>` : "";
+      const warn = p.injury ? ` <span class="inj" title="${esc(p.injury.status)}">${esc(injAbbr(p.injury.status))}</span>` : "";
       return `<tr class="click" data-pid="${p.player.id}" data-name="${esc(p.player.name)}"><td>${who(P(p.player.id, p.player.name), esc(p.player.name) + warn)}</td><td class="hm2">${p.minutes}'</td>
         <td>${pct(st(p, "GOL").p1)}</td><td>${pct(st(p, "AST").p1)}</td><td>${st(p, "SH").proj.toFixed(1)}</td><td>${st(p, "SOT").proj.toFixed(1)}</td>
         <td class="hm2">${st(p, "FC").proj.toFixed(1)}</td><td>${st(p, "FS").proj.toFixed(1)}</td><td>${pct(st(p, "YC").p1)}</td></tr>`;
@@ -609,7 +612,7 @@
     }).filter(Boolean).sort((x, y) => (x.keeper - y.keeper) || y.n * y.min - x.n * x.min);
     if (!list.length) return "";
     const rows = list.map(p => {
-      const warn = p.inj ? ` <span class="inj" title="${esc(p.inj.status)}">${esc((p.inj.status || "").slice(0, 3))}</span>` : "";
+      const warn = p.inj ? ` <span class="inj" title="${esc(p.inj.status)}">${esc(injAbbr(p.inj.status))}</span>` : "";
       return `<tr class="click" data-pid="${p.pid}" data-name="${esc(p.name)}"><td>${who(P(p.pid, p.name), (p.keeper ? "🧤 " : "") + esc(p.name) + warn)}</td>
         <td>${p.n}<small class="hm2"> (${p.st})</small></td><td class="hm2">${Math.round(p.min)}'</td><td>${p.gol}</td><td>${p.ast}</td><td>${p.sh}</td><td class="hm2">${p.sot}</td><td>${p.yc}</td><td class="hm2">${p.keeper ? p.sv : ""}</td></tr>`;
     }).join("");
