@@ -1,0 +1,496 @@
+{
+ "ita.1": [
+  {
+   "id": "346974",
+   "name": "Gabriele Bracaglia",
+   "status": "Squalificato",
+   "comment": "squalificato nella 12a giornata di campionato",
+   "source": "fantacalcio.it"
+  },
+  {
+   "id": "288540",
+   "name": "Abdoulaye Ndiaye",
+   "status": "Squalificato",
+   "comment": "squalificato nella 12a giornata di campionato",
+   "source": "fantacalcio.it"
+  }
+ ],
+ "uefa.champions": [
+  {
+   "id": "228267",
+   "name": "Oleksandr Zubkov",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Greek Super League, 08/11 Greek Super League)",
+   "source": "regola"
+  },
+  {
+   "id": "297300",
+   "name": "Devyne Rensch",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Serie A, 07/11 Serie A)",
+   "source": "regola"
+  },
+  {
+   "id": "204320",
+   "name": "Lorenzo Pellegrini",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Serie A, 07/11 Serie A)",
+   "source": "regola"
+  },
+  {
+   "id": "280555",
+   "name": "Bukayo Saka",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Premier League, 07/11 Premier League)",
+   "source": "regola"
+  },
+  {
+   "id": "397263",
+   "name": "Max Dowman",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Premier League, 07/11 Premier League)",
+   "source": "regola"
+  },
+  {
+   "id": "234698",
+   "name": "Matty Cash",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Premier League, 08/11 Premier League)",
+   "source": "regola"
+  },
+  {
+   "id": "310607",
+   "name": "Lamare Bogarde",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Premier League, 08/11 Premier League)",
+   "source": "regola"
+  },
+  {
+   "id": "236209",
+   "name": "Tammy Abraham",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Premier League, 08/11 Premier League)",
+   "source": "regola"
+  },
+  {
+   "id": "325555",
+   "name": "Alejandro Garnacho",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Premier League, 08/11 Premier League)",
+   "source": "regola"
+  },
+  {
+   "id": "96970",
+   "name": "Cristian Romero",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (22/11 LALIGA, 08/11 LALIGA)",
+   "source": "regola"
+  },
+  {
+   "id": "403582",
+   "name": "Xavi Espart",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (22/11 LALIGA, 08/11 LALIGA)",
+   "source": "regola"
+  },
+  {
+   "id": "231828",
+   "name": "Rodri",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (22/11 LALIGA, 08/11 LALIGA)",
+   "source": "regola"
+  },
+  {
+   "id": "304572",
+   "name": "Ismael Saibari",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (20/11 Bundesliga, 07/11 Bundesliga)",
+   "source": "regola"
+  },
+  {
+   "id": "142200",
+   "name": "Harry Kane",
+   "status": "In dubbio",
+   "comment": "Uscito al 20' nell'ultima partita (20/11): possibile infortunio",
+   "source": "regola"
+  },
+  {
+   "id": "178980",
+   "name": "Serge Gnabry",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (20/11 Bundesliga, 07/11 Bundesliga)",
+   "source": "regola"
+  },
+  {
+   "id": "257390",
+   "name": "Luis Díaz",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (20/11 Bundesliga, 07/11 Bundesliga)",
+   "source": "regola"
+  },
+  {
+   "id": "186381",
+   "name": "Serhou Guirassy",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Bundesliga, 07/11 Bundesliga)",
+   "source": "regola"
+  },
+  {
+   "id": "403592",
+   "name": "Jan Virgili",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Belgian Pro League, 08/11 Belgian Pro League)",
+   "source": "regola"
+  },
+  {
+   "id": "248633",
+   "name": "Moise Kean",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Serie A, 08/11 Serie A)",
+   "source": "regola"
+  },
+  {
+   "id": "364742",
+   "name": "Assane Diao",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Serie A, 08/11 Serie A)",
+   "source": "regola"
+  },
+  {
+   "id": "387491",
+   "name": "Jesús Rodriguez",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Serie A, 08/11 Serie A)",
+   "source": "regola"
+  },
+  {
+   "id": "376664",
+   "name": "William Gomes",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (20/11 Taca de Portugal, 08/11 Portuguese Liga)",
+   "source": "regola"
+  },
+  {
+   "id": "159248",
+   "name": "Nathan Aké",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Turkish Super Lig, 08/11 Turkish Super Lig)",
+   "source": "regola"
+  },
+  {
+   "id": "320982",
+   "name": "Archie Brown",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Turkish Super Lig, 08/11 Turkish Super Lig)",
+   "source": "regola"
+  },
+  {
+   "id": "215524",
+   "name": "Jerry St. Juste",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Eredivisie, 08/11 Eredivisie)",
+   "source": "regola"
+  },
+  {
+   "id": "228296",
+   "name": "Victor Osimhen",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Turkish Super Lig, 07/11 Turkish Super Lig)",
+   "source": "regola"
+  },
+  {
+   "id": "189775",
+   "name": "Andrés Andrade",
+   "status": "In dubbio",
+   "comment": "Uscito al 21' nell'ultima partita (21/11): possibile infortunio",
+   "source": "regola"
+  },
+  {
+   "id": "269948",
+   "name": "George Bello",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Austrian Bundesliga, 07/11 Austrian Bundesliga)",
+   "source": "regola"
+  },
+  {
+   "id": "403411",
+   "name": "Nael Kane",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Austrian Bundesliga, 07/11 Austrian Bundesliga)",
+   "source": "regola"
+  },
+  {
+   "id": "401306",
+   "name": "Souleymane Sagnan",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Ligue 1, 08/11 Ligue 1)",
+   "source": "regola"
+  },
+  {
+   "id": "222180",
+   "name": "Odsonne Édouard",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Ligue 1, 08/11 Ligue 1)",
+   "source": "regola"
+  },
+  {
+   "id": "364180",
+   "name": "Franjo Ivanovic",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Ligue 1, 08/11 Ligue 1)",
+   "source": "regola"
+  },
+  {
+   "id": "346844",
+   "name": "Tiago Santos",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Ligue 1, 08/11 Ligue 1)",
+   "source": "regola"
+  },
+  {
+   "id": "32572",
+   "name": "Luke Chambers",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (22/11 Premier League, 08/11 Premier League)",
+   "source": "regola"
+  },
+  {
+   "id": "274632",
+   "name": "Ryan Gravenberch",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (22/11 Premier League, 08/11 Premier League)",
+   "source": "regola"
+  },
+  {
+   "id": "272512",
+   "name": "Rayan Aït-Nouri",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Premier League, 07/11 Premier League)",
+   "source": "regola"
+  },
+  {
+   "id": "390094",
+   "name": "Kaden Braithwaite",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Premier League, 07/11 Premier League)",
+   "source": "regola"
+  },
+  {
+   "id": "273292",
+   "name": "Antoine Semenyo",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Premier League, 07/11 Premier League)",
+   "source": "regola"
+  },
+  {
+   "id": "395463",
+   "name": "Ryan McAidoo",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Premier League, 07/11 Premier League)",
+   "source": "regola"
+  },
+  {
+   "id": "356940",
+   "name": "Harry Amass",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (22/11 Premier League, 08/11 Premier League)",
+   "source": "regola"
+  },
+  {
+   "id": "338814",
+   "name": "Carlos Baleba",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (22/11 Premier League, 08/11 Premier League)",
+   "source": "regola"
+  },
+  {
+   "id": "230945",
+   "name": "Marcus Rashford",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (22/11 Premier League, 08/11 Premier League)",
+   "source": "regola"
+  },
+  {
+   "id": "271170",
+   "name": "Bryan Mbeumo",
+   "status": "In dubbio",
+   "comment": "Uscito al 22' nell'ultima partita (22/11): possibile infortunio",
+   "source": "regola"
+  },
+  {
+   "id": "289155",
+   "name": "Benjamin Sesko",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (22/11 Premier League, 08/11 Premier League)",
+   "source": "regola"
+  },
+  {
+   "id": "155904",
+   "name": "Giovanni Di Lorenzo",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Serie A, 08/11 Serie A)",
+   "source": "regola"
+  },
+  {
+   "id": "282585",
+   "name": "Benoît Badiashile",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Serie A, 08/11 Serie A)",
+   "source": "regola"
+  },
+  {
+   "id": "188412",
+   "name": "Stanislav Lobotka",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Serie A, 08/11 Serie A)",
+   "source": "regola"
+  },
+  {
+   "id": "332411",
+   "name": "Antonio Vergara",
+   "status": "In dubbio",
+   "comment": "Uscito al 13' nell'ultima partita (21/11): possibile infortunio",
+   "source": "regola"
+  },
+  {
+   "id": "245637",
+   "name": "David Neres",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Serie A, 08/11 Serie A)",
+   "source": "regola"
+  },
+  {
+   "id": "319697",
+   "name": "Alisson Santos",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Serie A, 08/11 Serie A)",
+   "source": "regola"
+  },
+  {
+   "id": "414396",
+   "name": "Amir Bouhamdi",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Eredivisie, 08/11 Eredivisie)",
+   "source": "regola"
+  },
+  {
+   "id": "274745",
+   "name": "Khvicha Kvaratskhelia",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Ligue 1, 07/11 Ligue 1)",
+   "source": "regola"
+  },
+  {
+   "id": "201803",
+   "name": "Lukas Klostermann",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Bundesliga, 12/11 Club Friendly)",
+   "source": "regola"
+  },
+  {
+   "id": "364897",
+   "name": "Assan Ouédraogo",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Bundesliga, 12/11 Club Friendly)",
+   "source": "regola"
+  },
+  {
+   "id": "363038",
+   "name": "Marc Guiu",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Bundesliga, 12/11 Club Friendly)",
+   "source": "regola"
+  },
+  {
+   "id": "411284",
+   "name": "José Morante",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 LALIGA, 12/11 Copa del Rey)",
+   "source": "regola"
+  },
+  {
+   "id": "175766",
+   "name": "Ivan Schranz",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (04/11 UEFA Champions League, 20/10 UEFA Champions League)",
+   "source": "regola"
+  },
+  {
+   "id": "257336",
+   "name": "Tomás Chorý",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (04/11 UEFA Champions League, 20/10 UEFA Champions League)",
+   "source": "regola"
+  },
+  {
+   "id": "335914",
+   "name": "Roman Cerepkai",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (03/11 UEFA Champions League, 20/10 UEFA Champions League)",
+   "source": "regola"
+  },
+  {
+   "id": "314473",
+   "name": "Zeno Debast",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Taca de Portugal, 07/11 Portuguese Liga)",
+   "source": "regola"
+  },
+  {
+   "id": "414124",
+   "name": "Salvador Blopa",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Taca de Portugal, 07/11 Portuguese Liga)",
+   "source": "regola"
+  },
+  {
+   "id": "290232",
+   "name": "Angelo Stiller",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Bundesliga, 07/11 Bundesliga)",
+   "source": "regola"
+  },
+  {
+   "id": "355487",
+   "name": "Leo Sauer",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Bundesliga, 07/11 Bundesliga)",
+   "source": "regola"
+  },
+  {
+   "id": "173356",
+   "name": "Kristoffer Haugen",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Norwegian Eliteserien, 08/11 Norwegian Eliteserien)",
+   "source": "regola"
+  },
+  {
+   "id": "365392",
+   "name": "Essien Bassey",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (21/11 Norwegian Eliteserien, 08/11 Norwegian Eliteserien)",
+   "source": "regola"
+  },
+  {
+   "id": "242710",
+   "name": "Juan Foyth",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (22/11 LALIGA, 08/11 LALIGA)",
+   "source": "regola"
+  },
+  {
+   "id": "396751",
+   "name": "Alassane Diatta",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (22/11 LALIGA, 08/11 LALIGA)",
+   "source": "regola"
+  },
+  {
+   "id": "156172",
+   "name": "Gerard Moreno",
+   "status": "Assente",
+   "comment": "Fuori dai convocati nelle ultime 2 partite della squadra (22/11 LALIGA, 08/11 LALIGA)",
+   "source": "regola"
+  }
+ ]
+}
