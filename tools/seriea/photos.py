@@ -6,7 +6,7 @@ Il nome (dal link, es. "martinez-l") si cerca nella rosa ESPN della stessa squad
 """
 import re
 
-from injuries import _player_id, _team_id, fetch, log
+from injuries import _player_id, _team_id, fetch, log, plain
 
 LIST_URL = "https://www.fantacalcio.it/quotazioni-fantacalcio"
 TEAM_URL = "https://www.fantacalcio.it/serie-a/squadre/inter"
@@ -45,3 +45,88 @@ def fantacalcio_photos(rosters, teams):
     log(f"Foto Serie A (fantacalcio.it): {len(out)} giocatori su {len(links)} in elenco"
         + (f"; non abbinati {len(miss)}: {miss[:15]}" if miss else ""))
     return out
+
+
+# ------------------------------------------------------------ Champions League: foto ufficiali UEFA
+# Le formazioni di ogni partita UEFA (match.uefa.com) hanno nome, squadra e foto di ogni giocatore.
+# I giocatori già letti si tengono in un file (uefa_players.json) così si scaricano solo le partite nuove.
+UEFA_MATCHES = ("https://match.uefa.com/v5/matches?competitionId={comp}&seasonYear={year}"
+                "&limit=100&offset={off}&order=ASC&status=FINISHED")
+UEFA_LINEUPS = "https://match.uefa.com/v5/matches/{mid}/lineups"
+UEFA_COMP = {"uefa.champions": 1, "uefa.europa": 14, "uefa.europa.conf": 2019}
+
+
+def _uefa_players(league, season_start, cache):
+    comp = UEFA_COMP.get(league)
+    if not comp:
+        return cache
+    done = set(cache.setdefault("matches", []))
+    players = cache.setdefault("players", {})
+    ids, off = [], 0
+    while True:
+        page = fetch(UEFA_MATCHES.format(comp=comp, year=season_start + 1, off=off)) or []
+        ids += [str(m["id"]) for m in page if m.get("id")]
+        if len(page) < 100 or off > 2000:
+            break
+        off += 100
+    new = [m for m in ids if m not in done]
+    for mid in new:
+        try:
+            lu = fetch(UEFA_LINEUPS.format(mid=mid)) or {}
+        except RuntimeError as e:
+            log(f"  formazione {mid}: {e}")
+            continue
+        for side in ("homeTeam", "awayTeam"):
+            t = lu.get(side) or {}
+            team = ((t.get("team") or {}).get("internationalName")) or ""
+            for grp in ("field", "bench"):
+                for e in t.get(grp) or []:
+                    p = e.get("player") or {}
+                    if p.get("id") and p.get("imageUrl"):
+                        fn = ((p.get("translations") or {}).get("firstName") or {}).get("EN") or ""
+                        ln = ((p.get("translations") or {}).get("lastName") or {}).get("EN") or ""
+                        players[str(p["id"])] = [p.get("internationalName") or "", fn, ln, team, p["imageUrl"]]
+        done.add(mid)
+    cache["matches"] = sorted(done)
+    log(f"Formazioni UEFA: {len(new)} partite nuove, {len(players)} giocatori in archivio")
+    return cache
+
+
+def _words(s):
+    return [w for w in plain(s).split() if w]
+
+
+def uefa_photos(rosters, teams, league, season_start, cache):
+    """{pid ESPN: foto UEFA}. Abbinamento per nome (completo, poi cognome + iniziale), la squadra decide i casi dubbi."""
+    cache = _uefa_players(league, season_start, cache)
+    tname = {str(t): plain((v or {}).get("name") or "") for t, v in teams.items()}
+    full, last = {}, {}
+    for pid, r in rosters.items():
+        w = _words(r.get("name"))
+        if not w:
+            continue
+        full.setdefault(" ".join(w), []).append(pid)
+        full.setdefault(" ".join(sorted(w)), []).append(pid)   # stesso nome in altro ordine (es. Kim Min-Jae)
+        last.setdefault(w[-1], []).append(pid)
+
+    def by_team(cands, team):
+        tw = set(_words(team)) - {"fc", "cf", "ac", "sc", "fk", "club", "de", "sk"}
+        best = [c for c in cands if tw & set(tname.get(str(rosters[c].get("tid")), "").split())]
+        return best if best else cands
+
+    out = {}
+    for uid, (iname, fn, ln, team, img) in cache["players"].items():
+        cands = (full.get(" ".join(_words(iname))) or full.get(" ".join(_words(f"{fn} {ln}")))
+                 or full.get(" ".join(sorted(_words(iname)))) or [])
+        cands = list(dict.fromkeys(cands))
+        if not cands:
+            lw, fw = _words(ln) or _words(iname)[-1:], _words(fn)
+            if lw:
+                cands = [c for c in last.get(lw[-1], []) if not fw or _words(rosters[c]["name"])[0][:1] == fw[0][:1]
+                         or len(_words(rosters[c]["name"])) == 1]
+        if len(cands) > 1:
+            cands = by_team(cands, team)
+        if len(cands) == 1:
+            out[str(cands[0])] = img
+    log(f"Foto UEFA: {len(out)} giocatori su {len(rosters)} nelle rose")
+    return out, cache
