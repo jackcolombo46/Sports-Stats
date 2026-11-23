@@ -578,6 +578,20 @@ def understat_xg(y, teams, cur):
     return out
 
 
+def player_photos(meta, teams):
+    """foto dei giocatori: fantacalcio.it per la Serie A; per le altre competizioni quelle dei giocatori
+    di Serie A già trovate (es. Inter, Napoli in Champions), dal file della Serie A"""
+    ros = meta.get("rosters") or {}
+    if LEAGUE == "ita.1":
+        import photos
+        return photos.fantacalcio_photos(ros, teams)
+    sa = read_json(os.path.join(os.path.dirname(DATA.rstrip("/")), "..", "seriea", "data", "meta.json"), {}) or {}
+    sa = (sa.get("images") or {}).get("players") or {}
+    out = {pid: url for pid, url in sa.items() if pid in ros}
+    log(f"Foto dalla Serie A: {len(out)} giocatori")
+    return out
+
+
 def extra_injuries(meta, teams, cur_files):
     """indisponibili che ESPN non dà per il calcio (vedi injuries.py): fantacalcio.it per la Serie A,
     la regola delle ultime partite per le altre competizioni"""
@@ -624,6 +638,10 @@ def main(argv=None):
         meta["rosters"], meta["injuries"], meta["current_teams"] = rosters(teams)
     except Exception as e:  # noqa: BLE001
         log(f"ATTENZIONE rose: {e}")
+    try:
+        meta["images"] = {"players": player_photos(meta, teams)}
+    except Exception as e:  # noqa: BLE001  - si tengono le foto precedenti
+        log(f"ATTENZIONE foto: {e}")
     try:
         meta["injuries"] = (meta.get("injuries") or []) + extra_injuries(meta, teams, cur_files)
     except Exception as e:  # noqa: BLE001  - senza indisponibili l'app funziona lo stesso

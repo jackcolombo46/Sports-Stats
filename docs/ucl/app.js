@@ -37,9 +37,10 @@
   // ------------------------------------------------------------ immagini (ESPN)
   const CDN = "https://a.espncdn.com";
   const crop = (path, w, h) => `${CDN}/combiner/i?img=${path}&w=${w}&h=${h}`;
+  let PIMG = {};   // foto dei giocatori dall'aggiornamento automatico (fantacalcio.it per la Serie A), prima di quelle ESPN
   const P = (id, name, size) => {
     const p = `/i/headshots/soccer/players/full/${id}.png`;
-    return Media.player([crop(p, 160, 116), CDN + p], name, size);
+    return Media.player(PIMG[id] ? [PIMG[id], crop(p, 160, 116)] : [crop(p, 160, 116), CDN + p], name, size);
   };
   const L = (tid, size) => {
     const p = `/i/teamlogos/soccer/500/${tid}.png`;
@@ -179,6 +180,7 @@
     const meta = await getJSON("data/meta.json", { cache: "no-store" });
     getJSON(`data/backtest.json?v=${encodeURIComponent(meta.updated_at || "")}`).then(j => { BT = j; if (mode === "picks") run(); }).catch(() => {});
     if (meta.league) ESPN = `https://site.api.espn.com/apis/site/v2/sports/soccer/${meta.league}/`;
+    PIMG = (meta.images || {}).players || {};
     const v = encodeURIComponent(meta.updated_at || "");
     const files = await Promise.all(meta.files.map(f => getJSON(`data/${f}?v=${v}`).then(j => [f, j])));
     const logs = {}, games = {}, teams = {};
