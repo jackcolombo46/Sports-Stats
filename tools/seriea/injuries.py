@@ -108,8 +108,10 @@ def fantacalcio_seriea(rosters, teams):
         if not tid:
             miss_t.append(m.group(1))
             continue
-        for seg in re.split(r'<strong class="label[^"]*">', card)[1:]:
-            label = plain(seg.split("<", 1)[0])
+        # ogni gruppo (Infortunati, Squalificati, Diffidati…) inizia con un <header> che contiene il titolo
+        for seg in re.split(r"<header(?:\s[^>]*)?>", card)[1:]:
+            head = seg.split("</header>", 1)[0]
+            label = plain(re.sub(r"<[^>]+>", " ", head)) or plain(" ".join(re.findall(r'aria-label="([^"]+)"', head)))
             if "diffidat" in label:
                 continue
             for name, desc in re.findall(r'<strong class="item-name">([^<]+)</strong>(.*?)</li>', seg, re.S):

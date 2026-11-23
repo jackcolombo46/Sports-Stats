@@ -74,6 +74,18 @@ pubblica del sito ufficiale:
 Codice partita = anno × 1000 + numero (es. 2026001). Regular season, play-in, playoff e Final Four; niente infortuni.
 Verifica alla prima esecuzione: occasioni dei giocatori previste 77,3%, riuscite 77,4%.
 
+## Indisponibili del calcio
+
+ESPN non pubblica gli infortuni per il calcio (il campo è sempre vuoto), quindi `tools/seriea/injuries.py`:
+- **Serie A**: pagina "Indisponibili" di fantacalcio.it (infortunati e squalificati di tutte le squadre, con la
+  descrizione); il nome breve ("Gonzalez N.") si cerca nella rosa ESPN della stessa squadra. Stato "In dubbio" se la
+  descrizione dice "da valutare", "tornato ad allenarsi", "convocabile"…, altrimenti "Infortunato"; "Squalificato".
+- **Champions League**: nessuna fonte affidabile (provati ESPN, UEFA, Transfermarkt, Sofascore, fantacalcio.it euro
+  leghe), quindi una regola sulle ultime 2 partite della squadra in tutte le competizioni (dalle partite ESPN):
+  fuori dai convocati in entrambe → "Assente"; uscito entro il 30' nell'ultima (senza espulsione) → "In dubbio".
+Infortunato, Squalificato, Indisponibile e Assente escludono il giocatore da Oggi, Occasioni e Generatore;
+"In dubbio" è solo un avviso nella scheda.
+
 ## Navigazione
 
 `docs/nav.js`: barra con 5 voci, in basso sul telefono e in alto sul computer. Alcune voci hanno due viste (linguette).
