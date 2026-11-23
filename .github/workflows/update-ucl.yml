@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ["tools/pbp/**", "tools/ucl/**", "tools/seriea/update_data.py", ".github/workflows/update-ucl.yml", "tools/backtest/**", "docs/ucl/model.js", "docs/picks.js"]
+    paths: ["tools/pbp/**", "tools/ucl/**", "tools/seriea/update_data.py", "tools/seriea/photos.py", "tools/seriea/injuries.py", ".github/workflows/update-ucl.yml", "tools/backtest/**", "docs/ucl/model.js", "docs/picks.js"]
 
 permissions:
   contents: write

@@ -589,6 +589,16 @@ def player_photos(meta, teams):
     sa = (sa.get("images") or {}).get("players") or {}
     out = {pid: url for pid, url in sa.items() if pid in ros}
     log(f"Foto dalla Serie A: {len(out)} giocatori")
+    # foto ufficiali UEFA (Champions League): hanno la precedenza
+    import photos
+    if LEAGUE in photos.UEFA_COMP:
+        path = os.path.join(DATA, "uefa_players.json")
+        try:
+            uefa, cache = photos.uefa_photos(ros, teams, LEAGUE, season_start_year(dt.date.today()), read_json(path, {}) or {})
+            write_json(path, cache)
+            out.update(uefa)
+        except Exception as e:  # noqa: BLE001
+            log(f"ATTENZIONE foto UEFA: {e}")
     return out
 
 
