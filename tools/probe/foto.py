@@ -1,24 +1,29 @@
-"""prova: abbinamento foto fantacalcio.it ↔ rose ESPN (con il meta della Serie A già nel repository)"""
-import json, os, sys, urllib.request
+"""prova: quali foto esistono davvero (pagine squadra fantacalcio.it) e in che cartella"""
+import json, re, sys, urllib.request
 sys.path.insert(0, "tools/seriea")
-import photos
-meta = json.load(open("docs/seriea/data/meta.json"))
-ros = meta.get("rosters") or {}
-out = photos.fantacalcio_photos(ros, meta.get("teams") or {})
-by_team = {}
-for pid, r in ros.items():
-    t = by_team.setdefault(str(r.get("tid")), [0, 0]); t[0] += 1; t[1] += pid in out
-ok = 0
-for url in list(out.values())[:10]:
+from injuries import fetch
+page = fetch("https://www.fantacalcio.it/quotazioni-fantacalcio", as_json=False)
+links = sorted(set(re.findall(r"/serie-a/squadre/([a-z0-9-]+)/([a-z0-9-]+)/(\d+)", page)))
+teams = sorted({t for t, _, _ in links})
+res, found = {}, {}
+for t in teams:
     try:
-        with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"}), timeout=20) as r:
-            ok += r.status == 200
+        h = fetch(f"https://www.fantacalcio.it/serie-a/squadre/{t}", as_json=False) or ""
     except Exception as e:
-        print("img", url, e)
-names = {pid: ros[pid].get("name") for pid in ros}
-os.makedirs("tools/probe/out", exist_ok=True)
-json.dump({"abbinati": len(out), "rosa": len(ros), "img_ok_su_10": ok,
-           "per_squadra": {(meta["teams"].get(t) or {}).get("name", t): v for t, v in by_team.items()},
-           "esempi": {names[p]: u for p, u in list(out.items())[:15]},
-           "senza_foto": [names[p] for p in ros if p not in out][:80]},
-          open("tools/probe/out/foto4.json", "w"), indent=1, ensure_ascii=False)
+        res[t] = str(e); continue
+    imgs = re.findall(r"campioncini/(\d+)/(\w+)/(\d+)\.png", h)
+    for f, s, i in imgs:
+        found[i] = f
+    ids = {i for tt, _, i in links if tt == t}
+    res[t] = {"giocatori": len(ids), "con_foto_in_pagina": len(ids & {i for _, _, i in imgs}),
+              "cartelle": sorted({f for f, _, _ in imgs})}
+def head(u):
+    try:
+        with urllib.request.urlopen(urllib.request.Request(u, method="HEAD", headers={"User-Agent": "Mozilla/5.0"}), timeout=15) as r:
+            return r.status
+    except Exception as e:
+        return getattr(e, "code", str(e))
+prove = {}
+for t, p, i in links[:12]:
+    prove[f"{p} ({t}) {i}"] = {f: head(f"https://content.fantacalcio.it/web/campioncini/{f}/medium/{i}.png") for f in ("21", "20", "22")}
+json.dump({"squadre": res, "foto_trovate": len(found), "prove": prove}, open("tools/probe/out/foto5.json", "w"), indent=1)
