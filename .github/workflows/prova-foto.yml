@@ -2,7 +2,7 @@ name: Prova foto (temporaneo)
 on:
   push:
     branches: [prova-foto-seriea]
-    paths: ["tools/probe/foto.py", ".github/workflows/prova-foto.yml"]
+    paths: ["tools/probe/foto.py", "tools/seriea/photos.py", ".github/workflows/prova-foto.yml"]
 permissions:
   contents: write
 jobs:
