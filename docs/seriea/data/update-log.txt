@@ -1,17 +1,11 @@
 Competizione ita.1 -> docs/seriea/data
-Stagione 2026-27: controllo le partite dal 2026-11-18 al 2026-11-22
-Stagione 2026-27: 3 partite nuove
+Stagione 2026-27: controllo le partite dal 2026-11-19 al 2026-11-23
+Stagione 2026-27: 2 partite nuove
   statistiche di squadra ESPN: accurateCrosses, accurateLongBalls, accuratePasses, blockedShots, crossPct, effectiveClearance, effectiveTackles, foulsCommitted, interceptions, longballPct, offsides, passPct, penaltyKickGoals, penaltyKickShots, possessionPct, redCards, saves, shotPct, shotsOnTarget, tacklePct, totalClearance, totalCrosses, totalLongBalls, totalPasses, totalShots, totalTackles, wonCorners, yellowCards
   Understat (dati): Expecting value: line 1 column 1 (char 0)
 ATTENZIONE Understat: dati delle squadre non trovati nella pagina
-Fatto: 2026-11-22T18:38:28Z 6 file, 31 partite in calendario, 658 giocatori in rosa
-seriea: 171 giornate, 497 partite in 7s; occasioni giocatori 1119 (previste 0.726, riuscite 0.755); squadre 2012 (previste 0.743, riuscite 0.734)
-seriea 2026-27: 3 partite nuove, 0 da fare
-fatto in 0s · partite 3 · errori 0
-confronto con i tabellini: {'gol ok': 96, 'ast ok': 96, 'sh ok': 95, 'sot ok': 95, 'fc ok': 94, 'fs ok': 95, 'yc ok': 96, 'min ok': 95, 'sot diverso': 1, 'min diverso': 1, 'sh diverso': 1, 'fc diverso': 2, 'fs diverso': 1}
-Competizione ita.1 -> docs/seriea/data
-Stagione 2026-27: controllo le partite dal 2026-11-19 al 2026-11-22
-Stagione 2026-27: 0 partite nuove
-  Understat (dati): Expecting value: line 1 column 1 (char 0)
-ATTENZIONE Understat: dati delle squadre non trovati nella pagina
-Fatto: 2026-11-22T18:38:42Z 6 file, 31 partite in calendario, 658 giocatori in rosa
+Fatto: 2026-11-23T00:21:11Z 6 file, 31 partite in calendario, 658 giocatori in rosa
+seriea: 171 giornate, 499 partite in 6s; occasioni giocatori 1127 (previste 0.726, riuscite 0.754); squadre 2024 (previste 0.743, riuscite 0.735)
+seriea 2026-27: 2 partite nuove, 0 da fare
+fatto in 0s · partite 2 · errori 0
+confronto con i tabellini: {'gol ok': 64, 'ast ok': 64, 'sh ok': 64, 'sot ok': 64, 'fc ok': 59, 'fs ok': 62, 'yc ok': 64, 'min ok': 63, 'fs diverso': 2, 'fc diverso': 5, 'min diverso': 1}
