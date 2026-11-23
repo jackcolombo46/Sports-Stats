@@ -34,7 +34,10 @@ def fantacalcio_photos(rosters, teams):
         if tslug not in team_ids:
             team_ids[tslug] = _team_id(tslug.replace("-", " "), teams)
         tid = team_ids[tslug]
-        pid = _player_id(pslug.replace("-", " "), by_team.get(str(tid), [])) if tid else None
+        ros, toks = by_team.get(str(tid), []), pslug.split("-")
+        pid = _player_id(" ".join(toks), ros) if tid else None
+        if not pid and tid and len(toks) > 1 and len(toks[-1]) <= 4:   # "pessina-mas" = Pessina Massimo
+            pid = _player_id(" ".join(toks[:-1]) + f" {toks[-1][0]}.", ros)
         if pid:
             out[str(pid)] = IMG.format(folder=folder, fid=fid)
         else:
