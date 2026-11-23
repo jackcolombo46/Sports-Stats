@@ -1,15 +1,10 @@
 Competizione ita.1 -> docs/seriea/data
 Stagione 2026-27: controllo le partite dal 2026-11-19 al 2026-11-23
 Stagione 2026-27: 0 partite nuove
+Indisponibili Serie A (fantacalcio.it): 66 giocatori; giocatori non trovati in rosa: 1 ['Terracciano (Milan)']
   Understat (dati): Expecting value: line 1 column 1 (char 0)
 ATTENZIONE Understat: dati delle squadre non trovati nella pagina
-Fatto: 2026-11-23T07:53:00Z 6 file, 31 partite in calendario, 658 giocatori in rosa
+Fatto: 2026-11-23T11:19:40Z 6 file, 31 partite in calendario, 658 giocatori in rosa
 seriea: 171 giornate, 499 partite in 7s; occasioni giocatori 1127 (previste 0.726, riuscite 0.754); squadre 2024 (previste 0.743, riuscite 0.735)
 fatto in 0s · partite 0 · errori 0
 confronto con i tabellini: {}
-Competizione ita.1 -> docs/seriea/data
-Stagione 2026-27: controllo le partite dal 2026-11-19 al 2026-11-23
-Stagione 2026-27: 0 partite nuove
-  Understat (dati): Expecting value: line 1 column 1 (char 0)
-ATTENZIONE Understat: dati delle squadre non trovati nella pagina
-Fatto: 2026-11-23T07:53:14Z 6 file, 31 partite in calendario, 658 giocatori in rosa
