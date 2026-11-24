@@ -12,3 +12,12 @@ ucl: 43 giornate, 263 partite in 1s; occasioni giocatori 702 (previste 0.729, ri
 ucl 2026-27: 2 partite nuove, 0 da fare
 fatto in 0s · partite 2 · errori 0
 confronto con i tabellini: {'gol ok': 62, 'ast ok': 62, 'sh ok': 62, 'sot ok': 61, 'fc ok': 58, 'fs ok': 62, 'yc ok': 62, 'min ok': 62, 'fc diverso': 4, 'sot diverso': 1}
+Competizione uefa.champions -> docs/ucl/data
+Stagione 2026-27: controllo le partite dal 2026-11-21 al 2026-11-24
+Stagione 2026-27: 0 partite nuove
+Foto dalla Serie A: 96 giocatori
+Formazioni UEFA: 0 partite nuove, 2042 giocatori in archivio
+Foto UEFA: 916 giocatori su 1196 nelle rose
+Indisponibili (regola ultime partite): 64 assenti, 3 in dubbio
+Understat: competizione non coperta, si usa solo l'xG di ESPN
+Fatto: 2026-11-24T20:11:08Z 5 file, 34 partite in calendario, 1196 giocatori in rosa
