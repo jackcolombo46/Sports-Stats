@@ -1,21 +1,14 @@
 Competizione uefa.champions -> docs/ucl/data
 Stagione 2026-27: controllo le partite dal 2026-11-01 al 2026-11-24
-Stagione 2026-27: 0 partite nuove
+Stagione 2026-27: 2 partite nuove
+  statistiche di squadra ESPN: accurateCrosses, accurateLongBalls, accuratePasses, blockedShots, crossPct, effectiveClearance, effectiveTackles, foulsCommitted, interceptions, longballPct, offsides, passPct, penaltyKickGoals, penaltyKickShots, possessionPct, redCards, saves, shotPct, shotsOnTarget, tacklePct, totalClearance, totalCrosses, totalLongBalls, totalPasses, totalShots, totalTackles, wonCorners, yellowCards
 Foto dalla Serie A: 96 giocatori
-Formazioni UEFA: 0 partite nuove, 2041 giocatori in archivio
-Foto UEFA: 915 giocatori su 1190 nelle rose
-Indisponibili (regola ultime partite): 64 assenti, 4 in dubbio
+Formazioni UEFA: 2 partite nuove, 2042 giocatori in archivio
+Foto UEFA: 916 giocatori su 1196 nelle rose
+Indisponibili (regola ultime partite): 64 assenti, 3 in dubbio
 Understat: competizione non coperta, si usa solo l'xG di ESPN
-Fatto: 2026-11-24T06:19:44Z 5 file, 36 partite in calendario, 1190 giocatori in rosa
-ucl: 42 giornate, 261 partite in 2s; occasioni giocatori 699 (previste 0.729, riuscite 0.742); squadre 1314 (previste 0.75, riuscite 0.72)
-fatto in 0s · partite 0 · errori 0
-confronto con i tabellini: {}
-Competizione uefa.champions -> docs/ucl/data
-Stagione 2026-27: controllo le partite dal 2026-11-01 al 2026-11-24
-Stagione 2026-27: 0 partite nuove
-Foto dalla Serie A: 96 giocatori
-Formazioni UEFA: 0 partite nuove, 2041 giocatori in archivio
-Foto UEFA: 915 giocatori su 1190 nelle rose
-Indisponibili (regola ultime partite): 64 assenti, 4 in dubbio
-Understat: competizione non coperta, si usa solo l'xG di ESPN
-Fatto: 2026-11-24T06:20:46Z 5 file, 36 partite in calendario, 1190 giocatori in rosa
+Fatto: 2026-11-24T20:10:41Z 5 file, 34 partite in calendario, 1196 giocatori in rosa
+ucl: 43 giornate, 263 partite in 1s; occasioni giocatori 702 (previste 0.729, riuscite 0.739); squadre 1324 (previste 0.75, riuscite 0.716)
+ucl 2026-27: 2 partite nuove, 0 da fare
+fatto in 0s · partite 2 · errori 0
+confronto con i tabellini: {'gol ok': 62, 'ast ok': 62, 'sh ok': 62, 'sot ok': 61, 'fc ok': 58, 'fs ok': 62, 'yc ok': 62, 'min ok': 62, 'fc diverso': 4, 'sot diverso': 1}
