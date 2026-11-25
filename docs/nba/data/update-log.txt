@@ -5,3 +5,38 @@ nba: 200 giornate, 1492 partite in 69s; occasioni giocatori 47253 (previste 0.78
 nba 2026-27: 2 partite nuove, 0 da fare
 fatto in 0s · partite 2 · errori 0
 confronto con i tabellini: {'pts ok': 49, 'reb ok': 49, 'ast ok': 49, 'stl ok': 49, 'blk ok': 49, 'tov ok': 48, 'fg3m ok': 49, 'min ok': 49, 'tov diverso': 1}
+Stagione 2024-25: mancano fgm, ftm, fg3a, la riscarico
+Stagione 2024-25: scarico il calendario...
+Stagione 2024-25: 1231 partite, scarico i box score...
+  100/1231 partite
+  200/1231 partite
+  300/1231 partite
+  400/1231 partite
+  500/1231 partite
+  600/1231 partite
+  700/1231 partite
+  800/1231 partite
+  900/1231 partite
+  1000/1231 partite
+  1100/1231 partite
+  1200/1231 partite
+Stagione 2024-25: salvate 26231 righe
+Stagione 2025-26: mancano fgm, ftm, fg3a, la riscarico
+Stagione 2025-26: scarico il calendario...
+Stagione 2025-26: 1231 partite, scarico i box score...
+  100/1231 partite
+  200/1231 partite
+  300/1231 partite
+  400/1231 partite
+  500/1231 partite
+  600/1231 partite
+  700/1231 partite
+  800/1231 partite
+  900/1231 partite
+  1000/1231 partite
+  1100/1231 partite
+  1200/1231 partite
+Stagione 2025-26: salvate 26565 righe
+Stagione 2026-27: controllo le partite dal 2026-11-21 al 2026-11-25
+Stagione 2026-27: 0 partite nuove
+Fatto: 2026-11-25T15:27:03Z 4 file, 64 partite in calendario
