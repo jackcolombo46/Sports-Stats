@@ -341,6 +341,7 @@
     ].filter(Boolean).map(x => `<span>${x}</span>`).join("");
     const sl = d && d.game && d.game.id && !d.game.manual;   // pulsante schedina solo con una partita vera in calendario
     return Thresh.card({ label: s.label, proj: s.proj, likely: lk, avgs: av, lines: s.lines, def: defLine(s),
+      probAt: k => M.probAtLeast(k, s.mu, s.v),   // cursore della soglia
       points: trendPoints(d.player.id, s.stat, 10), unit: s.label.toLowerCase(),
       slip: sl ? (line, prob) => Slip.button({ key: `p|${d.game.id}|${d.player.id}|${s.stat}|${line}`, kind: "p",
         gid: d.game.id, utc: d.game.utc, pid: d.player.id, prob, text: `${d.player.name}: ${s.label.toLowerCase()} almeno ${line}`,
