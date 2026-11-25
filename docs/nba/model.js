@@ -26,14 +26,21 @@
   ].map(([tri, name]) => ({ tri, name }));
   const TEAM = Object.fromEntries(TEAMS.map(t => [t.tri, t]));
 
-  const STATS = ["PTS", "REB", "AST", "FG3M", "STL", "BLK", "TOV"];
-  const ALL_STATS = [...STATS, "PRA"];
+  const BASE = ["PTS", "REB", "AST", "FG3M", "STL", "BLK", "TOV"];
+  // tiri (numero, non percentuale): da 2 = tiri dal campo meno quelli da 3
+  const SHOOT = ["FG2M", "FG2A", "FG3A", "FTM", "FTA"];
+  const STATS = [...BASE, ...SHOOT];
+  const ALL_STATS = [...BASE, "PRA", ...SHOOT];
   const LABELS = { PTS: "Punti", REB: "Rimbalzi", AST: "Assist", FG3M: "Triple", STL: "Rubate",
-                   BLK: "Stoppate", TOV: "Palle perse", PRA: "Punti+Rimb+Ass" };
+                   BLK: "Stoppate", TOV: "Palle perse", PRA: "Punti+Rimb+Ass",
+                   FG2M: "Tiri da 2 segnati", FG2A: "Tiri da 2 tentati", FG3A: "Tiri da 3 tentati",
+                   FTM: "Tiri liberi segnati", FTA: "Tiri liberi tentati" };
   const LINES = {
     PTS: [5, 10, 15, 20, 25, 30, 35, 40, 45], REB: [2, 4, 6, 8, 10, 12, 14, 16],
     AST: [2, 4, 6, 8, 10, 12, 14], FG3M: [1, 2, 3, 4, 5, 6, 7], STL: [1, 2, 3, 4],
     BLK: [1, 2, 3, 4], TOV: [1, 2, 3, 4, 5, 6], PRA: [10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60],
+    FG2M: [1, 2, 3, 4, 5, 6, 7, 8, 10, 12], FG2A: [2, 4, 6, 8, 10, 12, 14, 16, 18, 20],
+    FG3A: [1, 2, 3, 4, 5, 6, 7, 8, 10, 12], FTM: [1, 2, 3, 4, 5, 6, 8, 10, 12], FTA: [1, 2, 3, 4, 5, 6, 8, 10, 12, 14],
   };
   const SHRINK_GAMES = 12, PREV_SEASON_REGRESS = 0.5, RATE_HALF_LIFE = 20, MIN_HALF_LIFE = 4;
   const H2H_MAX_WEIGHT = 0.30, LIKELY_PROB = 0.60;
@@ -41,11 +48,16 @@
   // NBA: solo i giocatori "Out" nel bollettino infortuni (MISSED 99 = le partite saltate non bastano); verifica 2025-26
   // con le assenze vere: logloss 0,2974 -> 0,2962. Con le assenze indovinate dalle partite saltate nessun miglioramento.
   const ABS = Object.assign({ ON: true, K: 50, MISSED: 99, ROLE: 20 }, (root.MODEL_PARAMS || {}).ABS || {});
-  const KEY = { PTS: "pts", REB: "reb", AST: "ast", FG3M: "fg3m", STL: "stl", BLK: "blk", TOV: "tov" };
+  const KEY = { PTS: "pts", REB: "reb", AST: "ast", FG3M: "fg3m", STL: "stl", BLK: "blk", TOV: "tov",
+                FG3A: "fg3a", FTM: "ftm", FTA: "fta" };
+  const DERIVED = { PRA: g => g.pts + g.reb + g.ast, FG2M: g => g.fgm - g.fg3m, FG2A: g => g.fga - g.fg3a };
 
   const norm = s => (s || "").normalize("NFKD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
-  const statVal = (g, s) => s === "PRA" ? g.pts + g.reb + g.ast : g[KEY[s]];
+  // NaN se la partita non ha il dato (stagioni vecchie scaricate prima dei tiri segnati/tentati)
+  const statVal = (g, s) => { const v = DERIVED[s] ? DERIVED[s](g) : g[KEY[s]]; return v == null ? NaN : +v; };
+  const has = s => g => Number.isFinite(statVal(g, s));
   const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+  const num0 = x => (Number.isFinite(x) ? x : null);
   const r1 = x => Math.round(x * 10) / 10;
   const r3 = x => Math.round(x * 1000) / 1000;
 
@@ -81,8 +93,9 @@
     for (const r of logs) {
       const key = r.gid + "|" + r.tri;
       let t = games.get(key);
-      if (!t) { t = { gid: r.gid, tri: r.tri, pts: 0, reb: 0, oreb: 0, ast: 0, fg3m: 0, stl: 0, blk: 0, tov: 0, fga: 0, fta: 0, min: 0 }; games.set(key, t); }
+      if (!t) { t = { gid: r.gid, tri: r.tri, pts: 0, reb: 0, oreb: 0, ast: 0, fg3m: 0, stl: 0, blk: 0, tov: 0, fga: 0, fta: 0, fgm: 0, ftm: 0, fg3a: 0, min: 0 }; games.set(key, t); }
       for (const k of ["pts", "reb", "oreb", "ast", "fg3m", "stl", "blk", "tov", "fga", "fta", "min"]) t[k] += r[k];
+      for (const k of ["fgm", "ftm", "fg3a"]) t[k] += r[k] == null ? NaN : r[k];
     }
     const byGid = new Map();
     for (const t of games.values()) { if (!byGid.has(t.gid)) byGid.set(t.gid, []); byGid.get(t.gid).push(t); }
@@ -98,10 +111,10 @@
       for (const [me, op] of [[a, b], [b, a]]) {
         const g = agg[me.tri] || (agg[me.tri] = { gp: 0, poss: 0, min: 0, allowed: Object.fromEntries(STATS.map(s => [s, 0])) });
         g.gp++; g.poss += ps; g.min += mins;
-        for (const s of STATS) g.allowed[s] += op[KEY[s]];
+        for (const s of STATS) g.allowed[s] += statVal(op, s);
       }
       lgPoss += 2 * ps; lgMin += 2 * mins;
-      for (const s of STATS) lgTot[s] += a[KEY[s]] + b[KEY[s]];
+      for (const s of STATS) lgTot[s] += statVal(a, s) + statVal(b, s);
     }
     if (lgPoss <= 0) return {};
     const lgPace = lgPoss / lgMin * 48;
@@ -110,7 +123,7 @@
     for (const [tri, g] of Object.entries(agg)) {
       out[tri] = {
         gp: g.gp, rel_pace: (g.poss / g.min * 48) / lgPace,
-        f: Object.fromEntries(STATS.map(s => [s, lg100[s] ? (g.allowed[s] / g.poss * 100) / lg100[s] : 1])),
+        f: Object.fromEntries(STATS.map(s => { const x = lg100[s] ? (g.allowed[s] / g.poss * 100) / lg100[s] : 1; return [s, Number.isFinite(x) ? x : 1]; })),
       };
     }
     return out;
@@ -247,15 +260,16 @@
       const cur = logs.filter(g => g.season === this.season);
       const prev = logs.filter(g => g.season === this.prevSeason);
 
-      const num = Object.fromEntries(ALL_STATS.map(s => [s, 0]));
-      let den = 0;
+      const num = Object.fromEntries(ALL_STATS.map(s => [s, 0])), den = { ...num };
       logs.slice(0, 120).forEach((g, i) => {
         const sw = g.season === this.season ? 1 : g.season === this.prevSeason ? 0.6 : 0.3;
         const w = sw * Math.pow(0.5, i / RATE_HALF_LIFE);
-        for (const s of ALL_STATS) num[s] += w * statVal(g, s);
-        den += w * g.min;
+        for (const s of ALL_STATS) {
+          const x = statVal(g, s);
+          if (Number.isFinite(x)) { num[s] += w * x; den[s] += w * g.min; }
+        }
       });
-      const rate = Object.fromEntries(ALL_STATS.map(s => [s, num[s] / den]));
+      const rate = Object.fromEntries(ALL_STATS.map(s => [s, den[s] > 0 ? num[s] / den[s] : 0]));
 
       const wmean = (games, hl) => {
         let sw = 0, sm = 0;
@@ -274,7 +288,6 @@
       const paceF = clamp((own.rel_pace + op.rel_pace - 1) / own.rel_pace, 0.9, 1.1);
 
       const h2h = logs.filter(g => g.opp === opp);
-      const h2hMin = h2h.reduce((a, g) => a + g.min, 0);
       const last10 = logs.slice(0, 10), sample = logs.slice(0, 40);
 
       const warnings = [];
@@ -296,23 +309,25 @@
       if (inj) warnings.unshift(`Infortuni: ${inj.status || "in lista"}${inj.comment ? " – " + inj.comment : ""}`);
 
       const proj = {}, stats = [];
-      const avg = (arr, s) => arr.reduce((a, g) => a + statVal(g, s), 0) / arr.length;
+      const avg = (arr0, s) => { const arr = arr0.filter(has(s)); return arr.length ? arr.reduce((a, g) => a + statVal(g, s), 0) / arr.length : null; };
       for (const s of ALL_STATS) {
+        const hs = has(s), h2hS = h2h.filter(hs), l10S = last10.filter(hs), sampleS = sample.filter(hs);
+        const h2hMinS = h2hS.reduce((a, g) => a + g.min, 0);
         const base = rate[s] * minutes * paceF;
         const muModel = s === "PRA" ? proj.PTS.model + proj.REB.model + proj.AST.model : base * op.f[s];
         let mu = muModel, h2hAvg = null;
-        if (h2h.length && h2hMin > 0) {
-          const h2hRate = h2h.reduce((a, g) => a + statVal(g, s), 0) / h2hMin;
-          const w = Math.min(H2H_MAX_WEIGHT, h2h.length / (h2h.length + 15));
+        if (h2hS.length && h2hMinS > 0) {
+          const h2hRate = h2hS.reduce((a, g) => a + statVal(g, s), 0) / h2hMinS;
+          const w = Math.min(H2H_MAX_WEIGHT, h2hS.length / (h2hS.length + 15));
           mu = (1 - w) * muModel + w * h2hRate * minutes * paceF;
           h2hAvg = avg(h2h, s);
         }
-        if (adj && s !== "PRA") mu = Math.max(mu * 0.25, mu + adj[s]);   // assenze dei compagni
+        if (adj && s !== "PRA" && Number.isFinite(adj[s])) mu = Math.max(mu * 0.25, mu + adj[s]);   // assenze dei compagni
         if (s === "PRA") mu = proj.PTS.mu + proj.REB.mu + proj.AST.mu;
         proj[s] = { model: muModel, mu };
 
-        const vals = sample.map(g => statVal(g, s));
-        const mean = vals.reduce((a, b) => a + b, 0) / vals.length;
+        const vals = sampleS.map(g => statVal(g, s));
+        const mean = vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
         const varRaw = vals.reduce((a, v) => a + (v - mean) ** 2, 0) / Math.max(1, vals.length - 1);
         const phi = mean > 0 ? clamp(varRaw / mean, 1, 5) : 1;
         const v = phi * mu;
@@ -322,16 +337,16 @@
           const p = probAtLeast(L, mu, v);
           if (p >= 0.02 && p <= 0.98) lines.push({
             line: L, prob: r3(p),
-            l10: [last10.filter(g => statVal(g, s) >= L).length, last10.length],
-            h2h: [h2h.filter(g => statVal(g, s) >= L).length, h2h.length],
+            l10: [l10S.filter(g => statVal(g, s) >= L).length, l10S.length],
+            h2h: [h2hS.filter(g => statVal(g, s) >= L).length, h2hS.length],
           });
         }
         const ll = likelyLine(mu, v);
         stats.push({
           stat: s, label: LABELS[s], proj: r1(mu), mu, v,
-          season_avg: cur.length ? r1(avg(cur, s)) : null,
-          prev_avg: prev.length ? r1(avg(prev, s)) : null,
-          l10_avg: r1(avg(last10, s)),
+          season_avg: avg(cur, s) != null ? r1(avg(cur, s)) : null,
+          prev_avg: avg(prev, s) != null ? r1(avg(prev, s)) : null,
+          l10_avg: l10S.length ? r1(avg(last10, s)) : null,
           h2h_avg: h2hAvg != null ? r1(h2hAvg) : null,
           opp_factor: s !== "PRA" ? r3(op.f[s]) : null,
           opp_rank: s !== "PRA" ? this._ranks[opp + "|" + s] : null,
@@ -344,8 +359,8 @@
         opponent: TEAM[opp], home,
         minutes: r1(adj ? Math.max(0, minutes + adj.min) : minutes), pace_factor: r3(paceF), absence: adj ? adj.names : [],
         games: { season: cur.length, prev: prev.length, h2h: h2h.length },
-        h2h_games: h2h.slice(0, 6).map(g => ({ date: g.date, pts: g.pts, reb: g.reb, ast: g.ast, fg3m: g.fg3m, min: Math.round(g.min) })),
-        recent: last10.map(g => ({ date: g.date, opp: g.opp, home: !!g.home, pts: g.pts, reb: g.reb, ast: g.ast, fg3m: g.fg3m, min: Math.round(g.min) })),
+        h2h_games: h2h.slice(0, 6).map(g => ({ date: g.date, pts: g.pts, reb: g.reb, ast: g.ast, fg3m: g.fg3m, fg2m: num0(statVal(g, "FG2M")), fg2a: num0(statVal(g, "FG2A")), fg3a: num0(g.fg3a), ftm: num0(g.ftm), fta: num0(g.fta), min: Math.round(g.min) })),
+        recent: last10.map(g => ({ date: g.date, opp: g.opp, home: !!g.home, pts: g.pts, reb: g.reb, ast: g.ast, fg3m: g.fg3m, fg2m: num0(statVal(g, "FG2M")), fg2a: num0(statVal(g, "FG2A")), fg3a: num0(g.fg3a), ftm: num0(g.ftm), fta: num0(g.fta), min: Math.round(g.min) })),
         missed, injury: inj, warnings, stats,
       };
     }
@@ -439,7 +454,7 @@
     });
   }
 
-  const api = { Context, TEAMS, TEAM, STATS, ALL_STATS, LABELS, probAtLeast, likelyLine, decodeLogFile, norm };
+  const api = { Context, TEAMS, TEAM, STATS, ALL_STATS, LABELS, probAtLeast, likelyLine, decodeLogFile, norm, statVal };
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.NBAModel = api;
 })(typeof window !== "undefined" ? window : globalThis);

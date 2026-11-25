@@ -50,13 +50,14 @@ const out = { sport: SPORT, generated_at: new Date().toISOString(), seasons: tar
 const add = (b, p, hit) => { b.n++; b.p += p; b.hit += hit ? 1 : 0; };
 const binOf = (calib, p) => calib[Math.min(9, Math.floor(p * 10))];
 const MIN_LINE = {
-  nba: { PTS: 10, REB: 4, AST: 4, FG3M: 2, STL: 1, BLK: 1, TOV: 2, PRA: 20 },
+  nba: { PTS: 10, REB: 4, AST: 4, FG3M: 2, STL: 1, BLK: 1, TOV: 2, PRA: 20, FG2M: 3, FG2A: 6, FG3A: 4, FTM: 3, FTA: 3 },
   lba: { PTS: 10, REB: 4, AST: 3, FG3M: 2, STL: 1, BLK: 1, TOV: 2, PRA: 15 },
   eurolega: { PTS: 10, REB: 4, AST: 3, FG3M: 2, STL: 1, BLK: 1, TOV: 2, PRA: 15 },
   seriea: { SH: 2, FC: 2, FS: 2, SV: 2 }, ucl: { SH: 2, FC: 2, FS: 2, SV: 2 },
 }[SPORT];
 const PICK_MIN = BASKET ? 0.70 : 0.65;
 const statOf = (r, s) => {
+  if (BASKET && M.statVal) return M.statVal(r, s);
   if (BASKET) return s === "PRA" ? r.pts + r.reb + r.ast : r[{ PTS: "pts", REB: "reb", AST: "ast", FG3M: "fg3m", STL: "stl", BLK: "blk", TOV: "tov" }[s]];
   const k = M.SPORT.key, d = M.SPORT.derived[s];
   return d ? d.reduce((a, x) => a + r[k[x]], 0) : r[k[s]];
@@ -123,7 +124,7 @@ for (const season of target) {
         if (!p) continue;
         for (const st of p.stats) {
           const real = statOf(r, st.stat);
-          if (real == null) continue;
+          if (real == null || Number.isNaN(real)) continue;
           const bs = out.players.byStat[st.stat] ||= { label: st.label, n: 0, p: 0, hit: 0, brier: 0 };
           for (const l of st.lines || []) {
             const hit = real >= l.line;

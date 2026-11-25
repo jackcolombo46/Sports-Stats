@@ -523,9 +523,13 @@
 
   function renderPlayer(d) {
     const w = d.warnings.map(x => `<div class="warn">⚠ ${esc(x)}</div>`).join("");
-    const recent = d.recent.map(g => `<tr><td>${esc(g.date.slice(5))}</td><td>${g.home ? "vs" : "@"} ${esc(g.opp)}</td><td>${g.min}</td><td>${g.pts}</td><td>${g.reb}</td><td>${g.ast}</td><td>${g.fg3m}</td></tr>`).join("");
-    const h2h = d.h2h_games.length ? d.h2h_games.map(g => `<tr><td>${esc(g.date)}</td><td>${g.min}</td><td>${g.pts}</td><td>${g.reb}</td><td>${g.ast}</td><td>${g.fg3m}</td></tr>`).join("")
-      : `<tr><td colspan="6" style="color:var(--muted)">Nessun precedente nelle ultime stagioni</td></tr>`;
+    // tiri segnati/tentati (numeri, non percentuali); "–" nelle partite vecchie senza il dato
+    const ma = (m, a) => (m == null || a == null ? "–" : `${m}/${a}`);
+    const shots = g => `<td>${ma(g.fg2m, g.fg2a)}</td><td>${ma(g.fg3m, g.fg3a)}</td><td>${ma(g.ftm, g.fta)}</td>`;
+    const recent = d.recent.map(g => `<tr><td>${esc(g.date.slice(5))}</td><td>${g.home ? "vs" : "@"} ${esc(g.opp)}</td><td>${g.min}</td><td>${g.pts}</td><td>${g.reb}</td><td>${g.ast}</td>${shots(g)}</tr>`).join("");
+    const h2h = d.h2h_games.length ? d.h2h_games.map(g => `<tr><td>${esc(g.date)}</td><td>${g.min}</td><td>${g.pts}</td><td>${g.reb}</td><td>${g.ast}</td>${shots(g)}</tr>`).join("")
+      : `<tr><td colspan="8" style="color:var(--muted)">Nessun precedente nelle ultime stagioni</td></tr>`;
+    const shotHead = `<th title="tiri da 2 segnati/tentati">2P</th><th title="tiri da 3 segnati/tentati">3P</th><th title="tiri liberi segnati/tentati">TL</th>`;
     return `
     <div class="hero">
       <div class="idt">${P(d.player.id, d.player.name, "l")}<div><h2>${esc(d.player.name)}</h2><div class="sub">${L(d.player.team.tri, "s")} ${esc(d.player.team.name)}
@@ -542,8 +546,8 @@
     <div class="grid">${d.stats.map(s => statCard(s, d)).join("")}</div>
     ${oppChips(d.opp_profile)}
     <div class="two">
-      <div><h3>Ultime 10 partite</h3><table><tr><th>Data</th><th>Avv.</th><th>Min</th><th>Pt</th><th>Rb</th><th>As</th><th>3P</th></tr>${recent}</table></div>
-      <div><h3>Precedenti contro ${esc(d.opponent.tri)}</h3><table><tr><th>Data</th><th>Min</th><th>Pt</th><th>Rb</th><th>As</th><th>3P</th></tr>${h2h}</table></div>
+      <div><h3>Ultime 10 partite <small class="nt">(tiri: segnati/tentati)</small></h3><div class="scroll"><table><tr><th>Data</th><th>Avv.</th><th>Min</th><th>Pt</th><th>Rb</th><th>As</th>${shotHead}</tr>${recent}</table></div></div>
+      <div><h3>Precedenti contro ${esc(d.opponent.tri)}</h3><div class="scroll"><table><tr><th>Data</th><th>Min</th><th>Pt</th><th>Rb</th><th>As</th>${shotHead}</tr>${h2h}</table></div></div>
     </div>
     ${BasketAdv.playerSection(ctx, M, GM, d.player.id)}
     ${Absence.playerSection(ctx, ABS, d.player.id)}
@@ -635,7 +639,7 @@
 
 
   // ------------------------------------------------------------ occasioni (previsioni più probabili della prossima giornata)
-  const PICK_MIN = { PTS: 10, REB: 4, AST: 4, FG3M: 2, STL: 1, BLK: 1, TOV: 2, PRA: 20 };   // soglie minime (sotto sono previsioni banali)
+  const PICK_MIN = { PTS: 10, REB: 4, AST: 4, FG3M: 2, STL: 1, BLK: 1, TOV: 2, PRA: 20, FG2M: 3, FG2A: 6, FG3A: 4, FTM: 3, FTA: 3 };   // soglie minime (sotto sono previsioni banali)
   let BT = null;   // verifica del modello (data/backtest.json), caricata senza far aspettare l'app
   function picksCfg() {
     return {
@@ -706,12 +710,13 @@
   }
 
   // ------------------------------------------------------------ andamento (grafici) e confronto fra giocatori
-  const STATV = s => g => s === "PRA" ? g.pts + g.reb + g.ast : +g[{ PTS: "pts", REB: "reb", AST: "ast", FG3M: "fg3m", STL: "stl", BLK: "blk", TOV: "tov" }[s]] || 0;
+  const STATV = s => g => { const v = M.statVal(g, s); return Number.isFinite(v) ? v : 0; };
+  const hasStat = s => g => Number.isFinite(M.statVal(g, s));
   const oppAbbr = o => o, oppName = o => o, teamLbl = tri => tri || "—";
   let TREND = null;   // grafico da disegnare dopo aver messo la pagina (vedi run)
   function trendPoints(pid, s, n) {
     const f = STATV(s);
-    return (ctx.playerLogs.get(pid) || []).filter(g => g.min > 0).slice(0, n).reverse().map(g => {
+    return (ctx.playerLogs.get(pid) || []).filter(g => g.min > 0 && hasStat(s)(g)).slice(0, n).reverse().map(g => {
       const v = f(g);
       return { v, label: oppAbbr(g.opp), old: g.season !== ctx.season,
                title: `${g.date.split("-").reverse().join("/")} ${g.home ? "vs" : "@"} ${oppName(g.opp)}: ${v} (${Math.round(g.min)}')` };
@@ -781,7 +786,8 @@
     if (!a || !b) return `<div class="msg">Scrivi o scegli due giocatori nei campi qui sopra (anche della stessa squadra).</div>`;
     if (a === b) return `<div class="msg">Scegli due giocatori diversi.</div>`;
     const S = [pside(a), pside(b)];
-    const ST = [["PTS", "Punti", 1], ["REB", "Rimbalzi", 1], ["AST", "Assist", 1], ["FG3M", "Triple", 1], ["STL", "Rubate", 1], ["BLK", "Stoppate", 1], ["TOV", "Palle perse", -1], ["PRA", "Punti+Rimb+Ass", 1]];
+    const ST = [["PTS", "Punti", 1], ["REB", "Rimbalzi", 1], ["AST", "Assist", 1], ["FG3M", "Triple", 1], ["STL", "Rubate", 1], ["BLK", "Stoppate", 1], ["TOV", "Palle perse", -1], ["PRA", "Punti+Rimb+Ass", 1],
+      ["FG2M", "Tiri da 2 segnati", 1], ["FG2A", "Tiri da 2 tentati", 0], ["FG3A", "Tiri da 3 tentati", 0], ["FTM", "Tiri liberi segnati", 1], ["FTA", "Tiri liberi tentati", 0]];
     const metrics = [], vals = [{}, {}];
     const add = (key, label, group, fmt, dir, f) => { metrics.push({ key, label, group, fmt, dir }); S.forEach((x, i) => { vals[i][key] = f(x); }); };
     add("pmin", "Minuti attesi", "Prossima partita (proiezione)", "n1", 0, x => (x.pr ? x.pr.minutes : null));
@@ -789,8 +795,8 @@
     const avg = (list, f) => (list.length ? list.reduce((t, g) => t + f(g), 0) / list.length : null);
     add("sgp", "Partite", "Media stagione", "n0", 0, x => x.cur.length);
     add("smin", "Minuti", "Media stagione", "n1", 0, x => avg(x.cur, g => g.min));
-    for (const [k, l, d] of ST) add("s" + k, l, "Media stagione", "n1", d, x => avg(x.cur, STATV(k)));
-    for (const [k, l, d] of ST) add("l" + k, l, "Ultime 10 partite", "n1", d, x => avg(x.l10, STATV(k)));
+    for (const [k, l, d] of ST) add("s" + k, l, "Media stagione", "n1", d, x => avg(x.cur.filter(hasStat(k)), STATV(k)));
+    for (const [k, l, d] of ST) add("l" + k, l, "Ultime 10 partite", "n1", d, x => avg(x.l10.filter(hasStat(k)), STATV(k)));
     const AV = S.map(x => BasketAdv.playerVals(ctx, M, GM, x.pid));
     for (const m of AV[0].metrics) { metrics.push({ ...m, key: "a" + m.key, group: "Avanzate (stagione)" }); AV.forEach((av, i) => { vals[i]["a" + m.key] = av.vals[m.key]; }); }
 
