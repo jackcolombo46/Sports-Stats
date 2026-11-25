@@ -10,6 +10,11 @@
   const color = p => p >= .65 ? "var(--good)" : p >= .4 ? "var(--mid)" : "var(--bad)";
   const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const ord = n => n + "ª";
+  const fmtShort = utc => {
+    if (!utc) return "";
+    const t = new Date(utc), z = n => String(n).padStart(2, "0");
+    return `${["dom", "lun", "mar", "mer", "gio", "ven", "sab"][t.getDay()]} ${z(t.getDate())}/${z(t.getMonth() + 1)} · ${z(t.getHours())}:${z(t.getMinutes())}`;
+  };
   const fmtDate = utc => utc ? new Date(utc).toLocaleString("it-IT",
     { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" }) : "";
 
@@ -322,7 +327,8 @@
       if (mode === "player") {
         if (!selected) { if (suggList.length && $("#pq").value.trim()) return pick(0); $("#out").innerHTML = searchHome(); return bindRows(); }
         $("#out").innerHTML = renderPlayer(playerResult(selected.id));
-        $("#addw").onclick = () => { addWatch({ id: selected.id, name: selected.name }); $("#addw").textContent = "✓ tra gli osservati"; };
+        $("#addw").onclick = () => { addWatch({ id: selected.id, name: selected.name }); $("#addw").textContent = "✓ Osservato"; };
+        bindProj($("#out"));
         $("#toPcmp").onclick = () => openPlayerCompare(selected.id);
       } else {
         const t = $("#team").value;
@@ -481,19 +487,54 @@
   // ------------------------------------------------------------ render
   function matchupLine(teamTri, game, oppTri) {
     const where = game.home === false ? "@" : "vs";
-    const when = game.manual ? "avversario scelto a mano" : (game.live ? "IN CORSO · " : "") + fmtDate(game.utc);
+    const when = game.manual ? "avversario scelto a mano" : (game.live ? "IN CORSO · " : "") + fmtShort(game.utc);
     return `<div class="vs">${L(teamTri, "s")} ${esc(teamTri)} ${where} ${L(oppTri, "s")} <b>${esc(oppTri)}</b></div><div class="sub">${esc(when)}</div>`;
   }
 
+  /* quanto concede l'avversario: griglia compatta a due colonne (etichetta, differenza dalla media, posizione) */
   function oppChips(prof) {
-    const c = prof.allowed.map(a => {
-      const d = Math.round((a.factor - 1) * 100);
-      const cls = d > 0 ? "up" : d < 0 ? "dn" : "";
-      return `<span class="chip">${esc(a.label)}: <b class="${cls}">${d > 0 ? "+" : ""}${d}%</b> <small>(${ord(a.rank)})</small></span>`;
+    const cell = (label, rel, rank) => {
+      const d = Math.round((rel - 1) * 100), cls = d > 0 ? "up" : d < 0 ? "dn" : "";
+      return `<div><span>${esc(label)}</span><b class="${cls}">${d > 0 ? "+" : ""}${d}%</b><small>${ord(rank)}</small></div>`;
+    };
+    const SH = { FG2M: "Da 2 segnati", FG2A: "Da 2 tentati", FG3A: "Da 3 tentati", FTM: "Liberi segnati", FTA: "Liberi tentati", PRA: "P+R+A" };
+    const c = [cell("Ritmo", prof.pace.rel, prof.pace.rank), ...prof.allowed.map(a => cell(SH[a.stat] || a.label, a.factor, a.rank))];
+    return `<h3>Cosa concede ${esc(prof.team.name)} <small class="nt">(rispetto alla media NBA · 1ª = la più permissiva)</small></h3><div class="oppg">${c.join("")}</div>`;
+  }
+
+  /* proiezioni: linguette per gruppo, tabella riassuntiva, scheda della statistica scelta */
+  const PGROUPS = [["main", "Principali", ["PTS", "REB", "AST", "PRA", "FG3M"]], ["shoot", "Tiro", ["FG2M", "FG2A", "FG3A", "FTM", "FTA"]],
+                   ["other", "Altro", ["STL", "BLK", "TOV"]]];
+  const PSTATE = { g: "main", s: "PTS" };   // linguetta e statistica aperte (restano quando si cambia la soglia)
+  function projSection(d) {
+    const by = Object.fromEntries(d.stats.map(s => [s.stat, s]));
+    if (!by[PSTATE.s]) { PSTATE.g = "main"; PSTATE.s = "PTS"; }
+    const segs = PGROUPS.map(([id, l]) => `<button class="pseg${id === PSTATE.g ? " on" : ""}" data-pg="${id}">${l}</button>`).join("");
+    const rows = PGROUPS.map(([id, , keys]) => keys.filter(k => by[k]).map(k => {
+      const s = by[k];
+      return `<tr class="prow${id !== PSTATE.g ? " hidden" : ""}${k === PSTATE.s ? " sel" : ""}" data-pg="${id}" data-ps="${k}"><td>${esc(s.label)}</td><td class="pv">${s.proj}</td>
+        <td>${s.likely ? `<span class="pl">≥${s.likely.line}</span> <small>${pct(s.likely.prob)}</small>` : `<small>–</small>`}</td><td class="pm">${s.l10_avg ?? "–"}</td></tr>`;
+    }).join("")).join("");
+    const cards = d.stats.map(s => `<div class="pcard${s.stat === PSTATE.s ? "" : " hidden"}" data-pc="${s.stat}">${statCard(s, d)}</div>`).join("");
+    return `<div class="psegs">${segs}</div>
+      <table class="ptab"><tr><th>Statistica</th><th>Attesa</th><th>Probabile</th><th>L10</th></tr>${rows}</table>
+      <p class="phint">Tocca una riga per vedere soglie e grafico.</p>${cards}`;
+  }
+  function bindProj(root) {
+    const show = k => {
+      PSTATE.s = k;
+      root.querySelectorAll(".prow").forEach(r => r.classList.toggle("sel", r.dataset.ps === k));
+      root.querySelectorAll(".pcard").forEach(c => c.classList.toggle("hidden", c.dataset.pc !== k));
+    };
+    root.querySelectorAll(".pseg").forEach(b => b.onclick = () => {
+      PSTATE.g = b.dataset.pg;
+      root.querySelectorAll(".pseg").forEach(x => x.classList.toggle("on", x === b));
+      const rows = [...root.querySelectorAll(".prow")];
+      rows.forEach(r => r.classList.toggle("hidden", r.dataset.pg !== b.dataset.pg));
+      const first = rows.find(r => r.dataset.pg === b.dataset.pg);
+      if (first) show(first.dataset.ps);
     });
-    const pd = Math.round((prof.pace.rel - 1) * 100);
-    c.unshift(`<span class="chip">Ritmo: <b class="${pd > 0 ? "up" : pd < 0 ? "dn" : ""}">${pd > 0 ? "+" : ""}${pd}%</b> <small>(${ord(prof.pace.rank)})</small></span>`);
-    return `<h3>Cosa concede ${L(prof.team.tri, "s")} ${esc(prof.team.name)} rispetto alla media NBA <small class="nt">(1ª = la più permissiva)</small></h3><div class="opp">${c.join("")}</div>`;
+    root.querySelectorAll(".prow").forEach(r => r.onclick = () => show(r.dataset.ps));
   }
 
   function statCard(s, d) {
@@ -505,6 +546,7 @@
     ].filter(Boolean).map(x => `<span>${x}</span>`).join("");
     const sl = d && d.game && d.game.id && !d.game.manual;   // pulsante schedina solo con una partita vera in calendario
     return Thresh.card({ label: s.label, proj: s.proj, likely: lk, avgs: av, lines: s.lines, def: defLine(s),
+      probAt: k => M.probAtLeast(k, s.mu, s.v),   // soglia scritta a mano (es. almeno 22)
       points: trendPoints(d.player.id, s.stat, 10), unit: s.label.toLowerCase(),
       slip: sl ? (line, prob) => Slip.button({ key: `p|${d.game.id}|${d.player.id}|${s.stat}|${line}`, kind: "p",
         gid: d.game.id, utc: d.game.utc, pid: d.player.id, prob, text: `${d.player.name}: ${s.label.toLowerCase()} almeno ${line}`,
@@ -526,16 +568,17 @@
     // tiri segnati/tentati (numeri, non percentuali); "–" nelle partite vecchie senza il dato
     const ma = (m, a) => (m == null || a == null ? "–" : `${m}/${a}`);
     const shots = g => `<td>${ma(g.fg2m, g.fg2a)}</td><td>${ma(g.fg3m, g.fg3a)}</td><td>${ma(g.ftm, g.fta)}</td>`;
-    const recent = d.recent.map(g => `<tr><td>${esc(g.date.slice(5))}</td><td>${g.home ? "vs" : "@"} ${esc(g.opp)}</td><td>${g.min}</td><td>${g.pts}</td><td>${g.reb}</td><td>${g.ast}</td>${shots(g)}</tr>`).join("");
-    const h2h = d.h2h_games.length ? d.h2h_games.map(g => `<tr><td>${esc(g.date)}</td><td>${g.min}</td><td>${g.pts}</td><td>${g.reb}</td><td>${g.ast}</td>${shots(g)}</tr>`).join("")
+    const dm = x => `${x.slice(8, 10)}/${x.slice(5, 7)}`, dmy = x => `${dm(x)}/${x.slice(2, 4)}`;
+    const recent = d.recent.map(g => `<tr><td>${esc(dm(g.date))}</td><td>${g.home ? "vs" : "@"} ${esc(g.opp)}</td><td>${g.min}</td><td>${g.pts}</td><td>${g.reb}</td><td>${g.ast}</td>${shots(g)}</tr>`).join("");
+    const h2h = d.h2h_games.length ? d.h2h_games.map(g => `<tr><td>${esc(dmy(g.date))}</td><td>${g.min}</td><td>${g.pts}</td><td>${g.reb}</td><td>${g.ast}</td>${shots(g)}</tr>`).join("")
       : `<tr><td colspan="8" style="color:var(--muted)">Nessun precedente nelle ultime stagioni</td></tr>`;
     const shotHead = `<th title="tiri da 2 segnati/tentati">2P</th><th title="tiri da 3 segnati/tentati">3P</th><th title="tiri liberi segnati/tentati">TL</th>`;
     return `
     <div class="hero">
-      <div class="idt">${P(d.player.id, d.player.name, "l")}<div><h2>${esc(d.player.name)}</h2><div class="sub">${L(d.player.team.tri, "s")} ${esc(d.player.team.name)}
-        <button class="link" id="addw" data-id="${d.player.id}">${watch.some(w => w.id === d.player.id) ? "✓ tra gli osservati" : "+ Osserva"}</button>
-        <button class="link" id="toPcmp">⇄ Confronta</button></div>
-        ${matchupLine(d.player.team.tri, d.game, d.opponent.tri)}</div></div>
+      <div class="idt">${P(d.player.id, d.player.name, "l")}<div><h2>${esc(d.player.name)}</h2><div class="sub">${L(d.player.team.tri, "s")} ${esc(d.player.team.name)}</div>
+        ${matchupLine(d.player.team.tri, d.game, d.opponent.tri)}
+        <div class="hbtn"><button class="pill" id="addw" data-id="${d.player.id}">${watch.some(w => w.id === d.player.id) ? "✓ Osservato" : "+ Osserva"}</button>
+        <button class="pill" id="toPcmp">⇄ Confronta</button></div></div></div>
       <div class="kpis">
         <div class="kpi"><b>${d.minutes}</b><span>minuti attesi</span></div>
         <div class="kpi"><b>${d.games.season}</b><span>gare stagione</span></div>
@@ -543,7 +586,7 @@
       </div>
     </div>${w}
     <h3>Proiezioni contro ${esc(d.opponent.name)}</h3>
-    <div class="grid">${d.stats.map(s => statCard(s, d)).join("")}</div>
+    ${projSection(d)}
     ${oppChips(d.opp_profile)}
     <div class="two">
       <div><h3>Ultime 10 partite <small class="nt">(tiri: segnati/tentati)</small></h3><div class="scroll"><table><tr><th>Data</th><th>Avv.</th><th>Min</th><th>Pt</th><th>Rb</th><th>As</th>${shotHead}</tr>${recent}</table></div></div>
