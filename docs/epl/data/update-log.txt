@@ -1,45 +1,12 @@
 Competizione eng.1 -> docs/epl/data
-Stagione 2026-27: controllo le partite dal 2026-08-01 al 2026-11-26
-Stagione 2026-27: 110 partite nuove
-  50/110 partite
-  100/110 partite
-  statistiche di squadra ESPN: accurateCrosses, accurateLongBalls, accuratePasses, blockedShots, crossPct, effectiveClearance, effectiveTackles, foulsCommitted, interceptions, longballPct, offsides, passPct, penaltyKickGoals, penaltyKickShots, possessionPct, redCards, saves, shotPct, shotsOnTarget, tacklePct, totalClearance, totalCrosses, totalLongBalls, totalPasses, totalShots, totalTackles, wonCorners, yellowCards
-Foto Premier League (sito ufficiale): 599 giocatori su 606 nelle rose; elenco 1022; non abbinati 413: ['George Abbott (Spurs)', "Zach Abbott (Nott'm Forest)", 'Ahmed Abdullahi (Sunderland)', 'Joshua Abe (Liverpool)', 'Tayo Adaramola (Crystal Palace)', 'Miracle Adewole (Spurs)', 'Simon Adingra (Sunderland)', 'Demiane Agustien (Arsenal)', 'Damola Ajayi (Spurs)', 'Manuel Akanji (Man City)', 'Matai Akinmboni (Bournemouth)', 'David Akintola (Hull)']
-Indisponibili (regola ultime partite): 50 assenti, 1 in dubbio
-  Understat (dati): Expecting value: line 1 column 1 (char 0)
-ATTENZIONE Understat: dati delle squadre non trovati nella pagina
-Fatto: 2026-11-26T13:49:56Z 4 file, 40 partite in calendario, 606 giocatori in rosa
-epl: 34 giornate, 109 partite in 1s; occasioni giocatori 264 (previste 0.73, riuscite 0.731); squadre 512 (previste 0.75, riuscite 0.717)
-epl 2026-27: 110 partite nuove, 0 da fare
-fatto in 10s · partite 110 · errori 0
-confronto con i tabellini: {'gol ok': 3397, 'ast ok': 3397, 'sh ok': 3395, 'sot ok': 3356, 'fc ok': 3256, 'fs ok': 3354, 'yc ok': 3388, 'min ok': 3383, 'fs diverso': 43, 'fc diverso': 141, 'yc diverso': 9, 'sot diverso': 41, 'min diverso': 14, 'sh diverso': 2}
-Competizione eng.1 -> docs/epl/data
-Stagione 2024-25: scarico il calendario...
-Stagione 2024-25: 380 partite, scarico i tabellini...
-  50/380 partite
-  100/380 partite
-  150/380 partite
-  200/380 partite
-  250/380 partite
-  300/380 partite
-  350/380 partite
-  statistiche di squadra ESPN: accurateCrosses, accurateLongBalls, accuratePasses, blockedShots, crossPct, effectiveClearance, effectiveTackles, foulsCommitted, interceptions, longballPct, offsides, passPct, penaltyKickGoals, penaltyKickShots, possessionPct, redCards, saves, shotPct, shotsOnTarget, tacklePct, totalClearance, totalCrosses, totalLongBalls, totalPasses, totalShots, totalTackles, wonCorners, yellowCards
-Stagione 2024-25: salvate 11567 righe, 380 partite
-Stagione 2025-26: scarico il calendario...
-Stagione 2025-26: 380 partite, scarico i tabellini...
-  50/380 partite
-  100/380 partite
-  150/380 partite
-  200/380 partite
-  250/380 partite
-  300/380 partite
-  350/380 partite
-  statistiche di squadra ESPN: accurateCrosses, accurateLongBalls, accuratePasses, blockedShots, crossPct, effectiveClearance, effectiveTackles, foulsCommitted, interceptions, longballPct, offsides, passPct, penaltyKickGoals, penaltyKickShots, possessionPct, redCards, saves, shotPct, shotsOnTarget, tacklePct, totalClearance, totalCrosses, totalLongBalls, totalPasses, totalShots, totalTackles, wonCorners, yellowCards
-Stagione 2025-26: salvate 11492 righe, 380 partite
 Stagione 2026-27: controllo le partite dal 2026-11-20 al 2026-11-26
 Stagione 2026-27: 0 partite nuove
 Foto Premier League (sito ufficiale): 599 giocatori su 606 nelle rose; elenco 1022; non abbinati 413: ['George Abbott (Spurs)', "Zach Abbott (Nott'm Forest)", 'Ahmed Abdullahi (Sunderland)', 'Joshua Abe (Liverpool)', 'Tayo Adaramola (Crystal Palace)', 'Miracle Adewole (Spurs)', 'Simon Adingra (Sunderland)', 'Demiane Agustien (Arsenal)', 'Damola Ajayi (Spurs)', 'Manuel Akanji (Man City)', 'Matai Akinmboni (Bournemouth)', 'David Akintola (Hull)']
 Indisponibili (regola ultime partite): 50 assenti, 1 in dubbio
   Understat (dati): Expecting value: line 1 column 1 (char 0)
 ATTENZIONE Understat: dati delle squadre non trovati nella pagina
-Fatto: 2026-11-26T13:50:49Z 6 file, 40 partite in calendario, 606 giocatori in rosa
+Fatto: 2026-11-26T13:57:09Z 6 file, 40 partite in calendario, 606 giocatori in rosa
+epl: 149 giornate, 490 partite in 6s; occasioni giocatori 1110 (previste 0.732, riuscite 0.74); squadre 2180 (previste 0.75, riuscite 0.738)
+epl 2025-26: 150 partite nuove, 230 da fare
+fatto in 30s · partite 150 · errori 0
+confronto con i tabellini: {'gol ok': 4521, 'ast ok': 4520, 'sh ok': 4377, 'sot ok': 4375, 'fc ok': 4384, 'fs ok': 4494, 'yc ok': 4515, 'min ok': 4498, 'sot diverso': 148, 'min diverso': 25, 'fc diverso': 139, 'fs diverso': 29, 'sh diverso': 146, 'ast diverso': 3, 'yc diverso': 8, 'gol diverso': 2}
