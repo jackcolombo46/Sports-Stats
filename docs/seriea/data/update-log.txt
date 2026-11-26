@@ -1,19 +1,11 @@
 Competizione ita.1 -> docs/seriea/data
-Stagione 2026-27: controllo le partite dal 2026-11-20 al 2026-11-25
+Stagione 2026-27: controllo le partite dal 2026-11-20 al 2026-11-26
 Stagione 2026-27: 0 partite nuove
 Foto Serie A (fantacalcio.it): 514 giocatori su 589 in elenco; non abbinati 73: ['ahanor (atalanta)', 'djimsiti (atalanta)', 'vismara (atalanta)', 'dallinga (bologna)', 'albarracin (cagliari)', 'borrelli (cagliari)', 'ciocci (cagliari)', 'mutandwa (cagliari)', 'prati (cagliari)', 'raterink (cagliari)', 'zappa (cagliari)', 'azon (como)', 'cuenca-a (como)', 'kuhn (como)', 'morata (como)']
-Indisponibili Serie A (fantacalcio.it): 68 giocatori; giocatori non trovati in rosa: 1 ['Terracciano (Milan)']
+Indisponibili Serie A (fantacalcio.it): 69 giocatori; giocatori non trovati in rosa: 1 ['Terracciano (Milan)']
   Understat (dati): Expecting value: line 1 column 1 (char 0)
 ATTENZIONE Understat: dati delle squadre non trovati nella pagina
-Fatto: 2026-11-25T20:37:40Z 6 file, 30 partite in calendario, 660 giocatori in rosa
-seriea: 172 giornate, 500 partite in 7s; occasioni giocatori 1131 (previste 0.726, riuscite 0.754); squadre 2029 (previste 0.743, riuscite 0.734)
+Fatto: 2026-11-26T02:16:34Z 6 file, 30 partite in calendario, 660 giocatori in rosa
+seriea: 172 giornate, 500 partite in 6s; occasioni giocatori 1131 (previste 0.726, riuscite 0.754); squadre 2029 (previste 0.743, riuscite 0.734)
 fatto in 0s · partite 0 · errori 0
 confronto con i tabellini: {}
-Competizione ita.1 -> docs/seriea/data
-Stagione 2026-27: controllo le partite dal 2026-11-20 al 2026-11-25
-Stagione 2026-27: 0 partite nuove
-Foto Serie A (fantacalcio.it): 514 giocatori su 589 in elenco; non abbinati 73: ['ahanor (atalanta)', 'djimsiti (atalanta)', 'vismara (atalanta)', 'dallinga (bologna)', 'albarracin (cagliari)', 'borrelli (cagliari)', 'ciocci (cagliari)', 'mutandwa (cagliari)', 'prati (cagliari)', 'raterink (cagliari)', 'zappa (cagliari)', 'azon (como)', 'cuenca-a (como)', 'kuhn (como)', 'morata (como)']
-Indisponibili Serie A (fantacalcio.it): 68 giocatori; giocatori non trovati in rosa: 1 ['Terracciano (Milan)']
-  Understat (dati): Expecting value: line 1 column 1 (char 0)
-ATTENZIONE Understat: dati delle squadre non trovati nella pagina
-Fatto: 2026-11-25T20:37:56Z 6 file, 30 partite in calendario, 660 giocatori in rosa
