@@ -130,3 +130,47 @@ def uefa_photos(rosters, teams, league, season_start, cache):
             out[str(cands[0])] = img
     log(f"Foto UEFA: {len(out)} giocatori su {len(rosters)} nelle rose")
     return out, cache
+
+
+# ------------------------------------------------------------ Premier League: foto dal sito ufficiale
+# L'elenco dei giocatori del sito della Premier League ha nome, squadra e codice; la foto è
+# resources.premierleague.com/premierleague25/photos/players/110x140/<codice>.png (ESPN ne ha pochissime).
+PL_PLAYERS = ("https://sdp-prem-prod.premier-league-prod.pulselive.com/api/v1/competitions/8/seasons/{year}/players"
+              "?_limit=100{nxt}")
+PL_IMG = "https://resources.premierleague.com/premierleague25/photos/players/110x140/{pid}.png"
+
+
+def premier_photos(rosters, teams, season_start):
+    import urllib.parse
+    plist, nxt = [], ""
+    for _ in range(40):
+        page = fetch(PL_PLAYERS.format(year=season_start, nxt=f"&_next={urllib.parse.quote(nxt)}" if nxt else "")) or {}
+        plist += page.get("data") or []
+        nxt = (page.get("pagination") or {}).get("_next")
+        if not nxt:
+            break
+    by_team = {}
+    for pid, r in rosters.items():
+        by_team.setdefault(str(r.get("tid")), []).append((pid, r.get("name") or ""))
+    out, miss, tids = {}, [], {}
+    for p in plist:
+        team = p.get("currentTeam") or {}
+        key = team.get("id")
+        if key not in tids:
+            tids[key] = _team_id(team.get("abbr") or "", teams) or _team_id(team.get("name") or "", teams) \
+                or _team_id(team.get("shortName") or "", teams)
+        ros = by_team.get(str(tids[key]), [])
+        nm = p.get("name") or {}
+        first, last = (nm.get("firstName") or "").strip(), (nm.get("lastName") or "").strip()
+        tries = [nm.get("display") or nm.get("knownName") or "", f"{first} {last}", last]
+        if last and first:
+            tries.append(f"{last.split()[-1]} {first[0]}.")
+        pid = next((x for x in (_player_id(t, ros) for t in tries if t.strip()) if x), None) if ros else None
+        code = (p.get("id") or {}).get("playerId")
+        if pid and code:
+            out[str(pid)] = PL_IMG.format(pid=code)
+        elif ros:
+            miss.append(f"{first} {last} ({team.get('shortName')})")
+    log(f"Foto Premier League (sito ufficiale): {len(out)} giocatori su {len(rosters)} nelle rose; "
+        f"elenco {len(plist)}" + (f"; non abbinati {len(miss)}: {miss[:12]}" if miss else ""))
+    return out

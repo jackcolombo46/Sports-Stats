@@ -1,6 +1,6 @@
 /* Verifica del modello ("quanto ci azzecca"): per ogni giornata già giocata si ricostruiscono le proiezioni
    con lo stesso modello dell'app usando SOLO i dati precedenti a quella giornata, e si confrontano con i risultati.
-   Uso: node tools/backtest/backtest.js <nba|lba|eurolega|seriea|ucl>   →   docs/<sport>/data/backtest.json
+   Uso: node tools/backtest/backtest.js <nba|lba|eurolega|seriea|ucl|epl|uel>   →   docs/<sport>/data/backtest.json
    Nessuna dipendenza esterna; gira su GitHub Actions dopo l'aggiornamento dei dati. */
 "use strict";
 const fs = require("fs"), path = require("path"), vm = require("vm");
@@ -54,6 +54,7 @@ const MIN_LINE = {
   lba: { PTS: 10, REB: 4, AST: 3, FG3M: 2, STL: 1, BLK: 1, TOV: 2, PRA: 15 },
   eurolega: { PTS: 10, REB: 4, AST: 3, FG3M: 2, STL: 1, BLK: 1, TOV: 2, PRA: 15 },
   seriea: { SH: 2, FC: 2, FS: 2, SV: 2 }, ucl: { SH: 2, FC: 2, FS: 2, SV: 2 },
+  epl: { SH: 2, FC: 2, FS: 2, SV: 2 }, uel: { SH: 2, FC: 2, FS: 2, SV: 2 },
 }[SPORT];
 const PICK_MIN = BASKET ? 0.70 : 0.65;
 const statOf = (r, s) => {

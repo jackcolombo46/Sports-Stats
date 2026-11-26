@@ -7,7 +7,7 @@
   "use strict";
   const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
-  const SPORTS = [["nba", "NBA"], ["seriea", "Serie A"], ["ucl", "Champions League"], ["lba", "Serie A basket (LBA)"], ["eurolega", "EuroLeague"]];
+  const SPORTS = [["nba", "NBA"], ["seriea", "Serie A"], ["ucl", "Champions League"], ["uel", "Europa League"], ["epl", "Premier League"], ["lba", "Serie A basket (LBA)"], ["eurolega", "EuroLeague"]];
 
   const ICON = {
     today: '<path d="M4 6.5h16v13H4z"/><path d="M4 10.5h16M8.5 3.5v5M15.5 3.5v5"/><circle cx="12" cy="15" r="1.6" fill="currentColor" stroke="none"/>',

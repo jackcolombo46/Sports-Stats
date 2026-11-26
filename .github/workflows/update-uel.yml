@@ -1,0 +1,77 @@
+name: Aggiorna dati Europa League
+
+on:
+  schedule:
+    # orari UTC: notte (dopo le partite delle 21), mattina e tardo pomeriggio (dopo le partite delle 18:45)
+    - cron: "3 23 * * *"
+    - cron: "31 9 * * *"
+    - cron: "51 19 * * *"
+  workflow_dispatch:
+  push:
+    branches: [main, europa-premier]
+    paths: ["tools/pbp/**", "tools/uel/**", "tools/seriea/update_data.py", "tools/seriea/photos.py", "tools/seriea/injuries.py", ".github/workflows/update-uel.yml", "tools/backtest/**", "docs/uel/model.js", "docs/picks.js"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-uel
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Stagione in corso
+        run: |
+          set -o pipefail
+          mkdir -p docs/uel/data
+          python tools/uel/update_data.py --skip-past 2>&1 | tee docs/uel/data/update-log.txt
+      - name: Verifica del modello (quanto ci azzecca)
+        continue-on-error: true
+        run: node tools/backtest/backtest.js uel 2>&1 | tee -a docs/uel/data/update-log.txt
+      - name: Cronaca (statistiche per quarto / per minuto)
+        continue-on-error: true
+        timeout-minutes: 25
+        run: python tools/pbp/update_pbp.py --sport uel --max 150 2>&1 | tee -a docs/uel/data/update-log.txt
+      - name: Salva (stagione in corso)
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/uel/data
+          git diff --cached --quiet && exit 0
+          git commit -m "Dati aggiornati uel $(date -u +'%Y-%m-%d %H:%M UTC')"
+          # più aggiornamenti possono salvare insieme: se un altro ha appena salvato, riprende le sue modifiche e riprova
+          ok=0
+          for n in 1 2 3 4 5; do
+            git pull --rebase -q -X ours origin "$GITHUB_REF_NAME" || (git rebase --abort; git pull -q --no-rebase -X ours origin "$GITHUB_REF_NAME")
+            if git push; then ok=1; break; fi
+            sleep $((n * 7))
+          done
+          [ "$ok" = 1 ]
+      - name: Stagioni passate (solo la prima volta)
+        run: |
+          set -o pipefail
+          python tools/uel/update_data.py 2>&1 | tee -a docs/uel/data/update-log.txt
+      - name: Salva (stagioni passate)
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/uel/data
+          git diff --cached --quiet && exit 0
+          git commit -m "Dati aggiornati uel $(date -u +'%Y-%m-%d %H:%M UTC')"
+          # più aggiornamenti possono salvare insieme: se un altro ha appena salvato, riprende le sue modifiche e riprova
+          ok=0
+          for n in 1 2 3 4 5; do
+            git pull --rebase -q -X ours origin "$GITHUB_REF_NAME" || (git rebase --abort; git pull -q --no-rebase -X ours origin "$GITHUB_REF_NAME")
+            if git push; then ok=1; break; fi
+            sleep $((n * 7))
+          done
+          [ "$ok" = 1 ]
