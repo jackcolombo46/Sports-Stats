@@ -38,6 +38,8 @@ SPORTS = {
     "eurolega": {"kind": "basket", "src": "el", "team": "tri", "per_len": 600, "ot_len": 300},
     "seriea": {"kind": "soccer", "src": "espn", "path": "soccer/ita.1", "team": "tid"},
     "ucl": {"kind": "soccer", "src": "espn", "path": "soccer/uefa.champions", "team": "tid"},
+    "epl": {"kind": "soccer", "src": "espn", "path": "soccer/eng.1", "team": "tid"},
+    "uel": {"kind": "soccer", "src": "espn", "path": "soccer/uefa.europa", "team": "tid"},
 }
 BCOLS = ["gid", "pid", "per", "min", "pts", "reb", "ast", "fg3m", "stl", "blk", "tov"]
 REPORT = {"games": 0, "errors": 0, "check": collections.Counter(), "types": collections.Counter()}

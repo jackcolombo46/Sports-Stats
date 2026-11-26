@@ -585,6 +585,9 @@ def player_photos(meta, teams):
     if LEAGUE == "ita.1":
         import photos
         return photos.fantacalcio_photos(ros, teams)
+    if LEAGUE == "eng.1":
+        import photos
+        return photos.premier_photos(ros, teams, season_start_year(dt.date.today()))
     sa = read_json(os.path.join(os.path.dirname(DATA.rstrip("/")), "..", "seriea", "data", "meta.json"), {}) or {}
     sa = (sa.get("images") or {}).get("players") or {}
     out = {pid: url for pid, url in sa.items() if pid in ros}
@@ -624,7 +627,7 @@ def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--past", type=int, default=2, help="stagioni passate da tenere")
     ap.add_argument("--skip-past", action="store_true", help="non scaricare stagioni passate mancanti")
-    ap.add_argument("--league", default="ita.1", help="competizione ESPN (ita.1 = Serie A, uefa.champions = Champions League)")
+    ap.add_argument("--league", default="ita.1", help="competizione ESPN (ita.1 = Serie A, eng.1 = Premier League, uefa.champions = Champions League, uefa.europa = Europa League)")
     ap.add_argument("--data", default=os.path.join("docs", "seriea", "data"), help="cartella dei dati")
     args = ap.parse_args(argv)
     configure(args.league, args.data)
