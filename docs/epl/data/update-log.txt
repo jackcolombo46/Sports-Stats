@@ -10,3 +10,11 @@ epl: 149 giornate, 490 partite in 6s; occasioni giocatori 1110 (previste 0.732, 
 epl 2025-26: 150 partite nuove, 230 da fare
 fatto in 30s · partite 150 · errori 0
 confronto con i tabellini: {'gol ok': 4521, 'ast ok': 4520, 'sh ok': 4377, 'sot ok': 4375, 'fc ok': 4384, 'fs ok': 4494, 'yc ok': 4515, 'min ok': 4498, 'sot diverso': 148, 'min diverso': 25, 'fc diverso': 139, 'fs diverso': 29, 'sh diverso': 146, 'ast diverso': 3, 'yc diverso': 8, 'gol diverso': 2}
+Competizione eng.1 -> docs/epl/data
+Stagione 2026-27: controllo le partite dal 2026-11-20 al 2026-11-26
+Stagione 2026-27: 0 partite nuove
+Foto Premier League (sito ufficiale): 599 giocatori su 606 nelle rose; elenco 1022; non abbinati 413: ['George Abbott (Spurs)', "Zach Abbott (Nott'm Forest)", 'Ahmed Abdullahi (Sunderland)', 'Joshua Abe (Liverpool)', 'Tayo Adaramola (Crystal Palace)', 'Miracle Adewole (Spurs)', 'Simon Adingra (Sunderland)', 'Demiane Agustien (Arsenal)', 'Damola Ajayi (Spurs)', 'Manuel Akanji (Man City)', 'Matai Akinmboni (Bournemouth)', 'David Akintola (Hull)']
+Indisponibili (regola ultime partite): 50 assenti, 1 in dubbio
+  Understat (dati): Expecting value: line 1 column 1 (char 0)
+ATTENZIONE Understat: dati delle squadre non trovati nella pagina
+Fatto: 2026-11-26T13:58:10Z 6 file, 40 partite in calendario, 606 giocatori in rosa
