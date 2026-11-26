@@ -1,0 +1,15 @@
+Competizione uefa.europa -> docs/uel/data
+Stagione 2026-27: controllo le partite dal 2026-08-01 al 2026-11-26
+Stagione 2026-27: 72 partite nuove
+  50/72 partite
+  statistiche di squadra ESPN: accurateCrosses, accurateLongBalls, accuratePasses, blockedShots, crossPct, effectiveClearance, effectiveTackles, foulsCommitted, interceptions, longballPct, offsides, passPct, penaltyKickGoals, penaltyKickShots, possessionPct, redCards, saves, shotPct, shotsOnTarget, tacklePct, totalClearance, totalCrosses, totalLongBalls, totalPasses, totalShots, totalTackles, wonCorners, yellowCards
+Foto dalla Serie A: 52 giocatori
+Formazioni UEFA: 152 partite nuove, 1951 giocatori in archivio
+Foto UEFA: 922 giocatori su 1186 nelle rose
+Indisponibili (regola ultime partite): 67 assenti, 2 in dubbio
+Understat: competizione non coperta, si usa solo l'xG di ESPN
+Fatto: 2026-11-26T13:50:41Z 3 file, 36 partite in calendario, 1186 giocatori in rosa
+uel: 5 giornate, 63 partite in 0s; occasioni giocatori 107 (previste 0.73, riuscite 0.645); squadre 277 (previste 0.736, riuscite 0.744)
+uel 2026-27: 72 partite nuove, 0 da fare
+fatto in 6s · partite 72 · errori 0
+confronto con i tabellini: {'gol ok': 2273, 'ast ok': 2273, 'sh ok': 2270, 'sot ok': 2255, 'fc ok': 2140, 'fs ok': 2237, 'yc ok': 2269, 'min ok': 2261, 'fc diverso': 133, 'sh diverso': 3, 'sot diverso': 18, 'fs diverso': 36, 'yc diverso': 4, 'evento senza giocatore': 1, 'min diverso': 12}
