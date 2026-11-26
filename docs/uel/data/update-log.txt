@@ -11,3 +11,12 @@ uel: 26 giornate, 261 partite in 1s; occasioni giocatori 462 (previste 0.736, ri
 uel 2025-26: 150 partite nuove, 39 da fare
 fatto in 30s · partite 150 · errori 0
 confronto con i tabellini: {'gol ok': 4668, 'ast ok': 4678, 'sh ok': 4560, 'sot ok': 4572, 'fc diverso': 206, 'fs ok': 4635, 'yc ok': 4666, 'min ok': 4527, 'fc ok': 4472, 'sot diverso': 106, 'min diverso': 151, 'sh diverso': 118, 'fs diverso': 43, 'yc diverso': 12, 'gol diverso': 10, 'evento senza giocatore': 3}
+Competizione uefa.europa -> docs/uel/data
+Stagione 2026-27: controllo le partite dal 2026-11-02 al 2026-11-26
+Stagione 2026-27: 0 partite nuove
+Foto dalla Serie A: 52 giocatori
+Formazioni UEFA: 0 partite nuove, 1951 giocatori in archivio
+Foto UEFA: 922 giocatori su 1186 nelle rose
+Indisponibili (regola ultime partite): 67 assenti, 2 in dubbio
+Understat: competizione non coperta, si usa solo l'xG di ESPN
+Fatto: 2026-11-26T13:58:44Z 5 file, 36 partite in calendario, 1186 giocatori in rosa
