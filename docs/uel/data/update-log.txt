@@ -13,3 +13,26 @@ uel: 5 giornate, 63 partite in 0s; occasioni giocatori 107 (previste 0.73, riusc
 uel 2026-27: 72 partite nuove, 0 da fare
 fatto in 6s · partite 72 · errori 0
 confronto con i tabellini: {'gol ok': 2273, 'ast ok': 2273, 'sh ok': 2270, 'sot ok': 2255, 'fc ok': 2140, 'fs ok': 2237, 'yc ok': 2269, 'min ok': 2261, 'fc diverso': 133, 'sh diverso': 3, 'sot diverso': 18, 'fs diverso': 36, 'yc diverso': 4, 'evento senza giocatore': 1, 'min diverso': 12}
+Competizione uefa.europa -> docs/uel/data
+Stagione 2024-25: scarico il calendario...
+Stagione 2024-25: 189 partite, scarico i tabellini...
+  50/189 partite
+  100/189 partite
+  150/189 partite
+  statistiche di squadra ESPN: accurateCrosses, accurateLongBalls, accuratePasses, blockedShots, crossPct, effectiveClearance, effectiveTackles, foulsCommitted, interceptions, longballPct, offsides, passPct, penaltyKickGoals, penaltyKickShots, possessionPct, redCards, saves, shotPct, shotsOnTarget, tacklePct, totalClearance, totalCrosses, totalLongBalls, totalPasses, totalShots, totalTackles, wonCorners, yellowCards
+Stagione 2024-25: salvate 5851 righe, 189 partite
+Stagione 2025-26: scarico il calendario...
+Stagione 2025-26: 189 partite, scarico i tabellini...
+  50/189 partite
+  100/189 partite
+  150/189 partite
+  statistiche di squadra ESPN: accurateCrosses, accurateLongBalls, accuratePasses, blockedShots, crossPct, effectiveClearance, effectiveTackles, foulsCommitted, interceptions, longballPct, offsides, passPct, penaltyKickGoals, penaltyKickShots, possessionPct, redCards, saves, shotPct, shotsOnTarget, tacklePct, totalClearance, totalCrosses, totalLongBalls, totalPasses, totalShots, totalTackles, wonCorners, yellowCards
+Stagione 2025-26: salvate 5899 righe, 189 partite
+Stagione 2026-27: controllo le partite dal 2026-11-02 al 2026-11-26
+Stagione 2026-27: 0 partite nuove
+Foto dalla Serie A: 52 giocatori
+Formazioni UEFA: 0 partite nuove, 1951 giocatori in archivio
+Foto UEFA: 922 giocatori su 1186 nelle rose
+Indisponibili (regola ultime partite): 67 assenti, 2 in dubbio
+Understat: competizione non coperta, si usa solo l'xG di ESPN
+Fatto: 2026-11-26T13:51:29Z 5 file, 36 partite in calendario, 1186 giocatori in rosa
