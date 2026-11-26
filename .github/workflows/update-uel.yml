@@ -8,7 +8,7 @@ on:
     - cron: "51 19 * * *"
   workflow_dispatch:
   push:
-    branches: [main, europa-premier]
+    branches: [main]
     paths: ["tools/pbp/**", "tools/uel/**", "tools/seriea/update_data.py", "tools/seriea/photos.py", "tools/seriea/injuries.py", ".github/workflows/update-uel.yml", "tools/backtest/**", "docs/uel/model.js", "docs/picks.js"]
 
 permissions:

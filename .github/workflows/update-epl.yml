@@ -8,7 +8,7 @@ on:
     - cron: "11 18 * * *"
   workflow_dispatch:
   push:
-    branches: [main, europa-premier]
+    branches: [main]
     paths: ["tools/pbp/**", "tools/epl/**", "tools/seriea/update_data.py", "tools/seriea/photos.py", "tools/seriea/injuries.py", ".github/workflows/update-epl.yml", "tools/backtest/**", "docs/epl/model.js", "docs/picks.js"]
 
 permissions:
