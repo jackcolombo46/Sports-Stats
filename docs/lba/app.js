@@ -360,9 +360,14 @@
 
   function renderPlayer(d) {
     const w = d.warnings.map(x => `<div class="warn">⚠ ${esc(x)}</div>`).join("");
-    const recent = d.recent.map(g => `<tr><td>${esc(g.date.slice(5))}</td><td>${g.home ? "vs" : "@"} ${esc(g.opp)}</td><td>${g.min}</td><td>${g.pts}</td><td>${g.reb}</td><td>${g.ast}</td><td>${g.fg3m}</td></tr>`).join("");
-    const h2h = d.h2h_games.length ? d.h2h_games.map(g => `<tr><td>${esc(g.date)}</td><td>${g.min}</td><td>${g.pts}</td><td>${g.reb}</td><td>${g.ast}</td><td>${g.fg3m}</td></tr>`).join("")
-      : `<tr><td colspan="6" style="color:var(--muted)">Nessun precedente nelle ultime stagioni</td></tr>`;
+    // tiri segnati/tentati (numeri, non percentuali); "–" nelle partite vecchie senza il dato
+    const ma = (m, a) => (m == null || a == null ? "–" : `${m}/${a}`);
+    const shots = g => `<td>${ma(g.fg2m, g.fg2a)}</td><td>${ma(g.fg3m, g.fg3a)}</td><td>${ma(g.ftm, g.fta)}</td>`;
+    const shotHead = `<th title="tiri da 2 segnati/tentati">2P</th><th title="tiri da 3 segnati/tentati">3P</th><th title="tiri liberi segnati/tentati">TL</th>`;
+    const dm = x => `${x.slice(8, 10)}/${x.slice(5, 7)}`, dmy = x => `${dm(x)}/${x.slice(2, 4)}`;
+    const recent = d.recent.map(g => `<tr><td>${esc(dm(g.date))}</td><td>${g.home ? "vs" : "@"} ${esc(g.opp)}</td><td>${g.min}</td><td>${g.pts}</td><td>${g.reb}</td><td>${g.ast}</td><td>${g.stl ?? "–"}</td><td>${g.blk ?? "–"}</td><td>${g.tov ?? "–"}</td>${shots(g)}</tr>`).join("");
+    const h2h = d.h2h_games.length ? d.h2h_games.map(g => `<tr><td>${esc(dmy(g.date))}</td><td>${g.min}</td><td>${g.pts}</td><td>${g.reb}</td><td>${g.ast}</td><td>${g.stl ?? "–"}</td><td>${g.blk ?? "–"}</td><td>${g.tov ?? "–"}</td>${shots(g)}</tr>`).join("")
+      : `<tr><td colspan="11" style="color:var(--muted)">Nessun precedente nelle ultime stagioni</td></tr>`;
     return `
     <div class="hero">
       <div class="idt">${P(d.player.id, d.player.name, "l")}<div><h2>${esc(d.player.name)}</h2><div class="sub">${L(d.player.team.tri, "s")} ${esc(d.player.team.name)}
@@ -379,8 +384,8 @@
     <div class="grid">${d.stats.map(s => statCard(s, d)).join("")}</div>
     ${oppChips(d.opp_profile)}
     <div class="two">
-      <div><h3>Ultime 10 partite</h3><table><tr><th>Data</th><th>Avv.</th><th>Min</th><th>Pt</th><th>Rb</th><th>As</th><th>3P</th></tr>${recent}</table></div>
-      <div><h3>Precedenti contro ${esc(d.opponent.tri)}</h3><table><tr><th>Data</th><th>Min</th><th>Pt</th><th>Rb</th><th>As</th><th>3P</th></tr>${h2h}</table></div>
+      <div><h3>Ultime 10 partite <small class="nt">(tiri: segnati/tentati)</small></h3><div class="scroll"><table><tr><th>Data</th><th>Avv.</th><th>Min</th><th>Pt</th><th>Rb</th><th>As</th><th title="palle recuperate">PR</th><th title="stoppate">St</th><th title="palle perse">PP</th>${shotHead}</tr>${recent}</table></div></div>
+      <div><h3>Precedenti contro ${esc(d.opponent.tri)}</h3><div class="scroll"><table><tr><th>Data</th><th>Min</th><th>Pt</th><th>Rb</th><th>As</th><th title="palle recuperate">PR</th><th title="stoppate">St</th><th title="palle perse">PP</th>${shotHead}</tr>${h2h}</table></div></div>
     </div>
     ${BasketAdv.playerSection(ctx, M, GM, d.player.id)}
     ${Absence.playerSection(ctx, ABS, d.player.id)}

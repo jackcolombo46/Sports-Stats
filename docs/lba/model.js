@@ -50,6 +50,7 @@
 
   const norm = s => (s || "").normalize("NFKD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
   const statVal = (g, s) => s === "PRA" ? g.pts + g.reb + g.ast : g[KEY[s]];
+  const num0 = x => (Number.isFinite(x) ? x : null);   // dato mancante nelle partite vecchie
   const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
   const r1 = x => Math.round(x * 10) / 10;
   const r3 = x => Math.round(x * 1000) / 1000;
@@ -356,8 +357,8 @@
         opponent: TEAM[opp], home,
         minutes: r1(adj ? Math.max(0, minutes + adj.min) : minutes), pace_factor: r3(paceF), absence: adj ? adj.names : [],
         games: { season: cur.length, prev: prev.length, h2h: h2h.length },
-        h2h_games: h2h.slice(0, 6).map(g => ({ date: g.date, pts: g.pts, reb: g.reb, ast: g.ast, fg3m: g.fg3m, min: Math.round(g.min) })),
-        recent: last10.map(g => ({ date: g.date, opp: g.opp, home: !!g.home, pts: g.pts, reb: g.reb, ast: g.ast, fg3m: g.fg3m, min: Math.round(g.min) })),
+        h2h_games: h2h.slice(0, 6).map(g => ({ date: g.date, pts: g.pts, reb: g.reb, ast: g.ast, stl: g.stl, blk: g.blk, tov: g.tov, fg3m: g.fg3m, fg2m: num0(g.fgm - g.fg3m), fg2a: num0(g.fga - g.fg3a), fg3a: num0(g.fg3a), ftm: num0(g.ftm), fta: num0(g.fta), min: Math.round(g.min) })),
+        recent: last10.map(g => ({ date: g.date, opp: g.opp, home: !!g.home, pts: g.pts, reb: g.reb, ast: g.ast, stl: g.stl, blk: g.blk, tov: g.tov, fg3m: g.fg3m, fg2m: num0(g.fgm - g.fg3m), fg2a: num0(g.fga - g.fg3a), fg3a: num0(g.fg3a), ftm: num0(g.ftm), fta: num0(g.fta), min: Math.round(g.min) })),
         missed, injury: inj, warnings, stats,
       };
     }
