@@ -352,8 +352,13 @@ def backfill_past(y_cur, n_past, rs, teams, download=True):
         s = season_str(y)
         path = os.path.join(LOGS, f"{s}.json")
         if os.path.exists(path):
-            files.append(f"logs/{s}.json")
-            continue
+            with open(path) as fh:
+                cols = (json.load(fh) or {}).get("cols") or []
+            # file scaricato prima dei tiri segnati/tentati (NEW_COLS): si riscarica, se permesso
+            if not download or y not in rs or all(c in cols for c in NEW_COLS):
+                files.append(f"logs/{s}.json")
+                continue
+            log(f"Stagione {s}: mancano {', '.join(NEW_COLS)}, la riscarico")
         if not download or y not in rs:
             continue
         games = [g for g in season_games(rs[y]) if g["played"]]
