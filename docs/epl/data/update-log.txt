@@ -5,16 +5,7 @@ Foto Premier League (sito ufficiale): 600 giocatori su 608 nelle rose; elenco 10
 Indisponibili (regola ultime partite): 50 assenti, 1 in dubbio
   Understat (dati): Expecting value: line 1 column 1 (char 0)
 ATTENZIONE Understat: dati delle squadre non trovati nella pagina
-Fatto: 2026-11-27T05:27:03Z 6 file, 40 partite in calendario, 608 giocatori in rosa
-epl: 149 giornate, 490 partite in 7s; occasioni giocatori 1110 (previste 0.732, riuscite 0.74); squadre 2180 (previste 0.75, riuscite 0.738)
-epl 2025-26: 80 partite nuove, 0 da fare
-fatto in 8s · partite 80 · errori 0
-confronto con i tabellini: {'gol ok': 2450, 'ast ok': 2449, 'sh ok': 2386, 'sot ok': 2403, 'fc ok': 2382, 'fs ok': 2445, 'yc ok': 2447, 'min ok': 2439, 'fc diverso': 68, 'sot diverso': 47, 'fs diverso': 5, 'sh diverso': 64, 'ast diverso': 1, 'yc diverso': 3, 'min diverso': 11}
-Competizione eng.1 -> docs/epl/data
-Stagione 2026-27: controllo le partite dal 2026-11-20 al 2026-11-27
-Stagione 2026-27: 0 partite nuove
-Foto Premier League (sito ufficiale): 600 giocatori su 608 nelle rose; elenco 1022; non abbinati 412: ['George Abbott (Spurs)', "Zach Abbott (Nott'm Forest)", 'Ahmed Abdullahi (Sunderland)', 'Joshua Abe (Liverpool)', 'Tayo Adaramola (Crystal Palace)', 'Miracle Adewole (Spurs)', 'Simon Adingra (Sunderland)', 'Demiane Agustien (Arsenal)', 'Damola Ajayi (Spurs)', 'Manuel Akanji (Man City)', 'Matai Akinmboni (Bournemouth)', 'David Akintola (Hull)']
-Indisponibili (regola ultime partite): 50 assenti, 1 in dubbio
-  Understat (dati): Expecting value: line 1 column 1 (char 0)
-ATTENZIONE Understat: dati delle squadre non trovati nella pagina
-Fatto: 2026-11-27T05:27:35Z 6 file, 40 partite in calendario, 608 giocatori in rosa
+Fatto: 2026-11-27T19:12:49Z 6 file, 40 partite in calendario, 608 giocatori in rosa
+epl: 149 giornate, 490 partite in 5s; occasioni giocatori 1110 (previste 0.732, riuscite 0.74); squadre 2180 (previste 0.75, riuscite 0.738)
+fatto in 0s · partite 0 · errori 0
+confronto con i tabellini: {}
