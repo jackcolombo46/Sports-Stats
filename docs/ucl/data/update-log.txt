@@ -6,16 +6,7 @@ Formazioni UEFA: 0 partite nuove, 2063 giocatori in archivio
 Foto UEFA: 935 giocatori su 1199 nelle rose
 Indisponibili (regola ultime partite): 62 assenti, 0 in dubbio
 Understat: competizione non coperta, si usa solo l'xG di ESPN
-Fatto: 2026-11-28T02:04:25Z 5 file, 18 partite in calendario, 1199 giocatori in rosa
-ucl: 44 giornate, 279 partite in 2s; occasioni giocatori 756 (previste 0.728, riuscite 0.734); squadre 1404 (previste 0.75, riuscite 0.708)
+Fatto: 2026-11-28T04:10:47Z 5 file, 18 partite in calendario, 1199 giocatori in rosa
+ucl: 44 giornate, 279 partite in 1s; occasioni giocatori 756 (previste 0.728, riuscite 0.734); squadre 1404 (previste 0.75, riuscite 0.708)
 fatto in 0s · partite 0 · errori 0
 confronto con i tabellini: {}
-Competizione uefa.champions -> docs/ucl/data
-Stagione 2026-27: controllo le partite dal 2026-11-22 al 2026-11-28
-Stagione 2026-27: 0 partite nuove
-Foto dalla Serie A: 96 giocatori
-Formazioni UEFA: 0 partite nuove, 2063 giocatori in archivio
-Foto UEFA: 935 giocatori su 1199 nelle rose
-Indisponibili (regola ultime partite): 62 assenti, 0 in dubbio
-Understat: competizione non coperta, si usa solo l'xG di ESPN
-Fatto: 2026-11-28T02:04:54Z 5 file, 18 partite in calendario, 1199 giocatori in rosa
