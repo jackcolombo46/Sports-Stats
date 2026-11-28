@@ -1,19 +1,13 @@
 Competizione ita.1 -> docs/seriea/data
-Stagione 2026-27: controllo le partite dal 2026-11-20 al 2026-11-27
-Stagione 2026-27: 0 partite nuove
+Stagione 2026-27: controllo le partite dal 2026-11-20 al 2026-11-28
+Stagione 2026-27: 1 partite nuove
+  statistiche di squadra ESPN: accurateCrosses, accurateLongBalls, accuratePasses, blockedShots, crossPct, effectiveClearance, effectiveTackles, foulsCommitted, interceptions, longballPct, offsides, passPct, penaltyKickGoals, penaltyKickShots, possessionPct, redCards, saves, shotPct, shotsOnTarget, tacklePct, totalClearance, totalCrosses, totalLongBalls, totalPasses, totalShots, totalTackles, wonCorners, yellowCards
 Foto Serie A (fantacalcio.it): 514 giocatori su 589 in elenco; non abbinati 73: ['ahanor (atalanta)', 'djimsiti (atalanta)', 'vismara (atalanta)', 'dallinga (bologna)', 'albarracin (cagliari)', 'borrelli (cagliari)', 'ciocci (cagliari)', 'mutandwa (cagliari)', 'prati (cagliari)', 'raterink (cagliari)', 'zappa (cagliari)', 'azon (como)', 'cuenca-a (como)', 'kuhn (como)', 'morata (como)']
 Indisponibili Serie A (fantacalcio.it): 68 giocatori; giocatori non trovati in rosa: 2 ['Ostigard (Genoa)', 'Terracciano (Milan)']
   Understat (dati): Expecting value: line 1 column 1 (char 0)
 ATTENZIONE Understat: dati delle squadre non trovati nella pagina
-Fatto: 2026-11-27T20:17:14Z 6 file, 32 partite in calendario, 662 giocatori in rosa
-seriea: 172 giornate, 500 partite in 4s; occasioni giocatori 1131 (previste 0.726, riuscite 0.754); squadre 2029 (previste 0.743, riuscite 0.734)
-fatto in 0s · partite 0 · errori 0
-confronto con i tabellini: {}
-Competizione ita.1 -> docs/seriea/data
-Stagione 2026-27: controllo le partite dal 2026-11-20 al 2026-11-27
-Stagione 2026-27: 0 partite nuove
-Foto Serie A (fantacalcio.it): 514 giocatori su 589 in elenco; non abbinati 73: ['ahanor (atalanta)', 'djimsiti (atalanta)', 'vismara (atalanta)', 'dallinga (bologna)', 'albarracin (cagliari)', 'borrelli (cagliari)', 'ciocci (cagliari)', 'mutandwa (cagliari)', 'prati (cagliari)', 'raterink (cagliari)', 'zappa (cagliari)', 'azon (como)', 'cuenca-a (como)', 'kuhn (como)', 'morata (como)']
-Indisponibili Serie A (fantacalcio.it): 68 giocatori; giocatori non trovati in rosa: 2 ['Ostigard (Genoa)', 'Terracciano (Milan)']
-  Understat (dati): Expecting value: line 1 column 1 (char 0)
-ATTENZIONE Understat: dati delle squadre non trovati nella pagina
-Fatto: 2026-11-27T20:17:27Z 6 file, 32 partite in calendario, 662 giocatori in rosa
+Fatto: 2026-11-28T02:02:11Z 6 file, 34 partite in calendario, 662 giocatori in rosa
+seriea: 173 giornate, 501 partite in 6s; occasioni giocatori 1133 (previste 0.726, riuscite 0.754); squadre 2033 (previste 0.743, riuscite 0.734)
+seriea 2026-27: 1 partite nuove, 0 da fare
+fatto in 0s · partite 1 · errori 0
+confronto con i tabellini: {'gol ok': 32, 'ast ok': 32, 'sh ok': 32, 'sot ok': 31, 'fc ok': 28, 'fs diverso': 2, 'yc ok': 32, 'min ok': 32, 'fs ok': 30, 'fc diverso': 4, 'sot diverso': 1}
